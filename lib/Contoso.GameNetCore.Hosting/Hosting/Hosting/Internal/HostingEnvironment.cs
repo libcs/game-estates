@@ -2,11 +2,12 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Hosting;
 
 namespace Contoso.GameNetCore.Hosting.Internal
 {
 #pragma warning disable CS0618 // Type or member is obsolete
-    public class HostingEnvironment : IHostingEnvironment, Extensions.Hosting.IHostingEnvironment, IWebHostEnvironment
+    public class HostingEnvironment : IHostingEnvironment, Extensions.Hosting.IHostingEnvironment, IGameHostEnvironment
 #pragma warning restore CS0618 // Type or member is obsolete
     {
         public string EnvironmentName { get; set; } = Extensions.Hosting.Environments.Production;

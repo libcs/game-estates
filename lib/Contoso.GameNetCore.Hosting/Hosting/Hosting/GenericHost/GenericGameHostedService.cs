@@ -1,6 +1,16 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using Contoso.GameNetCore.Hosting.Builder;
+using Contoso.GameNetCore.Hosting.Server;
+using Contoso.GameNetCore.Hosting.Server.Features;
+using Contoso.GameNetCore.Hosting.Views;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -9,17 +19,6 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting.Builder;
-using Microsoft.AspNetCore.Hosting.Server;
-using Microsoft.AspNetCore.Hosting.Server.Features;
-using Microsoft.AspNetCore.Hosting.Views;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using Microsoft.Extensions.StackTrace.Sources;
 
 namespace Contoso.GameNetCore.Hosting.Internal
 {
@@ -73,9 +72,7 @@ namespace Contoso.GameNetCore.Hosting.Internal
                     serverAddressesFeature.PreferHostingUrls = GameHostUtilities.ParseBool(Configuration, GameHostDefaults.PreferHostingUrlsKey);
 
                     foreach (var value in urls.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries))
-                    {
                         addresses.Add(value);
-                    }
                 }
             }
 
@@ -86,16 +83,12 @@ namespace Contoso.GameNetCore.Hosting.Internal
                 Action<IApplicationBuilder> configure = Options.ConfigureApplication;
 
                 if (configure == null)
-                {
                     throw new InvalidOperationException($"No application configured. Please specify an application via IGameHostBuilder.UseStartup, IGameHostBuilder.Configure, or specifying the startup assembly via {nameof(GameHostDefaults.StartupAssemblyKey)} in the game host configuration.");
-                }
 
                 var builder = ApplicationBuilderFactory.CreateBuilder(Server.Features);
 
                 foreach (var filter in StartupFilters.Reverse())
-                {
                     configure = filter.Configure(configure);
-                }
 
                 configure(builder);
 
@@ -107,9 +100,7 @@ namespace Contoso.GameNetCore.Hosting.Internal
                 Logger.ApplicationError(ex);
 
                 if (!Options.GameHostOptions.CaptureStartupErrors)
-                {
                     throw;
-                }
 
                 application = BuildErrorPageApplication(ex);
             }
@@ -119,36 +110,22 @@ namespace Contoso.GameNetCore.Hosting.Internal
             await Server.StartAsync(httpApplication, cancellationToken);
 
             if (addresses != null)
-            {
                 foreach (var address in addresses)
-                {
                     LifetimeLogger.LogInformation("Now listening on: {address}", address);
-                }
-            }
 
             if (Logger.IsEnabled(LogLevel.Debug))
-            {
                 foreach (var assembly in Options.GameHostOptions.GetFinalHostingStartupAssemblies())
-                {
                     Logger.LogDebug("Loaded hosting startup assembly {assemblyName}", assembly);
-                }
-            }
 
             if (Options.HostingStartupExceptions != null)
-            {
                 foreach (var exception in Options.HostingStartupExceptions.InnerExceptions)
-                {
                     Logger.HostingStartupAssemblyError(exception);
-                }
-            }
         }
 
-        private RequestDelegate BuildErrorPageApplication(Exception exception)
+        RequestDelegate BuildErrorPageApplication(Exception exception)
         {
             if (exception is TargetInvocationException tae)
-            {
                 exception = tae.InnerException;
-            }
 
             var showDetailedErrors = HostingEnvironment.IsDevelopment() || Options.GameHostOptions.DetailedErrors;
 
@@ -167,18 +144,16 @@ namespace Contoso.GameNetCore.Hosting.Internal
             model.ClrVersion = clrVersion;
             model.OperatingSystemDescription = RuntimeInformation.OSDescription;
 
-            if (showDetailedErrors)
-            {
-                var exceptionDetailProvider = new ExceptionDetailsProvider(
-                    HostingEnvironment.ContentRootFileProvider,
-                    sourceCodeLineCount: 6);
+            //if (showDetailedErrors)
+            //{
+            //    var exceptionDetailProvider = new ExceptionDetailsProvider(
+            //        HostingEnvironment.ContentRootFileProvider,
+            //        sourceCodeLineCount: 6);
 
-                model.ErrorDetails = exceptionDetailProvider.GetDetails(exception);
-            }
-            else
-            {
-                model.ErrorDetails = new ExceptionDetails[0];
-            }
+            //    model.ErrorDetails = exceptionDetailProvider.GetDetails(exception);
+            //}
+            //else
+            //    model.ErrorDetails = new ExceptionDetails[0];
 
             var errorPage = new ErrorPage(model);
             return context =>

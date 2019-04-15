@@ -1,10 +1,7 @@
 ﻿// Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
-using System.Collections.Generic;
-using Microsoft.Extensions.StackTrace.Sources;
-
-namespace Microsoft.AspNetCore.Hosting.Views
+namespace Contoso.GameNetCore.Hosting.Views
 {
     /// <summary>
     /// Holds data to be displayed on the error page.
@@ -14,7 +11,7 @@ namespace Microsoft.AspNetCore.Hosting.Views
         /// <summary>
         /// Detailed information about each exception in the stack.
         /// </summary>
-        public IEnumerable<ExceptionDetails> ErrorDetails { get; set; }
+        //public IEnumerable<ExceptionDetails> ErrorDetails { get; set; }
 
         public string RuntimeDisplayName { get; set; }
 

@@ -1,6 +1,17 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using Contoso.GameNetCore.Hosting.Builder;
+using Contoso.GameNetCore.Hosting.Server;
+using Contoso.GameNetCore.Hosting.Server.Features;
+using Contoso.GameNetCore.Hosting.Views;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Features;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -10,19 +21,10 @@ using System.Runtime.ExceptionServices;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
-using Contoso.GameNetCore.Hosting.Server;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting.Builder;
-using Microsoft.AspNetCore.Hosting.Server;
-using Microsoft.AspNetCore.Hosting.Server.Features;
-using Microsoft.AspNetCore.Hosting.Views;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Features;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.StackTrace.Sources;
+#if !NET3
+using IHostEnvironment = Contoso.GameNetCore.Hosting.IHostingEnvironment;
+using IHostApplicationLifetime = Contoso.GameNetCore.Hosting.IApplicationLifetime;
+#endif
 
 namespace Contoso.GameNetCore.Hosting.Internal
 {
@@ -63,13 +65,15 @@ namespace Contoso.GameNetCore.Hosting.Internal
             _hostingServiceProvider = hostingServiceProvider ?? throw new ArgumentNullException(nameof(hostingServiceProvider));
             _applicationServiceCollection.AddSingleton<ApplicationLifetime>();
             // There's no way to to register multiple service types per definition. See https://github.com/aspnet/DependencyInjection/issues/360
-            _applicationServiceCollection.AddSingleton(services
-                => services.GetService<ApplicationLifetime>() as IHostApplicationLifetime);
 #pragma warning disable CS0618 // Type or member is obsolete
             _applicationServiceCollection.AddSingleton(services
+                => services.GetService<ApplicationLifetime>() as IHostApplicationLifetime);
+            _applicationServiceCollection.AddSingleton(services
                 => services.GetService<ApplicationLifetime>() as GameNetCore.Hosting.IApplicationLifetime);
+#if NET3
             _applicationServiceCollection.AddSingleton(services
                 => services.GetService<ApplicationLifetime>() as Extensions.Hosting.IApplicationLifetime);
+#endif
 #pragma warning restore CS0618 // Type or member is obsolete
             _applicationServiceCollection.AddSingleton<HostedServiceExecutor>();
         }
@@ -134,7 +138,7 @@ namespace Contoso.GameNetCore.Hosting.Internal
             // Log the fact that we did load hosting startup assemblies.
             if (_logger.IsEnabled(LogLevel.Debug))
                 foreach (var assembly in _options.GetFinalHostingStartupAssemblies())
-                    _logger.LogDebug("Loaded hosting startup assembly {assemblyName}", assembly);
+                    _logger.LogDebug($"Loaded hosting startup assembly {assembly}");
 
             if (_hostingStartupErrors != null)
                 foreach (var exception in _hostingStartupErrors.InnerExceptions)
@@ -158,7 +162,7 @@ namespace Contoso.GameNetCore.Hosting.Internal
             _startup = _hostingServiceProvider.GetService<IStartup>();
 
             if (_startup == null)
-                throw new InvalidOperationException($"No application configured. Please specify startup via IWebHostBuilder.UseStartup, IWebHostBuilder.Configure, injecting {nameof(IStartup)} or specifying the startup assembly via {nameof(WebHostDefaults.StartupAssemblyKey)} in the web host configuration.");
+                throw new InvalidOperationException($"No application configured. Please specify startup via IGameHostBuilder.UseStartup, IGameHostBuilder.Configure, injecting {nameof(IStartup)} or specifying the startup assembly via {nameof(GameHostDefaults.StartupAssemblyKey)} in the game host configuration.");
         }
 
         RequestDelegate BuildApplication()
@@ -175,9 +179,7 @@ namespace Contoso.GameNetCore.Hosting.Internal
                 var startupFilters = Services.GetService<IEnumerable<IStartupFilter>>();
                 Action<IApplicationBuilder> configure = _startup.Configure;
                 foreach (var filter in startupFilters.Reverse())
-                {
                     configure = filter.Configure(configure);
-                }
 
                 configure(builder);
 
@@ -217,16 +219,16 @@ namespace Contoso.GameNetCore.Hosting.Internal
                 model.ClrVersion = clrVersion;
                 model.OperatingSystemDescription = RuntimeInformation.OSDescription;
 
-                if (showDetailedErrors)
-                {
-                    var exceptionDetailProvider = new ExceptionDetailsProvider(
-                        hostingEnv.ContentRootFileProvider,
-                        sourceCodeLineCount: 6);
+                //if (showDetailedErrors)
+                //{
+                //    var exceptionDetailProvider = new ExceptionDetailsProvider(
+                //        hostingEnv.ContentRootFileProvider,
+                //        sourceCodeLineCount: 6);
 
-                    model.ErrorDetails = exceptionDetailProvider.GetDetails(ex);
-                }
-                else
-                    model.ErrorDetails = new ExceptionDetails[0];
+                //    model.ErrorDetails = exceptionDetailProvider.GetDetails(ex);
+                //}
+                //else
+                //    model.ErrorDetails = new ExceptionDetails[0];
 
                 var errorPage = new ErrorPage(model);
                 return context =>

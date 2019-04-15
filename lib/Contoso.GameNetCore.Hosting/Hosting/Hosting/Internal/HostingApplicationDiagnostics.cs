@@ -1,34 +1,34 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
-using System;
-using System.Diagnostics;
-using System.Runtime.CompilerServices;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Primitives;
-using Microsoft.Net.Http.Headers;
+using System;
+using System.Diagnostics;
+using System.Net.Http.Headers;
+using System.Runtime.CompilerServices;
 
 namespace Contoso.GameNetCore.Hosting.Internal
 {
     internal class HostingApplicationDiagnostics
     {
-        private static readonly double TimestampToTicks = TimeSpan.TicksPerSecond / (double)Stopwatch.Frequency;
+        static readonly double TimestampToTicks = TimeSpan.TicksPerSecond / (double)Stopwatch.Frequency;
 
-        private const string ActivityName = "Microsoft.AspNetCore.Hosting.HttpRequestIn";
-        private const string ActivityStartKey = "Microsoft.AspNetCore.Hosting.HttpRequestIn.Start";
+        const string ActivityName = "Contoso.GameNetCore.Hosting.HttpRequestIn";
+        const string ActivityStartKey = "Contoso.GameNetCore.Hosting.HttpRequestIn.Start";
 
-        private const string DeprecatedDiagnosticsBeginRequestKey = "Microsoft.AspNetCore.Hosting.BeginRequest";
-        private const string DeprecatedDiagnosticsEndRequestKey = "Microsoft.AspNetCore.Hosting.EndRequest";
-        private const string DiagnosticsUnhandledExceptionKey = "Microsoft.AspNetCore.Hosting.UnhandledException";
+        const string DeprecatedDiagnosticsBeginRequestKey = "Contoso.GameNetCore.Hosting.BeginRequest";
+        const string DeprecatedDiagnosticsEndRequestKey = "Contoso.GameNetCore.Hosting.EndRequest";
+        const string DiagnosticsUnhandledExceptionKey = "Contoso.GameNetCore.Hosting.UnhandledException";
 
-        private const string RequestIdHeaderName = "Request-Id";
-        private const string CorrelationContextHeaderName = "Correlation-Context";
-        private const string TraceParentHeaderName = "traceparent";
-        private const string TraceStateHeaderName = "tracestate";
+        const string RequestIdHeaderName = "Request-Id";
+        const string CorrelationContextHeaderName = "Correlation-Context";
+        const string TraceParentHeaderName = "traceparent";
+        const string TraceStateHeaderName = "tracestate";
 
-        private readonly DiagnosticListener _diagnosticListener;
-        private readonly ILogger _logger;
+        readonly DiagnosticListener _diagnosticListener;
+        readonly ILogger _logger;
 
         public HostingApplicationDiagnostics(ILogger logger, DiagnosticListener diagnosticListener)
         {
@@ -39,7 +39,7 @@ namespace Contoso.GameNetCore.Hosting.Internal
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void BeginRequest(HttpContext httpContext, ref HostingApplication.Context context)
         {
-            long startTimestamp = 0;
+            var startTimestamp = 0L;
 
             if (HostingEventSource.Log.IsEnabled())
             {
@@ -51,13 +51,10 @@ namespace Contoso.GameNetCore.Hosting.Internal
             var diagnosticListenerEnabled = _diagnosticListener.IsEnabled();
             var loggingEnabled = _logger.IsEnabled(LogLevel.Critical);
 
-
             if (diagnosticListenerEnabled)
             {
                 if (_diagnosticListener.IsEnabled(ActivityName, httpContext))
-                {
                     context.Activity = StartActivity(httpContext);
-                }
                 if (_diagnosticListener.IsEnabled(DeprecatedDiagnosticsBeginRequestKey))
                 {
                     startTimestamp = Stopwatch.GetTimestamp();
@@ -70,9 +67,7 @@ namespace Contoso.GameNetCore.Hosting.Internal
             {
                 // Get the request ID (first try TraceParent header otherwise Request-ID header
                 if (!httpContext.Request.Headers.TryGetValue(TraceParentHeaderName, out var correlationId))
-                {
                     httpContext.Request.Headers.TryGetValue(RequestIdHeaderName, out correlationId);
-                }
 
                 // Scope may be relevant for a different level of logging, so we always create it
                 // see: https://github.com/aspnet/Hosting/pull/944
@@ -82,9 +77,7 @@ namespace Contoso.GameNetCore.Hosting.Internal
                 if (_logger.IsEnabled(LogLevel.Information))
                 {
                     if (startTimestamp == 0)
-                    {
                         startTimestamp = Stopwatch.GetTimestamp();
-                    }
 
                     // Non-inline
                     LogRequestStarting(httpContext);
@@ -99,7 +92,7 @@ namespace Contoso.GameNetCore.Hosting.Internal
         {
             // Local cache items resolved multiple items, in order of use so they are primed in cpu pipeline when used
             var startTimestamp = context.StartTimestamp;
-            long currentTimestamp = 0;
+            var currentTimestamp = 0L;
 
             // If startTimestamp was 0, then Information logging wasn't enabled at for this request (and calcuated time will be wildly wrong)
             // Is used as proxy to reduce calls to virtual: _logger.IsEnabled(LogLevel.Information)
@@ -113,9 +106,7 @@ namespace Contoso.GameNetCore.Hosting.Internal
             if (_diagnosticListener.IsEnabled())
             {
                 if (currentTimestamp == 0)
-                {
                     currentTimestamp = Stopwatch.GetTimestamp();
-                }
 
                 if (exception == null)
                 {
@@ -142,16 +133,12 @@ namespace Contoso.GameNetCore.Hosting.Internal
                 var activity = context.Activity;
                 // Always stop activity if it was started
                 if (activity != null)
-                {
                     StopActivity(httpContext, activity);
-                }
             }
 
             if (context.EventLogEnabled && exception != null)
-            {
                 // Non-inline
                 HostingEventSource.Log.UnhandledException();
-            }
 
             // Logging Scope is finshed with
             context.Scope?.Dispose();
@@ -161,14 +148,12 @@ namespace Contoso.GameNetCore.Hosting.Internal
         public void ContextDisposed(HostingApplication.Context context)
         {
             if (context.EventLogEnabled)
-            {
                 // Non-inline
                 HostingEventSource.Log.RequestStop();
-            }
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private void LogRequestStarting(HttpContext httpContext)
+        void LogRequestStarting(HttpContext httpContext)
         {
             // IsEnabled is checked in the caller, so if we are here just log
             _logger.Log(
@@ -180,7 +165,7 @@ namespace Contoso.GameNetCore.Hosting.Internal
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private void LogRequestFinished(HttpContext httpContext, long startTimestamp, long currentTimestamp)
+        void LogRequestFinished(HttpContext httpContext, long startTimestamp, long currentTimestamp)
         {
             // IsEnabled isn't checked in the caller, startTimestamp > 0 is used as a fast proxy check
             // but that may be because diagnostics are enabled, which also uses startTimestamp, so check here
@@ -198,7 +183,7 @@ namespace Contoso.GameNetCore.Hosting.Internal
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private void RecordBeginRequestDiagnostics(HttpContext httpContext, long startTimestamp)
+        void RecordBeginRequestDiagnostics(HttpContext httpContext, long startTimestamp)
         {
             _diagnosticListener.Write(
                 DeprecatedDiagnosticsBeginRequestKey,
@@ -210,7 +195,7 @@ namespace Contoso.GameNetCore.Hosting.Internal
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private void RecordEndRequestDiagnostics(HttpContext httpContext, long currentTimestamp)
+        void RecordEndRequestDiagnostics(HttpContext httpContext, long currentTimestamp)
         {
             _diagnosticListener.Write(
                 DeprecatedDiagnosticsEndRequestKey,
@@ -222,7 +207,7 @@ namespace Contoso.GameNetCore.Hosting.Internal
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private void RecordUnhandledExceptionDiagnostics(HttpContext httpContext, long currentTimestamp, Exception exception)
+        void RecordUnhandledExceptionDiagnostics(HttpContext httpContext, long currentTimestamp, Exception exception)
         {
             _diagnosticListener.Write(
                 DiagnosticsUnhandledExceptionKey,
@@ -235,60 +220,42 @@ namespace Contoso.GameNetCore.Hosting.Internal
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private static void RecordRequestStartEventLog(HttpContext httpContext)
-        {
+        static void RecordRequestStartEventLog(HttpContext httpContext) =>
             HostingEventSource.Log.RequestStart(httpContext.Request.Method, httpContext.Request.Path);
-        }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private Activity StartActivity(HttpContext httpContext)
+        Activity StartActivity(HttpContext httpContext)
         {
             var activity = new Activity(ActivityName);
 
             if (!httpContext.Request.Headers.TryGetValue(TraceParentHeaderName, out var requestId))
-            {
                 httpContext.Request.Headers.TryGetValue(RequestIdHeaderName, out requestId);
-            }
 
             if (!StringValues.IsNullOrEmpty(requestId))
             {
                 activity.SetParentId(requestId);
                 if (httpContext.Request.Headers.TryGetValue(TraceStateHeaderName, out var traceState))
-                {
                     activity.TraceStateString = traceState;
-                }
 
                 // We expect baggage to be empty by default
                 // Only very advanced users will be using it in near future, we encourage them to keep baggage small (few items)
                 string[] baggage = httpContext.Request.Headers.GetCommaSeparatedValues(CorrelationContextHeaderName);
                 if (baggage != StringValues.Empty)
-                {
                     foreach (var item in baggage)
-                    {
                         if (NameValueHeaderValue.TryParse(item, out var baggageItem))
-                        {
                             activity.AddBaggage(baggageItem.Name.ToString(), baggageItem.Value.ToString());
-                        }
-                    }
-                }
             }
 
             if (_diagnosticListener.IsEnabled(ActivityStartKey))
-            {
                 _diagnosticListener.StartActivity(activity, new { HttpContext = httpContext });
-            }
             else
-            {
                 activity.Start();
-            }
 
             return activity;
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private void StopActivity(HttpContext httpContext, Activity activity)
-        {
+        void StopActivity(HttpContext httpContext, Activity activity) =>
             _diagnosticListener.StopActivity(activity, new { HttpContext = httpContext });
-        }
     }
 }

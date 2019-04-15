@@ -13,9 +13,9 @@ namespace Contoso.GameNetCore.Hosting.Internal
 {
     public class HostingApplication : IHttpApplication<HostingApplication.Context>
     {
-        private readonly RequestDelegate _application;
-        private readonly IHttpContextFactory _httpContextFactory;
-        private HostingApplicationDiagnostics _diagnostics;
+        readonly RequestDelegate _application;
+        readonly IHttpContextFactory _httpContextFactory;
+        HostingApplicationDiagnostics _diagnostics;
 
         public HostingApplication(
             RequestDelegate application,

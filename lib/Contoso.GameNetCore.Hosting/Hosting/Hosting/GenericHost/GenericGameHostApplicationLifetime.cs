@@ -3,6 +3,9 @@
 
 using System.Threading;
 using Microsoft.Extensions.Hosting;
+#if !NET3
+using IHostApplicationLifetime = Contoso.GameNetCore.Hosting.IApplicationLifetime;
+#endif
 
 namespace Contoso.GameNetCore.Hosting.Internal
 {

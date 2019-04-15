@@ -1,20 +1,22 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using Contoso.GameNetCore.Hosting.Builder;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.ExceptionServices;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting.Builder;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.ObjectPool;
+#if !NET3
+using IHostEnvironment = Microsoft.Extensions.Hosting.IHostingEnvironment;
+#endif
 
 namespace Contoso.GameNetCore.Hosting.Internal
 {
@@ -88,12 +90,12 @@ namespace Contoso.GameNetCore.Hosting.Internal
 
                 // REVIEW: This is bad since we don't own this type. Anybody could add one of these and it would mess things up
                 // We need to flow this differently
-                var listener = new DiagnosticListener("Microsoft.GameNetCore");
+                var listener = new DiagnosticListener("Contoso.GameNetCore");
                 services.TryAddSingleton<DiagnosticListener>(listener);
                 services.TryAddSingleton<DiagnosticSource>(listener);
 
-                services.TryAddSingleton<IHttpContextFactory, DefaultHttpContextFactory>();
-                services.TryAddScoped<IMiddlewareFactory, MiddlewareFactory>();
+                //services.TryAddSingleton<IHttpContextFactory, DefaultHttpContextFactory>();
+                //services.TryAddScoped<IMiddlewareFactory, MiddlewareFactory>();
                 services.TryAddSingleton<IApplicationBuilderFactory, ApplicationBuilderFactory>();
 
                 // Support UseStartup(assemblyName)
@@ -278,7 +280,7 @@ namespace Contoso.GameNetCore.Hosting.Internal
             });
         }
 
-        private void ConfigureContainer<TContainer>(HostBuilderContext context, TContainer container)
+        void ConfigureContainer<TContainer>(HostBuilderContext context, TContainer container)
         {
             var instance = context.Properties[_startupKey];
             var builder = (ConfigureContainerBuilder)context.Properties[typeof(ConfigureContainerBuilder)];

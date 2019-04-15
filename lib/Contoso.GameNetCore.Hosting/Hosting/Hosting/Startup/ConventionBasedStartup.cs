@@ -1,23 +1,23 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using Contoso.GameNetCore.Hosting;
+using Contoso.GameNetCore.Hosting.Internal;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Reflection;
 using System.Runtime.ExceptionServices;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Microsoft.AspNetCore.Hosting.Internal
 {
     public class ConventionBasedStartup : IStartup
     {
-        private readonly StartupMethods _methods;
+        readonly StartupMethods _methods;
 
-        public ConventionBasedStartup(StartupMethods methods)
-        {
+        public ConventionBasedStartup(StartupMethods methods) =>
             _methods = methods;
-        }
-        
+
         public void Configure(IApplicationBuilder app)
         {
             try
