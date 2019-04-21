@@ -4,10 +4,10 @@
 using Contoso.GameNetCore.Hosting.Builder;
 using Contoso.GameNetCore.Hosting.Internal;
 using Microsoft.AspNetCore.Hosting.Internal;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -238,13 +238,19 @@ namespace Contoso.GameNetCore.Hosting
             services.AddSingleton<IHostEnvironment>(_hostingEnvironment);
 #pragma warning disable CS0618 // Type or member is obsolete
             services.AddSingleton<GameNetCore.Hosting.IHostingEnvironment>(_hostingEnvironment);
+#if NET3
             services.AddSingleton<Extensions.Hosting.IHostingEnvironment>(_hostingEnvironment);
+#endif
 #pragma warning restore CS0618 // Type or member is obsolete
             services.AddSingleton(_context);
 
             var builder = new ConfigurationBuilder()
                 .SetBasePath(_hostingEnvironment.ContentRootPath)
+#if !NET3
+                .AddConfiguration(_config);
+#else
                 .AddConfiguration(_config, shouldDisposeConfiguration: true);
+#endif
 
             _configureAppConfigurationBuilder?.Invoke(_context, builder);
 
@@ -258,8 +264,8 @@ namespace Contoso.GameNetCore.Hosting
             services.AddSingleton<DiagnosticSource>(listener);
 
             services.AddTransient<IApplicationBuilderFactory, ApplicationBuilderFactory>();
-            services.AddTransient<IHttpContextFactory, DefaultHttpContextFactory>();
-            services.AddScoped<IMiddlewareFactory, MiddlewareFactory>();
+            //services.AddTransient<IHttpContextFactory, DefaultHttpContextFactory>();
+            //services.AddScoped<IMiddlewareFactory, MiddlewareFactory>();
             services.AddOptions();
             services.AddLogging();
 

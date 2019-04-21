@@ -10,7 +10,7 @@ namespace Contoso.Extensions.Hosting
 {
     public static class GenericHostGameHostBuilderExtensions
     {
-        public static IHostBuilder ConfigureWebHost(this IHostBuilder builder, Action<IGameHostBuilder> configure)
+        public static IHostBuilder ConfigureGameHost(this IHostBuilder builder, Action<IGameHostBuilder> configure)
         {
             var gamehostBuilder = new GenericGameHostBuilder(builder);
             configure(gamehostBuilder);

@@ -9,7 +9,7 @@ namespace Contoso.GameNetCore.Hosting.Internal
     {
         public static IServiceCollection Clone(this IServiceCollection serviceCollection)
         {
-            var clone = new ServiceCollection();
+            IServiceCollection clone = new ServiceCollection();
             foreach (var service in serviceCollection)
                 clone.Add(service);
             return clone;

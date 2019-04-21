@@ -6,6 +6,11 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Contoso.GameNetCore.Hosting.Server.Features;
+#if !NET3
+using IHostEnvironment = Microsoft.Extensions.Hosting.IHostingEnvironment;
+using IHostApplicationLifetime = Contoso.GameNetCore.Hosting.IApplicationLifetime;
+#endif
 
 namespace Contoso.GameNetCore.Hosting
 {
@@ -38,7 +43,6 @@ namespace Contoso.GameNetCore.Hosting
             var done = new ManualResetEventSlim(false);
             using (var cts = CancellationTokenSource.CreateLinkedTokenSource(token))
             using (var lifetime = new GameHostLifetime(cts, done, shutdownMessage: string.Empty))
-            {
                 try
                 {
                     await host.WaitForTokenShutdownAsync(cts.Token);
@@ -48,7 +52,6 @@ namespace Contoso.GameNetCore.Hosting
                 {
                     done.Set();
                 }
-            }
         }
 
         /// <summary>
@@ -117,10 +120,12 @@ namespace Contoso.GameNetCore.Hosting
             }
             finally
             {
+#if NET3
                 if (host is IAsyncDisposable asyncDisposable)
                     await asyncDisposable.DisposeAsync().ConfigureAwait(false);
                 else
-                    host.Dispose();
+#endif
+                host.Dispose();
             }
         }
 

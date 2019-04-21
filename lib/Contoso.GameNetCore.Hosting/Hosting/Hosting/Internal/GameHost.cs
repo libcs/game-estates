@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -24,6 +23,7 @@ using System.Threading.Tasks;
 #if !NET3
 using IHostEnvironment = Contoso.GameNetCore.Hosting.IHostingEnvironment;
 using IHostApplicationLifetime = Contoso.GameNetCore.Hosting.IApplicationLifetime;
+using IAsyncDisposable = System.IDisposable;
 #endif
 
 namespace Contoso.GameNetCore.Hosting.Internal
@@ -38,7 +38,6 @@ namespace Contoso.GameNetCore.Hosting.Internal
         HostedServiceExecutor _hostedServiceExecutor;
 
         readonly IServiceProvider _hostingServiceProvider;
-        readonly GameHostOptions _options;
         readonly IConfiguration _config;
         readonly AggregateException _hostingStartupErrors;
         ExceptionDispatchInfo _applicationServicesException;
@@ -47,7 +46,7 @@ namespace Contoso.GameNetCore.Hosting.Internal
         bool _stopped;
 
         // Used for testing only
-        internal GameHostOptions Options => _options;
+        internal GameHostOptions Options { get; }
 
         IServer Server { get; set; }
 
@@ -60,7 +59,7 @@ namespace Contoso.GameNetCore.Hosting.Internal
         {
             _config = config ?? throw new ArgumentNullException(nameof(config));
             _hostingStartupErrors = hostingStartupErrors;
-            _options = options;
+            Options = options;
             _applicationServiceCollection = appServices ?? throw new ArgumentNullException(nameof(appServices));
             _hostingServiceProvider = hostingServiceProvider ?? throw new ArgumentNullException(nameof(hostingServiceProvider));
             _applicationServiceCollection.AddSingleton<ApplicationLifetime>();
@@ -102,7 +101,7 @@ namespace Contoso.GameNetCore.Hosting.Internal
                 if (Services == null)
                     Services = _applicationServiceCollection.BuildServiceProvider();
 
-                if (!_options.CaptureStartupErrors)
+                if (!Options.CaptureStartupErrors)
                     throw;
 
                 _applicationServicesException = ExceptionDispatchInfo.Capture(ex);
@@ -137,7 +136,7 @@ namespace Contoso.GameNetCore.Hosting.Internal
 
             // Log the fact that we did load hosting startup assemblies.
             if (_logger.IsEnabled(LogLevel.Debug))
-                foreach (var assembly in _options.GetFinalHostingStartupAssemblies())
+                foreach (var assembly in Options.GetFinalHostingStartupAssemblies())
                     _logger.LogDebug($"Loaded hosting startup assembly {assembly}");
 
             if (_hostingStartupErrors != null)
@@ -187,22 +186,20 @@ namespace Contoso.GameNetCore.Hosting.Internal
             }
             catch (Exception ex)
             {
-                if (!_options.SuppressStatusMessages)
-                {
+                if (!Options.SuppressStatusMessages)
                     // Write errors to standard out so they can be retrieved when not in development mode.
                     Console.WriteLine("Application startup exception: " + ex.ToString());
-                }
                 var logger = Services.GetRequiredService<ILogger<GameHost>>();
                 logger.ApplicationError(ex);
 
-                if (!_options.CaptureStartupErrors)
+                if (!Options.CaptureStartupErrors)
                     throw;
 
                 EnsureServer();
 
                 // Generate an HTML error page.
                 var hostingEnv = Services.GetRequiredService<IHostEnvironment>();
-                var showDetailedErrors = hostingEnv.IsDevelopment() || _options.DetailedErrors;
+                var showDetailedErrors = hostingEnv.IsDevelopment() || Options.DetailedErrors;
 
                 var model = new ErrorPageModel
                 {
@@ -315,7 +312,9 @@ namespace Contoso.GameNetCore.Hosting.Internal
         {
             switch (serviceProvider)
             {
+#if NET3
                 case IAsyncDisposable asyncDisposable: await asyncDisposable.DisposeAsync(); break;
+#endif
                 case IDisposable disposable: disposable.Dispose(); break;
             }
         }

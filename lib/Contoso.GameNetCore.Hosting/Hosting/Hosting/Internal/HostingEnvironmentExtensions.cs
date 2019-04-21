@@ -63,8 +63,8 @@ namespace Contoso.GameNetCore.Hosting.Internal
             hostingEnvironment.ContentRootPath = contentRootPath;
             hostingEnvironment.ContentRootFileProvider = new PhysicalFileProvider(hostingEnvironment.ContentRootPath);
 
-            var webRoot = options.GameRoot;
-            if (webRoot == null)
+            var gameRoot = options.GameRoot;
+            if (gameRoot == null)
             {
                 // Default to /wwwroot if it exists.
                 var gameroot = Path.Combine(hostingEnvironment.ContentRootPath, "gameroot");
@@ -72,7 +72,7 @@ namespace Contoso.GameNetCore.Hosting.Internal
                     hostingEnvironment.GameRootPath = gameroot;
             }
             else
-                hostingEnvironment.GameRootPath = Path.Combine(hostingEnvironment.ContentRootPath, webRoot);
+                hostingEnvironment.GameRootPath = Path.Combine(hostingEnvironment.ContentRootPath, gameRoot);
 
             if (!string.IsNullOrEmpty(hostingEnvironment.GameRootPath))
             {

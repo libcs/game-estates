@@ -3,7 +3,6 @@
 
 using Contoso.GameNetCore.Hosting.Builder;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -185,6 +184,9 @@ namespace Contoso.GameNetCore.Hosting.Internal
 
         public IGameHostBuilder UseDefaultServiceProvider(Action<GameHostBuilderContext, ServiceProviderOptions> configure)
         {
+#if !NET3
+            throw new NotImplementedException();
+#else
             _builder.UseServiceProviderFactory(context =>
             {
                 var gameHostBuilderContext = GetGameHostBuilderContext(context);
@@ -192,6 +194,7 @@ namespace Contoso.GameNetCore.Hosting.Internal
                 configure(gameHostBuilderContext, options);
                 return new DefaultServiceProviderFactory(options);
             });
+#endif
 
             return this;
         }

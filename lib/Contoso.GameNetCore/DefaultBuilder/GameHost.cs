@@ -1,12 +1,16 @@
 ﻿using Contoso.GameNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.IO;
 using System.Reflection;
+using Microsoft.Extensions.Options;
+using Contoso.GameNetCore.HostFiltering;
 
 namespace Contoso.GameNetCore
 {
@@ -58,7 +62,6 @@ namespace Contoso.GameNetCore
             var startupAssemblyName = routeBuilder.GetMethodInfo().DeclaringType.GetTypeInfo().Assembly.GetName().Name;
             return StartWith(url, services => services.AddRouting(), appBuilder => appBuilder.UseRouter(routeBuilder), applicationName: startupAssemblyName);
         }
-
 
         /// <summary>
         /// Initializes and starts a new <see cref="IGameHost"/> with pre-configured defaults.
@@ -174,17 +177,18 @@ namespace Contoso.GameNetCore
                 options.ValidateScopes = context.HostingEnvironment.IsDevelopment();
             });
 
-            ConfigureWebDefaults(builder);
+            ConfigureGameDefaults(builder);
 
             return builder;
         }
 
-        internal static void ConfigureWebDefaults(IGameHostBuilder builder)
+        internal static void ConfigureGameDefaults(IGameHostBuilder builder)
         {
-            builder.UseKestrel((builderContext, options) =>
-            {
-                options.Configure(builderContext.Configuration.GetSection("Kestrel"));
-            })
+            builder
+            //.UseKestrel((builderContext, options) =>
+            //{
+            //    options.Configure(builderContext.Configuration.GetSection("Kestrel"));
+            //})
             .ConfigureServices((hostingContext, services) =>
             {
                 // Fallback
@@ -205,9 +209,7 @@ namespace Contoso.GameNetCore
                 services.AddTransient<IStartupFilter, HostFilteringStartupFilter>();
 
                 services.AddRouting();
-            })
-            .UseIIS()
-            .UseIISIntegration();
+            });
         }
 
         /// <summary>

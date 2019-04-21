@@ -234,12 +234,14 @@ namespace Contoso.GameNetCore.Hosting.Internal
             if (!StringValues.IsNullOrEmpty(requestId))
             {
                 activity.SetParentId(requestId);
+#if NET3
                 if (httpContext.Request.Headers.TryGetValue(TraceStateHeaderName, out var traceState))
                     activity.TraceStateString = traceState;
+#endif
 
                 // We expect baggage to be empty by default
                 // Only very advanced users will be using it in near future, we encourage them to keep baggage small (few items)
-                string[] baggage = httpContext.Request.Headers.GetCommaSeparatedValues(CorrelationContextHeaderName);
+                var baggage = httpContext.Request.Headers.GetCommaSeparatedValues(CorrelationContextHeaderName);
                 if (baggage != StringValues.Empty)
                     foreach (var item in baggage)
                         if (NameValueHeaderValue.TryParse(item, out var baggageItem))

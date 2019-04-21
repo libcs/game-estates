@@ -12,8 +12,12 @@ namespace Contoso.GameNetCore.Hosting.Internal
         {
             // These are the default arguments passed when methodInfo.Invoke(obj, parameters) are called. We do the same
             // here but specify BindingFlags.DoNotWrapExceptions to avoid getting TAE (TargetInvocationException)
-            // methodInfo.Invoke(obj, BindingFlags.Default, binder: null, parameters: parameters, culture: null)
+            // methodInfo.Invoke(obj, BindingFlags.Default, binder: null, parameters: parameters, culture: null);
+#if !NET3
+            return methodInfo.Invoke(obj, BindingFlags.Default, binder: null, parameters: parameters, culture: null);
+#else
             return methodInfo.Invoke(obj, BindingFlags.DoNotWrapExceptions, binder: null, parameters: parameters, culture: null);
+#endif
         }
     }
 }

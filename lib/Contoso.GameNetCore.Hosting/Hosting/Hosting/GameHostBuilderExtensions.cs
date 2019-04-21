@@ -11,6 +11,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+#if !NET3
+using IHostEnvironment = Microsoft.Extensions.Hosting.IHostingEnvironment;
+#endif
 
 namespace Contoso.GameNetCore.Hosting
 {

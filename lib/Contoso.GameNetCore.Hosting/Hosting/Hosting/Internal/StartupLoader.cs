@@ -147,7 +147,7 @@ namespace Contoso.GameNetCore.Hosting.Internal
                 }
             }
 
-            private Func<IServiceCollection, IServiceProvider> BuildStartupServicesFilterPipeline(Func<IServiceCollection, IServiceProvider> startup)
+            Func<IServiceCollection, IServiceProvider> BuildStartupServicesFilterPipeline(Func<IServiceCollection, IServiceProvider> startup)
             {
                 return RunPipeline;
 
@@ -183,7 +183,7 @@ namespace Contoso.GameNetCore.Hosting.Internal
                 }
             }
 
-            private Action<TContainerBuilder> BuildStartupConfigureContainerFiltersPipeline(Action<TContainerBuilder> configureContainer)
+             Action<TContainerBuilder> BuildStartupConfigureContainerFiltersPipeline(Action<TContainerBuilder> configureContainer)
             {
                 return RunPipeline;
 
