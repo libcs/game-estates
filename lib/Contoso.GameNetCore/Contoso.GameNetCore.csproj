@@ -9,6 +9,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Server\Kestrel\GameHostBuilderKestrelExtensions.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Routing" Version="2.2.2" />
     <PackageReference Include="Microsoft.Extensions.Configuration.CommandLine" Version="2.2.0" />
@@ -35,6 +39,10 @@
     <Reference Include="UnityEngine">
       <HintPath>..\..\..\..\..\Program Files\Unity\Hub\Editor\2019.1.0a11\Editor\Data\Managed\UnityEngine.dll</HintPath>
     </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Server\Kestrel\" />
   </ItemGroup>
 
 </Project>
