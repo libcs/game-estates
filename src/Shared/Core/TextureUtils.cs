@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using UnityEngine;
+﻿using UnityEngine;
 using static UnityEngine.Debug;
 
 namespace Shared.Core

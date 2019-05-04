@@ -21,7 +21,7 @@
       <HintPath>..\..\..\..\..\Program Files\dotnet\sdk\NuGetFallbackFolder\microsoft.extensions.dependencyinjection.abstractions\2.2.0\lib\netstandard2.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine">
-      <HintPath>..\..\..\..\..\Program Files\Unity\Hub\Editor\2019.1.0a11\Editor\Data\Managed\UnityEngine.dll</HintPath>
+      <HintPath>..\..\lib\Unity\UnityEngine.dll</HintPath>
     </Reference>
   </ItemGroup>
 

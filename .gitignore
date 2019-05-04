@@ -1,19 +1,30 @@
 # Visual Studio
 *.db
 *.opendb
-# *.csproj
 *.csproj.user
-# *.sln
+.vs
+.vscode
 packages/
 packages.config
-netcoreapp2.2/
+
+# Unity3D
+Library/
+UnityGenerated/
+DerivedData/
+Assets/AssetStoreTools*
+*.pidb.meta
+sysinfo.txt
+*.apk
+*.unitypackage
+
+# Unity3D Plugins
+Assets/Plugins/
 
 # Makefiles
 Makefile
 *.make
 
 # Misc
-*.txt
 *.7z
 *.zip
 *.tar.gz
@@ -25,11 +36,5 @@ Makefile
 # Directories we don't ever want to commit
 bin
 obj
+temp
 ipch
-release
-Release
-Debug
-.vs
-cov-int
-docs
-*.exe

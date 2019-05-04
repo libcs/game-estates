@@ -1,7 +1,6 @@
-﻿//using Test = Asset.Tes.ObjectTestObject;
-
-using Contoso.GameNetCore;
+﻿using Contoso.GameNetCore;
 using Contoso.GameNetCore.Hosting;
+using Test = Gamer.Asset.Tes.Loader.LoadObject;
 
 namespace Loader
 {
@@ -9,10 +8,8 @@ namespace Loader
     {
         public static void Main(string[] args)
         {
-            CreateGameHostBuilder(args).Build().Run();
-
-            //BaseSettings.Game.MaterialType = MaterialType.None;
-            //Test.Start();
+            Test.Start();
+            //CreateGameHostBuilder(args).Build().Run();
         }
 
         public static IGameHostBuilder CreateGameHostBuilder(string[] args) =>

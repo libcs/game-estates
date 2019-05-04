@@ -12,7 +12,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\lib\GameNetCore\src.net\DefaultBuilder\Contoso.GameNetCore.csproj" />
     <ProjectReference Include="..\Shared\Shared.csproj" />
+    <ProjectReference Include="..\Tes\Gamer.Asset.Tes.Unity\Gamer.Asset.Tes.Unity.csproj" />
   </ItemGroup>
 
 </Project>

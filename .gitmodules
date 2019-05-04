@@ -1,0 +1,6 @@
+[submodule "lib/gamer.asset.net"]
+	path = lib/gamer.asset.net
+	url = git@github.com:libcs/gamer.asset.net.git
+[submodule "lib/GameNetCore"]
+	path = lib/GameNetCore
+	url = git@github.com:bclnet/GameNetCore.git
