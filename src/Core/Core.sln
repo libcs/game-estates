@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.329
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gamer.Core", "src\Gamer.Core\Gamer.Core.csproj", "{FC7EC764-41A9-4DAE-A74C-1A55EEC364D8}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gamer.Core.Unity", "src\Gamer.Core.Unity\Gamer.Core.Unity.csproj", "{801960BC-8F78-4E5E-8BD9-976866515BFA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FC7EC764-41A9-4DAE-A74C-1A55EEC364D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FC7EC764-41A9-4DAE-A74C-1A55EEC364D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FC7EC764-41A9-4DAE-A74C-1A55EEC364D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FC7EC764-41A9-4DAE-A74C-1A55EEC364D8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{801960BC-8F78-4E5E-8BD9-976866515BFA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{801960BC-8F78-4E5E-8BD9-976866515BFA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{801960BC-8F78-4E5E-8BD9-976866515BFA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{801960BC-8F78-4E5E-8BD9-976866515BFA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {7ACB76E5-A8E8-4292-994C-E0779E009E43}
+	EndGlobalSection
+EndGlobal
