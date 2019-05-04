@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Gamer.Asset.Nif
+namespace Gamer.Estate.Nif
 {
     public static class ConvertUtils
     {

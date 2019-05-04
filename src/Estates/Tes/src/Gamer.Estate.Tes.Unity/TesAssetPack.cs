@@ -1,10 +1,10 @@
-﻿using Gamer.Asset.Nif.Format;
-using Gamer.Asset.Tes.FilePack;
-using Shared;
+﻿using Gamer.Estate.Nif.Format;
+using Gamer.Estate.Tes.FilePack;
+using Gamer.Base;
 using System;
 using UnityEngine;
 
-namespace Gamer.Asset.Tes
+namespace Gamer.Estate.Tes
 {
     public class TesAssetPack : BsaMultiFile, IAssetPack
     {

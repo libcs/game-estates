@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-namespace Gamer.Asset.Tes.FilePack
+namespace Gamer.Estate.Tes.FilePack
 {
     partial class BsaFile
     {

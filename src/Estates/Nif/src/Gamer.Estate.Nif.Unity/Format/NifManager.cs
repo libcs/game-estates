@@ -1,9 +1,10 @@
-﻿using Shared;
+﻿using Gamer.Base;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
+using static UnityEngine.Debug;
 
-namespace Gamer.Asset.Nif.Format
+namespace Gamer.Estate.Nif.Format
 {
     /// <summary>
     /// Manages loading and instantiation of NIF models.
@@ -31,7 +32,7 @@ namespace Gamer.Asset.Nif.Format
         {
             EnsurePrefabContainerObjectExists();
             // Get the prefab.
-            if (!_nifPrefabs.TryGetValue(filePath, out GameObject prefab))
+            if (!_nifPrefabs.TryGetValue(filePath, out var prefab))
             {
                 // Load & cache the NIF prefab.
                 prefab = LoadNifPrefabDontAddToPrefabCache(filePath);
@@ -44,9 +45,10 @@ namespace Gamer.Asset.Nif.Format
         public void PreloadNifFileAsync(string filePath)
         {
             // If the NIF prefab has already been created we don't have to load the file again.
-            if (_nifPrefabs.ContainsKey(filePath)) return;
+            if (_nifPrefabs.ContainsKey(filePath))
+                return;
             // Start loading the NIF asynchronously if we haven't already started.
-            if (!_nifFilePreloadTasks.TryGetValue(filePath, out Task<object> nifFileLoadingTask))
+            if (!_nifFilePreloadTasks.TryGetValue(filePath, out var nifFileLoadingTask))
             {
                 nifFileLoadingTask = _asset.LoadObjectInfoAsync(filePath);
                 _nifFilePreloadTasks[filePath] = nifFileLoadingTask;
@@ -64,7 +66,7 @@ namespace Gamer.Asset.Nif.Format
 
         GameObject LoadNifPrefabDontAddToPrefabCache(string filePath)
         {
-            Debug.Assert(!_nifPrefabs.ContainsKey(filePath));
+            Assert(!_nifPrefabs.ContainsKey(filePath));
             PreloadNifFileAsync(filePath);
             var file = (NiFile)_nifFilePreloadTasks[filePath].Result;
             _nifFilePreloadTasks.Remove(filePath);

@@ -1,12 +1,12 @@
-﻿using Shared.Core;
-using Shared.Format;
+﻿using Gamer.Base.Core;
+using Gamer.Base.Format;
 using System;
 using System.IO;
 using System.Threading.Tasks;
-using Gamer.Asset.Nif.Format;
+using Gamer.Estate.Nif.Format;
 using static System.Diagnostics.Debug;
 
-namespace Gamer.Asset.Tes.FilePack
+namespace Gamer.Estate.Tes.FilePack
 {
     partial class BsaMultiFile
     {

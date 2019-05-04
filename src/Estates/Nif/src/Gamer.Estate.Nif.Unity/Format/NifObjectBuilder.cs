@@ -1,10 +1,10 @@
-﻿using Shared;
-using Shared.Core;
+﻿using Gamer.Base;
+using Gamer.Base.Core;
 using System;
 using UnityEngine;
 using static UnityEngine.Debug;
 
-namespace Gamer.Asset.Nif.Format
+namespace Gamer.Estate.Nif.Format
 {
     public class NifObjectBuilder
     {
@@ -61,7 +61,7 @@ namespace Gamer.Asset.Nif.Format
             }
         }
 
-        private GameObject InstantiateRootNiObject(NiObject obj)
+        GameObject InstantiateRootNiObject(NiObject obj)
         {
             var gameObject = InstantiateNiObject(obj);
             ProcessExtraData(obj, out bool shouldAddMissingColliders, out bool isMarker);
@@ -78,7 +78,7 @@ namespace Gamer.Asset.Nif.Format
             return gameObject;
         }
 
-        private void ProcessExtraData(NiObject obj, out bool shouldAddMissingColliders, out bool isMarker)
+        void ProcessExtraData(NiObject obj, out bool shouldAddMissingColliders, out bool isMarker)
         {
             shouldAddMissingColliders = true;
             isMarker = false;
@@ -98,8 +98,7 @@ namespace Gamer.Asset.Nif.Format
                         }
                     }
                     // Move to the next NiExtraData.
-                    if (extraData.NextExtraData.Value >= 0) extraData = (NiExtraData)_file.Blocks[extraData.NextExtraData.Value];
-                    else extraData = null;
+                    extraData = extraData.NextExtraData.Value >= 0 ? (NiExtraData)_file.Blocks[extraData.NextExtraData.Value] : null;
                 }
             }
         }
@@ -108,7 +107,7 @@ namespace Gamer.Asset.Nif.Format
         /// Creates a GameObject representation of an NiObject.
         /// </summary>
         /// <returns>Returns the created GameObject, or null if the NiObject does not need its own GameObject.</returns>
-        private GameObject InstantiateNiObject(NiObject obj)
+        GameObject InstantiateNiObject(NiObject obj)
         {
             if (obj.GetType() == typeof(NiNode)) return InstantiateNiNode((NiNode)obj);
             else if (obj.GetType() == typeof(NiBSAnimationNode)) return InstantiateNiNode((NiNode)obj);
@@ -123,7 +122,7 @@ namespace Gamer.Asset.Nif.Format
             else throw new NotImplementedException($"Tried to instantiate an unsupported NiObject ({obj.GetType().Name}).");
         }
 
-        private GameObject InstantiateNiNode(NiNode node)
+        GameObject InstantiateNiNode(NiNode node)
         {
             var obj = new GameObject(node.Name);
             foreach (var childIndex in node.Children)
@@ -138,7 +137,7 @@ namespace Gamer.Asset.Nif.Format
             return obj;
         }
 
-        private GameObject InstantiateNiTriShape(NiTriShape triShape, bool visual, bool collidable)
+        GameObject InstantiateNiTriShape(NiTriShape triShape, bool visual, bool collidable)
         {
             Assert(visual || collidable);
             var mesh = NiTriShapeDataToMesh((NiTriShapeData)_file.Blocks[triShape.Data.Value]);
@@ -163,7 +162,7 @@ namespace Gamer.Asset.Nif.Format
             return obj;
         }
 
-        private GameObject InstantiateRootCollisionNode(RootCollisionNode collisionNode)
+        GameObject InstantiateRootCollisionNode(RootCollisionNode collisionNode)
         {
             var obj = new GameObject("Root Collision Node");
             foreach (var childIndex in collisionNode.Children)
@@ -174,14 +173,14 @@ namespace Gamer.Asset.Nif.Format
             return obj;
         }
 
-        private void ApplyNiAVObject(NiAVObject niAVObject, GameObject obj)
+        void ApplyNiAVObject(NiAVObject niAVObject, GameObject obj)
         {
             obj.transform.position = NifUtils.NifPointToUnityPoint(niAVObject.Translation);
             obj.transform.rotation = NifUtils.NifRotationMatrixToUnityQuaternion(niAVObject.Rotation);
             obj.transform.localScale = niAVObject.Scale * Vector3.one;
         }
 
-        private Mesh NiTriShapeDataToMesh(NiTriShapeData data)
+        Mesh NiTriShapeDataToMesh(NiTriShapeData data)
         {
             // vertex positions
             var vertices = new Vector3[data.Vertices.Length];
@@ -231,7 +230,7 @@ namespace Gamer.Asset.Nif.Format
             return mesh;
         }
 
-        private MaterialProps NiAVObjectPropertiesToMaterialProperties(NiAVObject obj)
+        MaterialProps NiAVObjectPropertiesToMaterialProperties(NiAVObject obj)
         {
             // Find relevant properties.
             NiTexturingProperty texturingProperty = null;
@@ -319,7 +318,7 @@ namespace Gamer.Asset.Nif.Format
             return mp;
         }
 
-        private MaterialTextures ConfigureTextureProperties(NiTexturingProperty ntp)
+        MaterialTextures ConfigureTextureProperties(NiTexturingProperty ntp)
         {
             var tp = new MaterialTextures();
             if (ntp.TextureCount < 1) return tp;
@@ -332,24 +331,18 @@ namespace Gamer.Asset.Nif.Format
             return tp;
         }
 
-        private UnityEngine.Rendering.BlendMode FigureBlendMode(byte b)
-        {
-            return (UnityEngine.Rendering.BlendMode)Mathf.Min(b, 10);
-        }
+        UnityEngine.Rendering.BlendMode FigureBlendMode(byte b) => (UnityEngine.Rendering.BlendMode)Mathf.Min(b, 10);
 
-        private MatTestMode FigureTestMode(byte b)
-        {
-            return (MatTestMode)Mathf.Min(b, 7);
-        }
+        MatTestMode FigureTestMode(byte b) => (MatTestMode)Mathf.Min(b, 7);
 
-        private void AddColliderFromNiObject(NiObject niObject, GameObject gameObject)
+        void AddColliderFromNiObject(NiObject niObject, GameObject gameObject)
         {
             if (niObject.GetType() == typeof(NiTriShape)) { var colliderObj = InstantiateNiTriShape((NiTriShape)niObject, false, true); colliderObj.transform.SetParent(gameObject.transform, false); }
             else if (niObject.GetType() == typeof(AvoidNode)) { }
             else Log("Unsupported collider NiObject: " + niObject.GetType().Name);
         }
 
-        private bool IsMarkerFileName(string name)
+        bool IsMarkerFileName(string name)
         {
             var lowerName = name.ToLower();
             return lowerName == "marker_light" ||

@@ -1,7 +1,7 @@
-﻿using Shared.Core;
+﻿using Gamer.Base.Core;
 using UnityEngine;
 
-namespace Gamer.Asset.Nif.Format
+namespace Gamer.Estate.Nif.Format
 {
     public static class NifUtils
     {
@@ -35,9 +35,9 @@ namespace Gamer.Asset.Nif.Format
 
         public static Quaternion NifRotationMatrixToUnityQuaternion(Matrix4x4 rotationMatrix) => ConvertUtils.RotationMatrixToQuaternion(NifRotationMatrixToUnityRotationMatrix(rotationMatrix));
 
-        public static Quaternion NifEulerAnglesToUnityQuaternion(Vector3 nifEulerAngles)
+        public static Quaternion NifEulerAnglesToUnityQuaternion(Vector3 eulerAngles)
         {
-            var eulerAngles2 = NifVectorToUnityVector(nifEulerAngles);
+            var eulerAngles2 = NifVectorToUnityVector(eulerAngles);
             var xRot = Quaternion.AngleAxis(Mathf.Rad2Deg * eulerAngles2.x, Vector3.right);
             var yRot = Quaternion.AngleAxis(Mathf.Rad2Deg * eulerAngles2.y, Vector3.up);
             var zRot = Quaternion.AngleAxis(Mathf.Rad2Deg * eulerAngles2.z, Vector3.forward);

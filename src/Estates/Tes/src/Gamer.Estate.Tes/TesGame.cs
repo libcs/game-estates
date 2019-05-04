@@ -1,4 +1,4 @@
-﻿namespace Gamer.Asset.Tes
+﻿namespace Gamer.Estate.Tes
 {
     public enum TesGame
     {

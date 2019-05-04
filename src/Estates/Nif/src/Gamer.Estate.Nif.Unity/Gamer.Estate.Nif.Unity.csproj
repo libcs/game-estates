@@ -5,7 +5,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\Core\src\Gamer.Core.Unity\Gamer.Core.Unity.csproj" />
+    <None Remove="**\*.swift" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\Base\src\Gamer.Base.Unity\Gamer.Base.Unity.csproj" />
     <ProjectReference Include="..\Gamer.Estate.Nif\Gamer.Estate.Nif.csproj" />
   </ItemGroup>
 

@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Threading.Tasks;
-using Gamer.Asset.Tes.FilePack;
 using static Microsoft.Win32.Registry;
 
-namespace Gamer.Asset.Tes
+namespace Gamer.Estate.Tes
 {
     public class FileManager
     {

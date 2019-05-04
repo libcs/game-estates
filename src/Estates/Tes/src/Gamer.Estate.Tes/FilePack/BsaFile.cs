@@ -1,14 +1,14 @@
 ﻿using ICSharpCode.SharpZipLib.Lzw;
 using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
-using Shared.Core;
-using Shared.Format;
+using Gamer.Base.Core;
+using Gamer.Base.Format;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace Gamer.Asset.Tes.FilePack
+namespace Gamer.Estate.Tes.FilePack
 {
     public partial class BsaFile : IDisposable
     {

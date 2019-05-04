@@ -17,6 +17,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gamer.Core", "..\Core\src\G
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gamer.Core.Unity", "..\Core\src\Gamer.Core.Unity\Gamer.Core.Unity.csproj", "{8DBC50CA-6901-45CC-8CFE-B8C22BF0230F}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gamer.Estate.Ultima", "Ultima\src\Gamer.Estate.Ultima\Gamer.Estate.Ultima.csproj", "{6D18B2E8-E738-43C7-87C7-DE476DAF4721}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gamer.Estate.Ultima.Unity", "Ultima\src\Gamer.Estate.Ultima.Unity\Gamer.Estate.Ultima.Unity.csproj", "{67E48FC6-0EA6-427D-B3C7-9678F604FAD7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -47,6 +51,14 @@ Global
 		{8DBC50CA-6901-45CC-8CFE-B8C22BF0230F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8DBC50CA-6901-45CC-8CFE-B8C22BF0230F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8DBC50CA-6901-45CC-8CFE-B8C22BF0230F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6D18B2E8-E738-43C7-87C7-DE476DAF4721}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6D18B2E8-E738-43C7-87C7-DE476DAF4721}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6D18B2E8-E738-43C7-87C7-DE476DAF4721}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6D18B2E8-E738-43C7-87C7-DE476DAF4721}.Release|Any CPU.Build.0 = Release|Any CPU
+		{67E48FC6-0EA6-427D-B3C7-9678F604FAD7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{67E48FC6-0EA6-427D-B3C7-9678F604FAD7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{67E48FC6-0EA6-427D-B3C7-9678F604FAD7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{67E48FC6-0EA6-427D-B3C7-9678F604FAD7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

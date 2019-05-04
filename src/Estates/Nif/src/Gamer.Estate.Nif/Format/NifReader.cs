@@ -1,9 +1,9 @@
-﻿using Shared.Core;
+﻿using Gamer.Base.Core;
 using System;
 using UnityEngine;
 using static UnityEngine.Debug;
 
-namespace Gamer.Asset.Nif.Format
+namespace Gamer.Estate.Nif.Format
 {
     // Refers to an object before the current one in the hierarchy.
     public struct Ptr<T>

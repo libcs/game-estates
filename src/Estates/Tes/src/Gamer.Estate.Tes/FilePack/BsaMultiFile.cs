@@ -5,7 +5,7 @@ using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace Gamer.Asset.Tes.FilePack
+namespace Gamer.Estate.Tes.FilePack
 {
     /// <summary>
     /// BsaMultiFile

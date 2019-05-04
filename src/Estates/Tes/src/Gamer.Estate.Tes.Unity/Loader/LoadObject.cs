@@ -1,7 +1,7 @@
-﻿using Shared;
+﻿using Gamer.Base;
 using System;
 
-namespace Gamer.Asset.Tes.Loader
+namespace Gamer.Estate.Tes.Loader
 {
     public static class LoadObject
     {
