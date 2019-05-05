@@ -7,7 +7,7 @@ namespace Gamer.Estate.Rsi
     {
         public static RsiGame ToGame(this Uri uri, out string path)
         {
-            path = uri.Scheme == "file" ? uri.LocalPath : uri.LocalPath.Substring(1);
+            path = "Data.p4k"; //path = uri.Scheme == "file" ? uri.LocalPath : uri.LocalPath.Substring(1);
             // host
             var host = uri.Host;
             if (host.StartsWith("#"))

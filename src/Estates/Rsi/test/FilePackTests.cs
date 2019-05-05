@@ -10,7 +10,7 @@ namespace Gamer.Estate.Rsi.Tests
         public FilePackTests(ITestOutputHelper helper) => LogFunc = x => helper.WriteLine(x.ToString());
 
         [Theory]
-        [InlineData("game://StarCitizen/*")]
+        [InlineData("game://StarCitizen/")]
         public void LoadAssetPack(string path)
         {
             var asset = (RsiAssetPack)new Uri(path).GetAssetPack(out var pakFile).Result;

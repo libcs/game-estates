@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using static Gamer.Core.Debug;
 
 namespace Gamer.Estate.Rsi.FilePack
 {
@@ -11,8 +12,10 @@ namespace Gamer.Estate.Rsi.FilePack
     {
         public class FileMetadata
         {
-            internal string Path;
-            internal bool Compressed;
+            public long Position;
+            public bool Compressed;
+            public string Path;
+            public int Size;
         }
 
         public override string ToString() => $"{Path.GetFileName(FilePath)}";
@@ -111,83 +114,94 @@ namespace Gamer.Estate.Rsi.FilePack
 
         static readonly byte[] HeaderMagic = { 0x50, 0x4B, 0x03, 0x14 };
 
+//#define ROUND64_(x)			(((x)+15)&~15)
         void ReadMetadata()
         {
+            _files = new List<FileMetadata>();
             _r.BaseStream.Seek(0, SeekOrigin.Begin);
-            var buf = new byte[16];
-            var header = new byte[HeaderMagic.Length];
+
+            //
+            var chunk = new byte[16];
+            var buf = new byte[HeaderMagic.Length];
+            var idx = 0;
             // read bytes from the file
-            while (_r.Read(buf, 0, 16) != 0)
+            while (_r.Read(chunk, 0, 16) != 0)
             {
                 // Create a header byte array and copy the first 4 bytes from the buffer
-                Array.Copy(buf, 0, header, 0, 4);
-                if (!header.SequenceEqual(HeaderMagic))
+                Array.Copy(chunk, 0, buf, 0, 4);
+                if (!buf.Take(4).SequenceEqual(HeaderMagic))
                     continue;
-                var compressed = BitConverter.ToInt16(buf, 8) == 0x64;
-                _r.Read(buf, 0, 16);
-                var fileNameSize = BitConverter.ToInt16(buf, 0xA);
-                var extraFieldSize = BitConverter.ToInt16(buf, 0xC);
+                var compressed = BitConverter.ToInt16(chunk, 8) == 0x64;
+                _r.Read(chunk, 0, 16);
+                var fileNameSize = BitConverter.ToInt16(chunk, 0xA);
+                var extraFieldSize = BitConverter.ToInt16(chunk, 0xC);
 
-                //Get the file name
-                var fileNameBytes = new byte[fileNameSize];
-                Array.Copy(buf, 0xE, fileNameBytes, 0, 2);
-                int nameChunks = (int)Math.Ceiling((decimal)(fileNameSize - 2) / 16), fileNameIndex = 2, lastCharIndex = 0;
-                while (fileNameIndex < fileNameSize)
+                // file name
+                if (fileNameSize > buf.Length) buf = new byte[fileNameSize];
+                Array.Copy(chunk, 0xE, buf, 0, 2);
+                int nameChunks = (int)Math.Ceiling((decimal)(fileNameSize - 2) / 16), lastCharIndex = 0;
+                idx = 2;
+                while (idx < fileNameSize)
                 {
-                    _r.Read(buf, 0, 16);
-                    for (var i = 0; i < buf.Length; i++)
+                    _r.Read(chunk, 0, 16);
+                    for (var i = 0; i < chunk.Length; i++)
                     {
-                        if (fileNameIndex >= fileNameSize)
+                        if (idx >= fileNameSize)
                         {
                             lastCharIndex = i;
                             break;
                         }
-                        fileNameBytes[fileNameIndex] = buf[i];
-                        fileNameIndex++;
+                        buf[idx] = chunk[i];
+                        idx++;
                     }
                 }
-                var fileName = Encoding.ASCII.GetString(fileNameBytes);
+                var fileName = Encoding.ASCII.GetString(buf, 0, idx);
                 var extraFieldChunkStart = _r.Position;
 
                 // Get the file size
-                var fileSizeBytes = new byte[4];
                 lastCharIndex--;
                 if (lastCharIndex < 3 && lastCharIndex >= 0)
                 {
-                    Array.Copy(buf, lastCharIndex + 13, fileSizeBytes, 0, 3 - lastCharIndex);
-                    _r.Read(buf, 0, 16);
-                    Array.Copy(buf, 0, fileSizeBytes, 3 - lastCharIndex, lastCharIndex + 1);
+                    Array.Copy(chunk, lastCharIndex + 13, buf, 0, 3 - lastCharIndex);
+                    _r.Read(chunk, 0, 16);
+                    Array.Copy(chunk, 0, buf, 3 - lastCharIndex, lastCharIndex + 1);
                 }
                 else if (lastCharIndex < 15 && lastCharIndex >= 3)
                 {
-                    _r.Read(buf, 0, 16);
-                    Array.Copy(buf, lastCharIndex - 3, fileSizeBytes, 0, 4);
+                    _r.Read(chunk, 0, 16);
+                    Array.Copy(chunk, lastCharIndex - 3, buf, 0, 4);
                 }
                 else
                 {
-                    _r.Read(buf, 0, 16);
+                    _r.Read(chunk, 0, 16);
                     extraFieldChunkStart = _r.Position;
-                    Array.Copy(buf, 12, fileSizeBytes, 0, 4);
+                    Array.Copy(chunk, 12, buf, 0, 4);
                 }
-                var fileSize = BitConverter.ToInt32(fileSizeBytes, 0);
+                var fileSize = BitConverter.ToInt32(buf, 0);
 
                 // get file data
                 var chunkOffset = _r.Position - extraFieldChunkStart;
                 var garbageLength = ((int)Math.Ceiling((decimal)extraFieldSize / 16) - 1) * 16 - chunkOffset;
-                _r.ReadBytes((int)garbageLength);
-
-                // read file data
-                var file = new byte[fileSize];
-                _r.Read(file, 0, fileSize);
-                _r.ReadBytes(16 - (fileSize % 16));
-                Console.WriteLine(fileName);
+                _r.Position += garbageLength;
 
                 // add
                 _files.Add(new FileMetadata
                 {
-                    Path = fileName,
+                    Position = _r.Position,
                     Compressed = compressed,
+                    Path = fileName,
+                    Size = fileSize,
                 });
+                Log($"{fileName} - {fileSize} Bytes");
+
+                // skip file data
+                _r.Position += fileSize + (16 - (fileSize % 16));
+
+                //// read file data
+                //var file = new byte[fileSize];
+                //_r.Read(file, 0, fileSize);
+                //_r.ReadBytes(16 - (fileSize % 16));
+                //
             }
         }
     }
