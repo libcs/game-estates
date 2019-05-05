@@ -1,5 +1,5 @@
-﻿using Gamer.Base;
-using Gamer.Base.Records;
+﻿using Gamer.Core;
+using Gamer.Core.Records;
 using Gamer.Estate.Tes.FilePack;
 using System.IO;
 using UnityEngine;

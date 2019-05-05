@@ -30,15 +30,15 @@ namespace Gamer.Estate.Ultima.Resources.IO
             {
                 var fi = new FileInfo(dataPath);
                 var uopPattern = Path.GetFileNameWithoutExtension(fi.Name).ToLowerInvariant();
-                using (var br = new BinaryReader(index))
+                using (var r = new BinaryReader(index))
                 {
-                    br.BaseStream.Seek(0, SeekOrigin.Begin);
-                    if (br.ReadInt32() != UOP_MAGIC_NUMBER)
+                    r.BaseStream.Seek(0, SeekOrigin.Begin);
+                    if (r.ReadInt32() != UOP_MAGIC_NUMBER)
                         throw new ArgumentException("Bad UOP file.");
-                    br.ReadInt64(); // version + signature
-                    var nextBlock = br.ReadInt64();
-                    br.ReadInt32(); // block capacity
-                    var count = br.ReadInt32();
+                    r.ReadInt64(); // version + signature
+                    var nextBlock = r.ReadInt64();
+                    r.ReadInt32(); // block capacity
+                    var count = r.ReadInt32();
                     var hashes = new Dictionary<ulong, int>();
                     for (var i = 0; i < length; i++)
                     {
@@ -46,20 +46,20 @@ namespace Gamer.Estate.Ultima.Resources.IO
                         if (!hashes.ContainsKey(hash))
                             hashes.Add(hash, i);
                     }
-                    br.BaseStream.Seek(nextBlock, SeekOrigin.Begin);
+                    r.BaseStream.Seek(nextBlock, SeekOrigin.Begin);
                     do
                     {
-                        var filesCount = br.ReadInt32();
-                        nextBlock = br.ReadInt64();
+                        var filesCount = r.ReadInt32();
+                        nextBlock = r.ReadInt64();
                         for (var i = 0; i < filesCount; i++)
                         {
-                            var offset = br.ReadInt64();
-                            var headerLength = br.ReadInt32();
-                            var compressedLength = br.ReadInt32();
-                            var decompressedLength = br.ReadInt32();
-                            var hash = br.ReadUInt64();
-                            br.ReadUInt32();
-                            var flag = br.ReadInt16();
+                            var offset = r.ReadInt64();
+                            var headerLength = r.ReadInt32();
+                            var compressedLength = r.ReadInt32();
+                            var decompressedLength = r.ReadInt32();
+                            var hash = r.ReadUInt64();
+                            r.ReadUInt32();
+                            var flag = r.ReadInt16();
                             var entryLength = flag == 1 ? compressedLength : decompressedLength;
                             if (offset == 0)
                                 continue;
@@ -71,18 +71,18 @@ namespace Gamer.Estate.Ultima.Resources.IO
                                 entries[idx].Length = entryLength;
                                 if (_hasExtra)
                                 {
-                                    var curPos = br.BaseStream.Position;
-                                    br.BaseStream.Seek(offset + headerLength, SeekOrigin.Begin);
-                                    var extra = br.ReadBytes(8);
+                                    var curPos = r.BaseStream.Position;
+                                    r.BaseStream.Seek(offset + headerLength, SeekOrigin.Begin);
+                                    var extra = r.ReadBytes(8);
                                     var extra1 = (ushort)((extra[3] << 24) | (extra[2] << 16) | (extra[1] << 8) | extra[0]);
                                     var extra2 = (ushort)((extra[7] << 24) | (extra[6] << 16) | (extra[5] << 8) | extra[4]);
                                     entries[idx].Lookup += 8;
                                     entries[idx].Extra = extra1 << 16 | extra2;
-                                    br.BaseStream.Seek(curPos, SeekOrigin.Begin);
+                                    r.BaseStream.Seek(curPos, SeekOrigin.Begin);
                                 }
                             }
                         }
-                    } while (br.BaseStream.Seek(nextBlock, SeekOrigin.Begin) != 0);
+                    } while (r.BaseStream.Seek(nextBlock, SeekOrigin.Begin) != 0);
                 }
             }
             return entries;

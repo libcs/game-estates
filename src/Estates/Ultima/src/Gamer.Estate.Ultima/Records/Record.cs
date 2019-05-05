@@ -1,4 +1,4 @@
-﻿using Gamer.Base.Records;
+﻿using  Gamer.Core.Records;
 
 namespace Gamer.Estate.Ultima.Records
 {

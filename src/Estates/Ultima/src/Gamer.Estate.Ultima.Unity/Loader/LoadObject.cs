@@ -1,4 +1,4 @@
-﻿//using Gamer.Base;
+﻿//using Gamer.Core;
 
 //namespace Gamer.Asset.Ultima.Loader
 //{

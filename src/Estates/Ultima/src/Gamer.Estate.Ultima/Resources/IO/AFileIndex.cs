@@ -1,4 +1,4 @@
-﻿using Gamer.Base.Core;
+﻿using Gamer.Core;
 using System.IO;
 
 namespace Gamer.Estate.Ultima.Resources.IO

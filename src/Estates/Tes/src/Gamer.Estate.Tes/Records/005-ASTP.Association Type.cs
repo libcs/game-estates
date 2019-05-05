@@ -1,4 +1,4 @@
-﻿using Gamer.Base.Core;
+﻿using Gamer.Core;
 
 namespace Gamer.Estate.Tes.Records
 {

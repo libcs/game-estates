@@ -1,7 +1,7 @@
-﻿using ICSharpCode.SharpZipLib.Lzw;
+﻿using Gamer.Core;
+using Gamer.Core.Format;
+using ICSharpCode.SharpZipLib.Lzw;
 using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
-using Gamer.Base.Core;
-using Gamer.Base.Format;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -106,7 +106,7 @@ namespace Gamer.Estate.Tes.FilePack
         public string FilePath;
         public VirtualDirectory RootDir;
 
-        public bool IsAtEof => _r.BaseStream.Position >= _r.BaseStream.Length;
+        public bool IsAtEof => _r.Position >= _r.BaseStream.Length;
 
         public BsaFile(string filePath)
         {
@@ -115,8 +115,6 @@ namespace Gamer.Estate.Tes.FilePack
             FilePath = filePath;
             _r = new BinaryFileReader(File.Open(filePath, FileMode.Open, FileAccess.Read));
             ReadMetadata();
-            //TestContainsFile();
-            //TestLoadFileData();
         }
 
         public void Dispose()
@@ -158,13 +156,13 @@ namespace Gamer.Estate.Tes.FilePack
         /// </summary>
         public byte[] LoadFileData(FileMetadata file)
         {
-            _r.BaseStream.Position = file.Offset;
+            _r.Position = file.Offset;
             var fileSize = (int)file.Size;
             if (_hasNamePrefix)
             {
                 var len = _r.ReadByte();
                 fileSize -= len + 1;
-                _r.BaseStream.Position = file.Offset + 1 + len;
+                _r.Position = file.Offset + 1 + len;
             }
             var newFileSize = fileSize;
             var bsaCompressed = file.SizeFlags > 0 && file.Compressed ^ _compressToggle;
@@ -292,7 +290,7 @@ namespace Gamer.Estate.Tes.FilePack
                 var header_NumFiles = _r.ReadUInt32();            // 0C
                 var header_NameTableOffset = _r.ReadUInt64();     // 10 - relative to start of file
                 // Create file metadatas
-                _r.BaseStream.Position = (long)header_NameTableOffset;
+                _r.Position = (long)header_NameTableOffset;
                 _files = new FileMetadata[header_NumFiles];
                 for (var i = 0; i < header_NumFiles; i++)
                 {
@@ -306,7 +304,7 @@ namespace Gamer.Estate.Tes.FilePack
                 }
                 if (header_Type == "GNRL") // General BA2 Format
                 {
-                    _r.BaseStream.Position = 16 + 8; // sizeof(header) + 8
+                    _r.Position = 16 + 8; // sizeof(header) + 8
                     for (var i = 0; i < header_NumFiles; i++)
                     {
                         var info_NameHash = _r.ReadUInt32();      // 00
@@ -324,7 +322,7 @@ namespace Gamer.Estate.Tes.FilePack
                 }
                 else if (header_Type == "DX10") // Texture BA2 Format
                 {
-                    _r.BaseStream.Position = 16 + 8; // sizeof(header) + 8
+                    _r.Position = 16 + 8; // sizeof(header) + 8
                     for (var i = 0; i < header_NumFiles; i++)
                     {
                         var fileMetadata = _files[i];
@@ -391,7 +389,7 @@ namespace Gamer.Estate.Tes.FilePack
 
                 // Create file metadatas
                 _files = new FileMetadata[header_FileCount];
-                var filenamesSectionStartPos = _r.BaseStream.Position = header_FolderRecordOffset + header_FolderNameLength + header_FolderCount * (folderSize + 1) + header_FileCount * 16;
+                var filenamesSectionStartPos = _r.Position = header_FolderRecordOffset + header_FolderNameLength + header_FolderCount * (folderSize + 1) + header_FileCount * 16;
                 var buf = new List<byte>(64);
                 for (var i = 0; i < header_FileCount; i++)
                 {
@@ -404,11 +402,11 @@ namespace Gamer.Estate.Tes.FilePack
                         Path = path,
                     };
                 }
-                if (_r.BaseStream.Position != filenamesSectionStartPos + header_FileNameLength)
+                if (_r.Position != filenamesSectionStartPos + header_FileNameLength)
                     throw new InvalidOperationException("HEADER FILENAMES");
 
                 // read-all folders
-                _r.BaseStream.Position = header_FolderRecordOffset;
+                _r.Position = header_FolderRecordOffset;
                 var foldersFiles = new uint[header_FolderCount];
                 for (var i = 0; i < header_FolderCount; i++)
                 {
@@ -447,7 +445,7 @@ namespace Gamer.Estate.Tes.FilePack
                 var header_FileCount = _r.ReadUInt32(); // Number of files in the archive
 
                 // Calculate some useful values
-                var headerSize = _r.BaseStream.Position;
+                var headerSize = _r.Position;
                 var hashTablePosition = headerSize + header_HashOffset;
                 var fileDataSectionPostion = hashTablePosition + (8 * header_FileCount);
 
@@ -467,11 +465,11 @@ namespace Gamer.Estate.Tes.FilePack
                     filenameOffsets[i] = _r.ReadUInt32();
 
                 // Read filenames
-                var filenamesSectionStartPos = _r.BaseStream.Position;
+                var filenamesSectionStartPos = _r.Position;
                 var buf = new List<byte>(64);
                 for (var i = 0; i < header_FileCount; i++)
                 {
-                    _r.BaseStream.Position = filenamesSectionStartPos + filenameOffsets[i];
+                    _r.Position = filenamesSectionStartPos + filenameOffsets[i];
                     buf.Clear();
                     byte curCharAsByte; while ((curCharAsByte = _r.ReadByte()) != 0)
                         buf.Add(curCharAsByte);
@@ -479,7 +477,7 @@ namespace Gamer.Estate.Tes.FilePack
                 }
 
                 // Read filename hashes
-                _r.BaseStream.Position = hashTablePosition;
+                _r.Position = hashTablePosition;
                 for (var i = 0; i < header_FileCount; i++)
                     _files[i].PathHash = _r.ReadUInt64();
 

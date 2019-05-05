@@ -1,4 +1,4 @@
-﻿using Gamer.Base.Core;
+﻿using Gamer.Core;
 using Gamer.Estate.Tes.Records;
 using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
 using System;
@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using static System.Diagnostics.Debug;
+using static Gamer.Core.Debug;
 
 // TES3
 //http://en.uesp.net/wiki/Tes3Mod:File_Format
@@ -93,7 +93,7 @@ namespace Gamer.Estate.Tes.FilePack
                 r.ReadUInt32(); // stamp | stamp + uknown
                 if (format != GameFormat.TES4)
                     r.ReadUInt32(); // version + uknown
-                Position = r.BaseStream.Position;
+                Position = r.Position;
                 return;
             }
             DataSize = r.ReadUInt32();
@@ -102,7 +102,7 @@ namespace Gamer.Estate.Tes.FilePack
             Flags = (HeaderFlags)r.ReadUInt32();
             if (format == GameFormat.TES3)
             {
-                Position = r.BaseStream.Position;
+                Position = r.Position;
                 return;
             }
             // tes4
@@ -110,12 +110,12 @@ namespace Gamer.Estate.Tes.FilePack
             r.ReadUInt32();
             if (format == GameFormat.TES4)
             {
-                Position = r.BaseStream.Position;
+                Position = r.Position;
                 return;
             }
             // tes5
             r.ReadUInt32();
-            Position = r.BaseStream.Position;
+            Position = r.Position;
         }
 
         struct RecordType
@@ -224,7 +224,7 @@ namespace Gamer.Estate.Tes.FilePack
         {
             if (!CreateMap.TryGetValue(Type, out RecordType recordType))
             {
-                Print($"Unsupported ESM record type: {Type}");
+                Log($"Unsupported ESM record type: {Type}");
                 return null;
             }
             if (!recordType.L(recordLevel))
@@ -284,9 +284,9 @@ namespace Gamer.Estate.Tes.FilePack
         static int _cellsLoaded = 0;
         void ReadGroup(Header header, bool loadAll)
         {
-            _r.BaseStream.Position = header.Position;
+            _r.Position = header.Position;
             var endPosition = header.Position + header.DataSize;
-            while (_r.BaseStream.Position < endPosition)
+            while (_r.Position < endPosition)
             {
                 var recordHeader = new Header(_r, _format, header);
                 if (recordHeader.Type == "GRUP")
@@ -299,13 +299,13 @@ namespace Gamer.Estate.Tes.FilePack
                 // HACK to limit cells loading
                 if (recordHeader.Type == "CELL" && _cellsLoaded > int.MaxValue)
                 {
-                    _r.BaseStream.Position += recordHeader.DataSize;
+                    _r.Position += recordHeader.DataSize;
                     continue;
                 }
-                var record = recordHeader.CreateRecord(_r.BaseStream.Position, _recordLevel);
+                var record = recordHeader.CreateRecord(_r.Position, _recordLevel);
                 if (record == null)
                 {
-                    _r.BaseStream.Position += recordHeader.DataSize;
+                    _r.Position += recordHeader.DataSize;
                     continue;
                 }
                 ReadRecord(record, recordHeader.Compressed);
@@ -317,13 +317,13 @@ namespace Gamer.Estate.Tes.FilePack
 
         RecordGroup ReadGRUP(Header header, Header recordHeader)
         {
-            var nextPosition = _r.BaseStream.Position + recordHeader.DataSize;
+            var nextPosition = _r.Position + recordHeader.DataSize;
             if (Groups == null)
                 Groups = new List<RecordGroup>();
             var group = new RecordGroup(_r, _filePath, _format, _recordLevel);
             group.AddHeader(recordHeader);
             Groups.Add(group);
-            _r.BaseStream.Position = nextPosition;
+            _r.Position = nextPosition;
             // print header path
             var headerPath = string.Join("/", GetHeaderPath(new List<string>(), header).ToArray());
             Console.WriteLine($"Grup: {headerPath} {header.GroupType}");

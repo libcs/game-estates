@@ -1,10 +1,10 @@
-﻿using Gamer.Base.Core;
-using Gamer.Base.Format;
+﻿using Gamer.Core;
+using Gamer.Core.Format;
+using Gamer.Estate.Nif.Format;
 using System;
 using System.IO;
 using System.Threading.Tasks;
-using Gamer.Estate.Nif.Format;
-using static System.Diagnostics.Debug;
+using static Gamer.Core.Debug;
 
 namespace Gamer.Estate.Tes.FilePack
 {
@@ -18,7 +18,7 @@ namespace Gamer.Estate.Tes.FilePack
                 var fileData = LoadFileData(filePath);
                 return Task.Run(() =>
                 {
-                    Print(filePath);
+                    Log(filePath);
                     var fileExtension = Path.GetExtension(filePath);
                     if (fileExtension.ToLowerInvariant() == ".dds") return DdsReader.LoadDDSTexture(new MemoryStream(fileData));
                     else throw new NotSupportedException($"Unsupported texture type: {fileExtension}");
@@ -26,7 +26,7 @@ namespace Gamer.Estate.Tes.FilePack
             }
             else
             {
-                Print($"Could not find file \"{texturePath}\" in a BSA file.");
+                Log($"Could not find file \"{texturePath}\" in a BSA file.");
                 return Task.FromResult<Texture2DInfo>(null);
             }
         }

@@ -1,4 +1,4 @@
-﻿using Gamer.Base.Core;
+﻿using Gamer.Core;
 using UnityEngine;
 
 namespace Gamer.Estate.Ultima.Resources

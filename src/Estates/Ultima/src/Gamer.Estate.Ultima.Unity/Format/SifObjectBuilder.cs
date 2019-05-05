@@ -1,8 +1,7 @@
-﻿using Gamer.Base;
-using Gamer.Base.Core;
+﻿using Gamer.Core;
 using System;
 using UnityEngine;
-using static UnityEngine.Debug;
+using static Gamer.Core.Debug;
 
 namespace Gamer.Estate.Ultima.Format
 {

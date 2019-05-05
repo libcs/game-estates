@@ -5,7 +5,7 @@ VisualStudioVersion = 15.0.28307.329
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gamer.Estate.Tes", "Estates\Tes\src\Gamer.Estate.Tes\Gamer.Estate.Tes.csproj", "{4F98ED55-7738-4C7C-801D-498A2A514325}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gamer.Base", "Base\src\Gamer.Base\Gamer.Base.csproj", "{4B414633-2D46-4F28-B43B-AFC788833986}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gamer.Core", "Core\src\Gamer.Core\Gamer.Core.csproj", "{4B414633-2D46-4F28-B43B-AFC788833986}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gamer.Estate.Nif.Unity", "Estates\Nif\src\Gamer.Estate.Nif.Unity\Gamer.Estate.Nif.Unity.csproj", "{9599FE83-86A6-48F9-908F-97B632B9FDC0}"
 EndProject
@@ -41,7 +41,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Contoso.GameNetCore.Hosting
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Contoso.GameNetCore.Hosting.WindowsServices", "..\lib\GameNetCore\src.net\Hosting\WindowsServices\Contoso.GameNetCore.Hosting.WindowsServices.csproj", "{AEBE969D-A6B5-4CA3-B0D5-C784C994605E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gamer.Base.Unity", "Base\src\Gamer.Base.Unity\Gamer.Base.Unity.csproj", "{C0723FCE-BAA0-44EB-9921-41DE38866957}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gamer.Core.Unity", "Core\src\Gamer.Core.Unity\Gamer.Core.Unity.csproj", "{C0723FCE-BAA0-44EB-9921-41DE38866957}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Nif", "Nif", "{BD46BDAC-7371-436D-A66F-19399447FC62}"
 EndProject
@@ -55,7 +55,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gamer.Estate.Nif", "Estates
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Estates", "Estates", "{D30CDA7F-DA42-4AC5-87FF-0814F5B4EC73}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Base", "Base", "{D62024D3-476E-4A68-8A24-1B14491536B4}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{D62024D3-476E-4A68-8A24-1B14491536B4}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Ultima", "Ultima", "{AC830F14-5775-4569-9D4B-1623059887C5}"
 EndProject
@@ -64,6 +64,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gamer.Estate.Ultima", "Estates\Ultima\src\Gamer.Estate.Ultima\Gamer.Estate.Ultima.csproj", "{844BE502-026D-4E99-9E25-89946DA34CA0}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gamer.Estate.Ultima.Unity", "Estates\Ultima\src\Gamer.Estate.Ultima.Unity\Gamer.Estate.Ultima.Unity.csproj", "{9ADF1603-8566-4375-B7EA-BB5C930E542F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gamer.Estate.Rsi", "Estates\Rsi\src\Gamer.Estate.Rsi\Gamer.Estate.Rsi.csproj", "{B0BCE2C3-7347-4E0C-97DC-5E844287AD41}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -143,6 +145,10 @@ Global
 		{9ADF1603-8566-4375-B7EA-BB5C930E542F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9ADF1603-8566-4375-B7EA-BB5C930E542F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9ADF1603-8566-4375-B7EA-BB5C930E542F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B0BCE2C3-7347-4E0C-97DC-5E844287AD41}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B0BCE2C3-7347-4E0C-97DC-5E844287AD41}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B0BCE2C3-7347-4E0C-97DC-5E844287AD41}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B0BCE2C3-7347-4E0C-97DC-5E844287AD41}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -176,6 +182,7 @@ Global
 		{2C49E6C3-3811-4D3C-AA1A-91109651817C} = {D30CDA7F-DA42-4AC5-87FF-0814F5B4EC73}
 		{844BE502-026D-4E99-9E25-89946DA34CA0} = {AC830F14-5775-4569-9D4B-1623059887C5}
 		{9ADF1603-8566-4375-B7EA-BB5C930E542F} = {AC830F14-5775-4569-9D4B-1623059887C5}
+		{B0BCE2C3-7347-4E0C-97DC-5E844287AD41} = {2C49E6C3-3811-4D3C-AA1A-91109651817C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7ACB76E5-A8E8-4292-994C-E0779E009E43}

@@ -1,4 +1,4 @@
-﻿using Gamer.Base;
+﻿using Gamer.Core;
 using System;
 
 namespace Gamer.Estate.Tes.Loader

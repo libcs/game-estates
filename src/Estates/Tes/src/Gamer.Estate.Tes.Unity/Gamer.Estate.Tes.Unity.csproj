@@ -35,7 +35,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\Base\src\Gamer.Base.Unity\Gamer.Base.Unity.csproj" />
+    <ProjectReference Include="..\..\..\..\Core\src\Gamer.Core.Unity\Gamer.Core.Unity.csproj" />
     <ProjectReference Include="..\..\..\Nif\src\Gamer.Estate.Nif.Unity\Gamer.Estate.Nif.Unity.csproj" />
     <ProjectReference Include="..\Gamer.Estate.Tes\Gamer.Estate.Tes.csproj" />
   </ItemGroup>

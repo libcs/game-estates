@@ -1,5 +1,5 @@
-﻿using Gamer.Base.Core;
-using Gamer.Base.Records;
+﻿using Gamer.Core;
+using Gamer.Core.Records;
 using Gamer.Estate.Tes.Records;
 using System;
 using System.Collections.Generic;
@@ -11,7 +11,7 @@ namespace Gamer.Estate.Tes.FilePack
     partial class EsmFile
     {
         // TES3
-        internal Dictionary<string, IRecord> _MANYsById;
+        public Dictionary<string, IRecord> MANYsById;
         Dictionary<long, LTEXRecord> _LTEXsById;
         Dictionary<Vector3Int, LANDRecord> _LANDsById;
         Dictionary<Vector3Int, CELLRecord> _CELLsById;
@@ -26,7 +26,7 @@ namespace Gamer.Estate.Tes.FilePack
             if (Format == GameFormat.TES3)
             {
                 var manyGroups = new List<Record>[] { Groups.ContainsKey("STAT") ? Groups["STAT"].Load() : null };
-                _MANYsById = manyGroups.SelectMany(x => x).Cast<IHaveEDID>().Where(x => x != null).ToDictionary(x => x.EDID.Value, x => (IRecord)x);
+                MANYsById = manyGroups.SelectMany(x => x).Cast<IHaveEDID>().Where(x => x != null).ToDictionary(x => x.EDID.Value, x => (IRecord)x);
                 _LTEXsById = Groups["LTEX"].Load().Cast<LTEXRecord>().ToDictionary(x => x.INTV.Value);
                 var lands = Groups["LAND"].Load().Cast<LANDRecord>().ToList();
                 foreach (var land in lands)

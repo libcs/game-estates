@@ -1,5 +1,5 @@
-﻿using Gamer.Base.Core;
-using static System.Diagnostics.Debug;
+﻿using Gamer.Core;
+using static Gamer.Core.Debug;
 
 namespace Gamer.Estate.Ultima.Resources
 {
@@ -83,10 +83,10 @@ namespace Gamer.Estate.Ultima.Resources
                 {
                     pData = _data[i - 1];
                     if (itemId != pData.ItemId)
-                        Print($"Mismatch? Requested particle {itemId}, returning particle {pData.ItemId}.");
+                        Log($"Mismatch? Requested particle {itemId}, returning particle {pData.ItemId}.");
                     return _data[i - 1];
                 }
-            Print($"Unknown particle effect with ItemID={itemId}");
+            Log($"Unknown particle effect with ItemID={itemId}");
             return null;
         }
 

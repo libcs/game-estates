@@ -22,7 +22,7 @@ namespace Gamer.Estate.Ultima.Data
         TrialAccount = 0x4000,
         EleventhAge = 0x8000,
         StygianAbyss = 0x10000,
-        HighSeas = 0x20000,         
+        HighSeas = 0x20000,
         GothicHousing = 0x40000,
         RusticHousing = 0x80000
     }

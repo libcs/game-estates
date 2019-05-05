@@ -38,7 +38,7 @@ namespace Gamer.Estate.Ultima.Resources.Fonts
             }
             return _characters[index];
         }
-        
+
         CharacterUnicode loadCharacter(int index)
         {
             // get the lookup table - 0x10000 ints.

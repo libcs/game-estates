@@ -1,8 +1,8 @@
-﻿using Gamer.Base;
+﻿using Gamer.Core;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
-using static UnityEngine.Debug;
+using static Gamer.Core.Debug;
 
 namespace Gamer.Estate.Nif.Format
 {

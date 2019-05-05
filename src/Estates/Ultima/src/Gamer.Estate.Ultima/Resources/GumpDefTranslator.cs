@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using static System.Diagnostics.Debug;
+using static Gamer.Core.Debug;
 
 namespace Gamer.Estate.Ultima.Resources
 {
@@ -14,7 +14,7 @@ namespace Gamer.Estate.Ultima.Resources
             _translations = new Dictionary<int, Tuple<int, int>>();
             StreamReader gumpDefFile = null;
             try { gumpDefFile = new StreamReader(FileManager.GetFile("gump.def")); }
-            catch { Print("GumpDefTranslator: unable to open gump.def file. No item/itemgumpling translations are available."); return; }
+            catch { Log("GumpDefTranslator: unable to open gump.def file. No item/itemgumpling translations are available."); return; }
             try
             {
                 string line;
@@ -36,7 +36,7 @@ namespace Gamer.Estate.Ultima.Resources
                     _translations.Add(inGump, new Tuple<int, int>(outGump, outHue));
                 }
             }
-            catch { Print("GumpDefTranslator: unable to parse gump.def file. No item/itemgumpling translations are available."); }
+            catch { Log("GumpDefTranslator: unable to parse gump.def file. No item/itemgumpling translations are available."); }
             gumpDefFile.Close();
         }
 

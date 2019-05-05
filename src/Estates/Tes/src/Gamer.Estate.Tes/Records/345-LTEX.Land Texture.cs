@@ -1,4 +1,4 @@
-﻿using Gamer.Base.Core;
+﻿using Gamer.Core;
 using System.Collections.Generic;
 
 namespace Gamer.Estate.Tes.Records
@@ -10,7 +10,7 @@ namespace Gamer.Estate.Tes.Records
             public byte MaterialType;
             public byte Friction;
             public byte Restitution;
-           
+
             public HNAMField(BinaryFileReader r, int dataSize)
             {
                 MaterialType = r.ReadByte();

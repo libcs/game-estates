@@ -42,7 +42,7 @@ namespace Gamer.Estate.Ultima.Resources
 
         public EffectData GetResource(int itemId)
         {
-            itemId &= FileManager.ItemIDMask;
+            itemId &= FileManager.ItemIdMask;
             return _animData[itemId >> 3][itemId & 0x07];
         }
     }

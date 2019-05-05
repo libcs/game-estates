@@ -1,4 +1,4 @@
-﻿using Gamer.Base.Core;
+﻿using Gamer.Core;
 using Gamer.Estate.Tes.Records;
 using System;
 using System.Collections.Generic;
@@ -6,14 +6,14 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
-using static System.Diagnostics.Debug;
+using static Gamer.Core.Debug;
 
 namespace Gamer.Estate.Tes.FilePack
 {
     public partial class EsmFile : IDisposable
     {
         const int recordHeaderSizeInBytes = 16;
-        public override string ToString() => $"{Path.GetFileName(FilePath)}";
+        public override string ToString() => Path.GetFileName(FilePath);
         BinaryFileReader _r;
         public string FilePath;
         public GameFormat Format;
@@ -29,7 +29,7 @@ namespace Gamer.Estate.Tes.FilePack
             var watch = new Stopwatch();
             watch.Start();
             Read(1);
-            Print($"Loading: {watch.ElapsedMilliseconds}");
+            Log($"Loading: {watch.ElapsedMilliseconds}");
             Process();
             watch.Stop();
             GameFormat GetFormat()
@@ -79,8 +79,8 @@ namespace Gamer.Estate.Tes.FilePack
                 group.AddHeader(new Header
                 {
                     Label = null,
-                    DataSize = (uint)(_r.BaseStream.Length - _r.BaseStream.Position),
-                    Position = _r.BaseStream.Position,
+                    DataSize = (uint)(_r.BaseStream.Length - _r.Position),
+                    Position = _r.Position,
                 });
                 group.Load();
                 Groups = group.Records.GroupBy(x => x.Header.Type)
@@ -95,12 +95,12 @@ namespace Gamer.Estate.Tes.FilePack
             // read groups
             Groups = new Dictionary<string, RecordGroup>();
             var endPosition = _r.BaseStream.Length;
-            while (_r.BaseStream.Position < endPosition)
+            while (_r.Position < endPosition)
             {
                 var header = new Header(_r, Format, null);
                 if (header.Type != "GRUP")
                     throw new InvalidOperationException($"{header.Type} not GRUP");
-                var nextPosition = _r.BaseStream.Position + header.DataSize;
+                var nextPosition = _r.Position + header.DataSize;
                 var label = Encoding.ASCII.GetString(header.Label);
                 if (!Groups.TryGetValue(label, out RecordGroup group))
                 {
@@ -108,7 +108,7 @@ namespace Gamer.Estate.Tes.FilePack
                     Groups.Add(label, group);
                 }
                 group.AddHeader(header);
-                _r.BaseStream.Position = nextPosition;
+                _r.Position = nextPosition;
             }
         }
     }

@@ -1,7 +1,7 @@
-﻿using Gamer.Base.Core;
+﻿using Gamer.Core;
 using System.Collections.Generic;
 using UnityEngine;
-using static System.Diagnostics.Debug;
+using static Gamer.Core.Debug;
 
 namespace Gamer.Estate.Tes.Records
 {

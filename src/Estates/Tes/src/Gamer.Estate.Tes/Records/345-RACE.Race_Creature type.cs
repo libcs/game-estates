@@ -1,4 +1,4 @@
-﻿using Gamer.Base.Core;
+﻿using Gamer.Core;
 using System.Collections.Generic;
 
 namespace Gamer.Estate.Tes.Records

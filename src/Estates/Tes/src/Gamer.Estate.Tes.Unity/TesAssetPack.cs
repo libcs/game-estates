@@ -1,7 +1,6 @@
-﻿using Gamer.Estate.Nif.Format;
+﻿using Gamer.Core;
+using Gamer.Estate.Nif.Format;
 using Gamer.Estate.Tes.FilePack;
-using Gamer.Base;
-using System;
 using UnityEngine;
 
 namespace Gamer.Estate.Tes

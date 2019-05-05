@@ -1,4 +1,4 @@
-﻿using Gamer.Base.Core;
+﻿using Gamer.Core;
 using Gamer.Estate.Ultima.Resources.UI;
 using UnityEngine;
 

@@ -1,5 +1,5 @@
 ﻿//#define ADDITEMS
-using Gamer.Base.Records;
+using Gamer.Core.Records;
 using Gamer.Estate.Ultima.Records;
 using Gamer.Estate.Ultima.Resources;
 using System;

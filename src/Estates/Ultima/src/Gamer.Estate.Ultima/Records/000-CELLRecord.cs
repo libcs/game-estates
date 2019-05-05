@@ -1,5 +1,5 @@
 ﻿//#define LOADLANDTILES
-using Gamer.Base.Records;
+using Gamer.Core.Records;
 using Gamer.Estate.Ultima.FilePack;
 using Gamer.Estate.Ultima.Resources;
 using System.Collections.Generic;

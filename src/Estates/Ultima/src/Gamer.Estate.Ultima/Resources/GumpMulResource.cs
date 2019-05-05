@@ -1,7 +1,7 @@
-﻿using Gamer.Base.Core;
+﻿using Gamer.Core;
 using Gamer.Estate.Ultima.Resources.IO;
 using UnityEngine;
-using static System.Diagnostics.Debug;
+using static Gamer.Core.Debug;
 
 namespace Gamer.Estate.Ultima.Resources
 {
@@ -33,7 +33,7 @@ namespace Gamer.Estate.Ultima.Resources
                 var shortsToRead = length - (height * 2);
                 if (r.BaseStream.Length - r.Position < (shortsToRead * 2))
                 {
-                    Print($"Could not read gump {textureId:X4}: not enough data. Gump texture file truncated?");
+                    Log($"Could not read gump {textureId:X4}: not enough data. Gump texture file truncated?");
                     return null;
                 }
                 var lookups = r.ReadManyInt32(height);

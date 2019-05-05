@@ -1,8 +1,8 @@
 ﻿using Gamer.Estate.Ultima.Resources.IO;
 using System;
 using System.IO;
+using static Gamer.Core.Debug;
 using static Microsoft.Win32.Registry;
-using static UnityEngine.Debug;
 
 namespace Gamer.Estate.Ultima
 {
@@ -36,7 +36,7 @@ namespace Gamer.Estate.Ultima
             };
 
         public static bool Is64Bit => IntPtr.Size == 8;
-        public static int ItemIDMask => ClientVersion.InstallationIsUopFormat ? 0xffff : 0x3fff;
+        public static int ItemIdMask => ClientVersion.InstallationIsUopFormat ? 0xffff : 0x3fff;
 
         static FileManager()
         {
@@ -63,7 +63,7 @@ namespace Gamer.Estate.Ultima
                 var patchVersion = string.Join(".", PatchVersion);
                 Log($"Client.Exe version: {clientVersion}; Patch version reported to server: {patchVersion}");
                 if (!ClientVersion.EqualTo(PatchVersion, ClientVersion.DefaultVersion))
-                    LogWarning($"Note from ZaneDubya: I will not support any code where the Patch version is not {string.Join(".", ClientVersion.DefaultVersion)}");
+                    Log($"Note from ZaneDubya: I will not support any code where the Patch version is not {string.Join(".", ClientVersion.DefaultVersion)}");
             }
         }
 
@@ -118,7 +118,6 @@ namespace Gamer.Estate.Ultima
             }
             return null;
         }
-
         public static string[] GetFilePaths(string searchPattern) => Directory.GetFiles(_fileDirectory, searchPattern);
 
         public static bool Exists(string name)
@@ -127,13 +126,11 @@ namespace Gamer.Estate.Ultima
             {
                 name = Path.Combine(_fileDirectory, name);
                 Log($"Checking if file exists [{name}]");
-                return File.Exists(name) ? true : false;
+                return File.Exists(name);
             }
             catch { return false; }
         }
-
         public static bool Exists(string name, int index, string type) => Exists($"{name}{index}.{type}");
-
         public static bool Exists(string name, string type) => Exists($"{name}.{type}");
 
         public static FileStream GetFile(string path)
@@ -143,13 +140,9 @@ namespace Gamer.Estate.Ultima
         }
 
         public static FileStream GetFile(string name, uint index, string type) => GetFile($"{name}{index}.{type}");
-
         public static FileStream GetFile(string name, string type) => GetFile($"{name}.{type}");
-
         public static string GetPath(string name) => Path.Combine(_fileDirectory, name);
-
         public static AFileIndex CreateFileIndex(string uopFile, int length, bool hasExtra, string extension) => new UopFileIndex(GetPath(uopFile), length, hasExtra, extension);
-
         public static AFileIndex CreateFileIndex(string idxFile, string mulFile, int length, int patch_file) => new MulFileIndex(GetPath(idxFile), GetPath(mulFile), length, patch_file);
     }
 }

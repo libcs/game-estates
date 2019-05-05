@@ -1,4 +1,4 @@
-﻿using Gamer.Base.Core;
+﻿using Gamer.Core;
 using Gamer.Estate.Ultima.Resources.IO;
 using UnityEngine;
 
@@ -23,7 +23,7 @@ namespace Gamer.Estate.Ultima.Resources
 
         public Texture2DInfo GetLandTexture(int index)
         {
-            index &= FileManager.ItemIDMask;
+            index &= FileManager.ItemIdMask;
             if (_landTileTextureCache[index] == null)
                 _landTileTextureCache[index] = ReadLandTexture(index);
             return _landTileTextureCache[index];
@@ -31,7 +31,7 @@ namespace Gamer.Estate.Ultima.Resources
 
         public Texture2DInfo GetStaticTexture(int index)
         {
-            index &= FileManager.ItemIDMask;
+            index &= FileManager.ItemIdMask;
             if (_staticTileTextureCache[index] == null)
             {
                 ReadStaticTexture(index + 0x4000, out Texture2DInfo texture);
@@ -42,7 +42,7 @@ namespace Gamer.Estate.Ultima.Resources
 
         public void GetStaticDimensions(int index, out int width, out int height)
         {
-            index &= FileManager.ItemIDMask;
+            index &= FileManager.ItemIdMask;
             if (_staticTileTextureCache[index] == null)
                 GetStaticTexture(index);
             _staticPicking.GetDimensions(index + 0x4000, out width, out height);

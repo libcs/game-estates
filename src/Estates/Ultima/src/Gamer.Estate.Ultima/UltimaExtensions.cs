@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Gamer.Core;
+using System;
+using System.Threading.Tasks;
 
 namespace Gamer.Estate.Ultima
 {
@@ -8,6 +10,13 @@ namespace Gamer.Estate.Ultima
         {
             path = null;
             return UltimaGame.UltimaOnline;
+        }
+
+        public static Task<IDataPack> GetDataPack(this Uri uri)
+        {
+            var game = uri.ToGame(out var path);
+            uint.TryParse(path, out var map);
+            return Task.FromResult((IDataPack)new UltimaDataPack(map));
         }
     }
 }

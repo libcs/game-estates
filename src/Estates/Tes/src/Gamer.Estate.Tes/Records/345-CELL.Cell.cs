@@ -1,5 +1,5 @@
-﻿using Gamer.Base.Core;
-using Gamer.Base.Records;
+﻿using Gamer.Core;
+using Gamer.Core.Records;
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;

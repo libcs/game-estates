@@ -1,4 +1,4 @@
-﻿using Gamer.Base.Core;
+﻿using Gamer.Core;
 using Gamer.Estate.Ultima.Resources.IO;
 using System.Linq;
 using UnityEngine;
@@ -13,7 +13,7 @@ namespace Gamer.Estate.Ultima.Resources
         public static MultiComponentList GetComponents(int index)
         {
             MultiComponentList mcl;
-            index &= FileManager.ItemIDMask;
+            index &= FileManager.ItemIdMask;
             if (index >= 0 && index < Cache.Length)
             {
                 mcl = Cache[index];

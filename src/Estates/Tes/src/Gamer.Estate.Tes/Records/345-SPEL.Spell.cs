@@ -1,4 +1,4 @@
-﻿using Gamer.Base.Core;
+﻿using Gamer.Core;
 using System.Collections.Generic;
 
 namespace Gamer.Estate.Tes.Records
@@ -11,7 +11,7 @@ namespace Gamer.Estate.Tes.Records
             public override string ToString() => $"{Type}";
             // TES3: 0 = Spell, 1 = Ability, 2 = Blight, 3 = Disease, 4 = Curse, 5 = Power
             // TES4: 0 = Spell, 1 = Disease, 2 = Power, 3 = Lesser Power, 4 = Ability, 5 = Poison
-            public uint Type; 
+            public uint Type;
             public int SpellCost;
             public uint Flags; // 0x0001 = AutoCalc, 0x0002 = PC Start, 0x0004 = Always Succeeds
             // TES4

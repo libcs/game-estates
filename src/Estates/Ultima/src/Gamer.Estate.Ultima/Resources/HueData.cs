@@ -1,4 +1,4 @@
-﻿using Gamer.Base.Core;
+﻿using Gamer.Core;
 using System;
 using System.IO;
 using UnityEngine;
@@ -36,7 +36,7 @@ namespace Gamer.Estate.Ultima.Resources
             var hueData = getTextureData();
             HueTexture0 = new Texture2DInfo(_hueTextureWidth, _hueTextureHeight, TextureFormat.Alpha8, false, null);
             HueTexture1 = new Texture2DInfo(_hueTextureWidth, _hueTextureHeight, TextureFormat.Alpha8, false, null);
-            
+
             //_hueTexture0.SetData(hueData, 0, _hueTextureWidth * _hueTextureHeight);
             //_hueTexture1.SetData(hueData, _hueTextureWidth * _hueTextureHeight, _hueTextureWidth * _hueTextureHeight);
         }

@@ -1,7 +1,7 @@
-﻿using System;
+﻿using Gamer.Core;
+using System;
 using System.Collections.Generic;
 using System.IO;
-using Gamer.Base.Core;
 using UnityEngine;
 
 namespace Gamer.Estate.Ultima.Resources

@@ -1,8 +1,8 @@
-﻿using Gamer.Base.Core;
-using Gamer.Base.Records;
+﻿using Gamer.Core;
+using Gamer.Core.Records;
 using Gamer.Estate.Tes.FilePack;
 using System;
-using static System.Diagnostics.Debug;
+using static Gamer.Core.Debug;
 
 namespace Gamer.Estate.Tes.Records
 {
@@ -21,9 +21,9 @@ namespace Gamer.Estate.Tes.Records
 
         public void Read(BinaryFileReader r, string filePath, GameFormat format)
         {
-            var startPosition = r.BaseStream.Position;
+            var startPosition = r.Position;
             var endPosition = startPosition + Header.DataSize;
-            while (r.BaseStream.Position < endPosition)
+            while (r.Position < endPosition)
             {
                 var fieldHeader = new FieldHeader(r, format);
                 if (fieldHeader.Type == "XXXX")
@@ -35,22 +35,22 @@ namespace Gamer.Estate.Tes.Records
                 }
                 else if (fieldHeader.Type == "OFST" && Header.Type == "WRLD")
                 {
-                    r.BaseStream.Position = endPosition;
+                    r.Position = endPosition;
                     continue;
                 }
-                var position = r.BaseStream.Position;
+                var position = r.Position;
                 if (!CreateField(r, format, fieldHeader.Type, fieldHeader.DataSize))
                 {
-                    Print($"Unsupported ESM record type: {Header.Type}:{fieldHeader.Type}");
-                    r.BaseStream.Position += fieldHeader.DataSize;
+                    Log($"Unsupported ESM record type: {Header.Type}:{fieldHeader.Type}");
+                    r.Position += fieldHeader.DataSize;
                     continue;
                 }
                 // check full read
-                if (r.BaseStream.Position != position + fieldHeader.DataSize)
-                    throw new FormatException($"Failed reading {Header.Type}:{fieldHeader.Type} field data at offset {position} in {filePath} of {r.BaseStream.Position - position - fieldHeader.DataSize}");
+                if (r.Position != position + fieldHeader.DataSize)
+                    throw new FormatException($"Failed reading {Header.Type}:{fieldHeader.Type} field data at offset {position} in {filePath} of {r.Position - position - fieldHeader.DataSize}");
             }
             // check full read
-            if (r.BaseStream.Position != endPosition)
+            if (r.Position != endPosition)
                 throw new FormatException($"Failed reading {Header.Type} record data at offset {startPosition} in {filePath}");
         }
     }

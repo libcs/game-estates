@@ -1,7 +1,7 @@
-﻿using Gamer.Base.Core;
+﻿using Gamer.Core;
 using Gamer.Estate.Ultima.Resources.IO;
 using UnityEngine;
-using static System.Diagnostics.Debug;
+using static Gamer.Core.Debug;
 
 namespace Gamer.Estate.Ultima.Resources
 {
@@ -26,14 +26,14 @@ namespace Gamer.Estate.Ultima.Resources
             return _cache[index];
         }
 
-         unsafe Texture2DInfo ReadTexmapTexture(int index)
+        unsafe Texture2DInfo ReadTexmapTexture(int index)
         {
             var r = _index.Seek(index, out int length, out int extra, out bool isPatched);
             if (r == null)
                 return null;
             if (r.BaseStream.Length == 0)
             {
-                Print($"Requested texmap texture #{index} does not exist. Replacing with 'unused' graphic.");
+                Log($"Requested texmap texture #{index} does not exist. Replacing with 'unused' graphic.");
                 return GetTexmapTexture(DEFAULT_TEXTURE);
             }
             var metrics_dataread_start = (int)r.Position;
@@ -44,8 +44,8 @@ namespace Gamer.Estate.Ultima.Resources
             fixed (byte* pData = pixels)
             {
                 uint* pDataRef = (uint*)pData;
-                int count = 0;
-                int max = fileSize;
+                var count = 0;
+                var max = fileSize;
                 while (count < max)
                     *pDataRef++ = fileData[count++].FromBGR555();
             }

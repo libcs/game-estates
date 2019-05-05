@@ -1,4 +1,4 @@
-﻿using Gamer.Base.Core;
+﻿using Gamer.Core;
 using System.IO;
 
 namespace Gamer.Estate.Ultima.Resources
@@ -13,12 +13,12 @@ namespace Gamer.Estate.Ultima.Resources
         {
             using (var index = new FileStream(FileManager.GetFilePath("Radarcol.mul"), FileMode.Open, FileAccess.Read, FileShare.Read))
             {
-                var bin = new BinaryReader(index);
+                var r = new BinaryReader(index);
                 // Prior to 7.0.7.1, all clients have 0x10000 colors. Newer clients have fewer colors.
                 var colorCount = (int)index.Length / 2;
                 for (var i = 0; i < colorCount; i++)
                 {
-                    var c = (uint)bin.ReadUInt16();
+                    var c = (uint)r.ReadUInt16();
                     Colors[i] = 0xFF000000 | (
                             ((((c >> 10) & 0x1F) * multiplier)) |
                             ((((c >> 5) & 0x1F) * multiplier) << 8) |
@@ -28,7 +28,7 @@ namespace Gamer.Estate.Ultima.Resources
                 // fill the remainder of the color table with non-transparent magenta.
                 for (var i = colorCount; i < Colors.Length; i++)
                     Colors[i] = 0xFFFF00FF;
-                Metrics.ReportDataRead((int)bin.BaseStream.Position);
+                Metrics.ReportDataRead((int)r.BaseStream.Position);
             }
         }
     }

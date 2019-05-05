@@ -22,7 +22,7 @@ namespace Gamer.Estate.Tes
 
         static Dictionary<TesGame, string> _fileDirectories = new Dictionary<TesGame, string>();
 
-        public static bool Is64Bit => true; // IntPtr.Size == 8;
+        public static bool Is64Bit => true;
 
         static FileManager()
         {
@@ -32,9 +32,9 @@ namespace Gamer.Estate.Tes
                 if (exePath != null && Directory.Exists(exePath))
                 {
                     var dataPath = Path.Combine(exePath, "Data");
-                    var gameId = (TesGame)_knownRegkeys[i + 1];
+                    var game = (TesGame)_knownRegkeys[i + 1];
                     if (Directory.Exists(dataPath))
-                        _fileDirectories.Add(gameId, dataPath);
+                        _fileDirectories.Add(game, dataPath);
                 }
             }
             HardAdds();
@@ -73,13 +73,13 @@ namespace Gamer.Estate.Tes
             catch { return null; }
         }
 
-        public static string GetFilePath(string path, TesGame gameId) =>
-            _fileDirectories.TryGetValue(gameId, out var fileDirectory)
+        public static string GetFilePath(string path, TesGame game) =>
+            _fileDirectories.TryGetValue(game, out var fileDirectory)
                 ? File.Exists(path = Path.Combine(fileDirectory, path)) ? path : null
                 : null;
 
-        public static string[] GetFilePaths(string searchPattern, TesGame gameId) =>
-            _fileDirectories.TryGetValue(gameId, out var fileDirectory)
+        public static string[] GetFilePaths(string searchPattern, TesGame game) =>
+            _fileDirectories.TryGetValue(game, out var fileDirectory)
                 ? Directory.GetFiles(fileDirectory, searchPattern)
                 : null;
     }

@@ -1,9 +1,9 @@
-﻿using Gamer.Base.Core;
+﻿using Gamer.Core;
 using System;
 using System.Collections;
 using System.IO;
 using System.Text;
-using static System.Diagnostics.Debug;
+using static Gamer.Core.Debug;
 
 namespace Gamer.Estate.Ultima.Resources
 {
@@ -23,7 +23,7 @@ namespace Gamer.Estate.Ultima.Resources
         {
             if (_table[index] == null)
             {
-                Print($"Missing cliloc with index {index}. Client version is lower than expected by Server.");
+                Log($"Missing cliloc with index {index}. Client version is lower than expected by Server.");
                 return $"Err: Cliloc Entry {index} not found.";
             }
             return _table[index].ToString();
@@ -48,10 +48,10 @@ namespace Gamer.Estate.Ultima.Resources
             if (path == null)
                 return;
             byte[] buffer;
-            using (var bin = new BinaryReader(new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read)))
+            using (var r = new BinaryReader(new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read)))
             {
-                buffer = bin.ReadBytes((int)bin.BaseStream.Length);
-                Metrics.ReportDataRead((int)bin.BaseStream.Position);
+                buffer = r.ReadBytes((int)r.BaseStream.Length);
+                Metrics.ReportDataRead((int)r.BaseStream.Position);
             }
             var pos = 6;
             var count = buffer.Length;

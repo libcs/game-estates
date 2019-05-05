@@ -1,7 +1,7 @@
-﻿using Gamer.Base.Core;
+﻿using Gamer.Core;
 using System;
 using System.IO;
-using static System.Diagnostics.Debug;
+using static Gamer.Core.Debug;
 
 namespace Gamer.Estate.Ultima.Resources
 {
@@ -33,8 +33,8 @@ namespace Gamer.Estate.Ultima.Resources
             // Map file fallback order: mapX.mul => mapXLegacyMUL.uop => (if trammel / map index 1) => map0.mul => mapXLegacyMUL.uop
             if (!LoadMapStream(MapIndex, out _mapDataStream, out _UOPIndex))
             {
-                if (MapIndex == 1 && LoadMapStream(0, out _mapDataStream, out _UOPIndex)) Print("Map file for index 1 did not exist, successfully loaded index 0 instead.");
-                else Print($"Unable to load map index {MapIndex}");
+                if (MapIndex == 1 && LoadMapStream(0, out _mapDataStream, out _UOPIndex)) Log("Map file for index 1 did not exist, successfully loaded index 0 instead.");
+                else Log($"Unable to load map index {MapIndex}");
             }
             ChunkHeight = MapChunkHeightList[MapIndex];
             ChunkWidth = (uint)_mapDataStream.Length / (ChunkHeight * SizeOfLandChunk);
@@ -42,8 +42,8 @@ namespace Gamer.Estate.Ultima.Resources
             _patch = new TileMatrixDataPatch(this, MapIndex);
             if (!LoadStaticsStream(MapIndex, out _staticDataStream, out _staticIndexReader))
             {
-                if (MapIndex == 1 && LoadStaticsStream(0, out _staticDataStream, out _staticIndexReader)) Print("Statics file for index 1 did not exist, successfully loaded index 0 instead.");
-                else Print($"Unable to load static index {MapIndex}");
+                if (MapIndex == 1 && LoadStaticsStream(0, out _staticDataStream, out _staticIndexReader)) Log("Statics file for index 1 did not exist, successfully loaded index 0 instead.");
+                else Log($"Unable to load static index {MapIndex}");
             }
             // load buffers
             _bufferedLandChunkKeys = new uint[CountBufferedLandChunk];

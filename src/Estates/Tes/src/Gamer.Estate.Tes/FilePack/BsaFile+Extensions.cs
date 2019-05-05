@@ -1,15 +1,16 @@
 ﻿using System;
 using System.Linq;
+using static Gamer.Core.Debug;
 
 namespace Gamer.Estate.Tes.FilePack
 {
     partial class BsaFile
     {
-        void TestContainsFile()
+        public void TestContainsFile()
         {
             foreach (var file in _files)
             {
-                Console.WriteLine($"{file.Path} {file.PathHash}");
+                Log($"{file.Path} {file.PathHash}");
                 if (!ContainsFile(file.Path))
                     throw new FormatException("Hash Invalid");
                 else if (!_filesByHash[HashFilePath(file.Path)].Any(x => x.Path == file.Path))
@@ -17,11 +18,11 @@ namespace Gamer.Estate.Tes.FilePack
             }
         }
 
-        void TestLoadFileData()
+        public void TestLoadFileData()
         {
             foreach (var file in _files)
             {
-                Console.WriteLine(file.Path);
+                Log(file.Path);
                 LoadFileData(file);
             }
         }

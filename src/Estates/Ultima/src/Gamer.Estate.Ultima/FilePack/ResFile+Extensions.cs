@@ -1,4 +1,4 @@
-﻿using Gamer.Base.Core;
+﻿using Gamer.Core;
 using Gamer.Estate.Ultima.Format;
 using System;
 using System.Threading.Tasks;
@@ -16,21 +16,18 @@ namespace Gamer.Estate.Ultima.FilePack
                 case "sta": texture = _artmulResource.GetStaticTexture(int.Parse(texturePath.Substring(3))); break;
                 case "gmp": texture = _gumpMulResource.GetGumpTexture(int.Parse(texturePath.Substring(3))); break;
                 case "tex": texture = _texmapResource.GetTexmapTexture(int.Parse(texturePath.Substring(3))); break;
-                default: throw new ArgumentOutOfRangeException("texturePath", texturePath);
+                //case "ani": texture = _animationResource.GetAnimation(int.Parse(texturePath.Substring(3))); break;
+                //case "fnt": texture = _fontsResource.GetAsciiFont(int.Parse(texturePath.Substring(3))); break;
+                default: throw new ArgumentOutOfRangeException(nameof(texturePath), texturePath);
             }
             return Task.FromResult(texture);
         }
-        //case "ani": texture = _animationResource.GetAnimation(int.Parse(texturePath.Substring(3))); break;
-        //case "fnt": texture = _fontsResource.GetAsciiFont(int.Parse(texturePath.Substring(3))); break;
 
-        public Task<object> LoadObjectInfoAsync(string filePath)
+        public Task<object> LoadObjectInfoAsync(string filePath) => Task.Run(() =>
         {
-            return Task.Run(() =>
-            {
-                var file = new SiFile(this, filePath);
-                return (object)file;
-            });
-        }
+            var file = new SiFile(this, filePath);
+            return (object)file;
+        });
 
         internal void GetStaticDimensions(short index, out int width, out int height)
         {
