@@ -5,7 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using ZstdNet;
-using static Gamer.Core.Debug;
 
 namespace Gamer.Estate.Rsi.FilePack
 {
@@ -107,7 +106,7 @@ namespace Gamer.Estate.Rsi.FilePack
                     continue;
                 // file found
                 var compressed = BitConverter.ToInt16(chunk, 8) == 0x64;
-                _r.Read(chunk, 0, 14); // minus 2
+                _r.Read(chunk, 0, 14); //: minus 2
                 var fileNameSize = BitConverter.ToInt16(chunk, 0xA);
                 var extraFieldSize = BitConverter.ToInt16(chunk, 0xC);
 
@@ -119,15 +118,13 @@ namespace Gamer.Estate.Rsi.FilePack
                 var charIdx = (fileNameSize - 2) % 16;
 
                 // file size
-                var fileSize = BitConverter.ToInt32(buf, fileNameSize + 12); //: (fileNameRead - 16) + (charIdx - 3)
+                var fileSize = BitConverter.ToInt32(buf, fileNameSize + 12);
 
                 // skip extra
                 var extraFieldRead = ((extraFieldSize + 15) & ~15) - (charIdx != 0 ? 32 : 16);
-                _r.Skip(extraFieldRead);
-                //var extraField = new byte[extraFieldRead]; _r.Read(extraField, 0, extraField.Length);
+                _r.Skip(extraFieldRead); //: var extraField = new byte[extraFieldRead]; _r.Read(extraField, 0, extraField.Length);
 
                 // add
-                Log($"{fileName} - {fileSize} Bytes");
                 _files.Add(new FileMetadata
                 {
                     Position = _r.Position,
@@ -137,8 +134,7 @@ namespace Gamer.Estate.Rsi.FilePack
                 });
 
                 // file data
-                _r.Skip(fileSize + (16 - (fileSize % 16)));
-                //: var file = new byte[fileSize]; _r.Read(file, 0, fileSize); _r.Position += 16 - (fileSize % 16);
+                _r.Skip(fileSize + (16 - (fileSize % 16))); //: var file = new byte[fileSize]; _r.Read(file, 0, fileSize); _r.Position += 16 - (fileSize % 16);
             }
 
             // files by path

@@ -18,17 +18,13 @@ namespace Gamer.Estate.Tes.FilePack
                 var fileData = LoadFileData(filePath);
                 return Task.Run(() =>
                 {
-                    Log(filePath);
                     var fileExtension = Path.GetExtension(filePath);
                     if (fileExtension.ToLowerInvariant() == ".dds") return DdsReader.LoadDDSTexture(new MemoryStream(fileData));
                     else throw new NotSupportedException($"Unsupported texture type: {fileExtension}");
                 });
             }
-            else
-            {
-                Log($"Could not find file \"{texturePath}\" in a BSA file.");
-                return Task.FromResult<Texture2DInfo>(null);
-            }
+            Log($"Could not find file \"{texturePath}\" in a BSA file.");
+            return Task.FromResult<Texture2DInfo>(null);
         }
 
         public Task<object> LoadObjectInfoAsync(string filePath)

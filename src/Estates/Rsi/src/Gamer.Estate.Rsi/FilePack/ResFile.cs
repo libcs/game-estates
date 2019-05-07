@@ -16,7 +16,7 @@ namespace Gamer.Estate.Rsi.FilePack
         }
         ~ResFile() => Close();
 
-        public void Close() { }
+        public void Close() => _pakFile.Close();
 
         /// <summary>
         /// Determines whether the BSA archive contains a file.
