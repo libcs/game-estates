@@ -154,7 +154,7 @@ namespace Gamer.Estate.Tes.FilePack
         /// <summary>
         /// Loads an archived file's data.
         /// </summary>
-        public byte[] LoadFileData(FileMetadata file)
+        byte[] LoadFileData(FileMetadata file)
         {
             _r.Position = file.Offset;
             var fileSize = (int)file.Size;

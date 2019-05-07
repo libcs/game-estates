@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
 using static Gamer.Core.Debug;
@@ -11,9 +12,10 @@ namespace Gamer.Estate.Rsi.Tests
 
         [Theory]
         [InlineData("game://StarCitizen/")]
-        public void LoadAssetPack(string path)
+        public async Task LoadAssetPack(string path)
         {
-            var asset = (RsiAssetPack)new Uri(path).GetAssetPack(out var pakFile).Result;
+            var asset = await new Uri(path).GetAssetPackAsync(out var pakFile) as RsiAssetPack;
+            asset.TestLoadFileData();
         }
     }
 }

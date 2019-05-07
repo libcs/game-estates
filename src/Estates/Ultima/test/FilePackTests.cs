@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
 using static Gamer.Core.Debug;
@@ -11,9 +12,9 @@ namespace Gamer.Estate.Ultima.Tests
 
         [Theory]
         [InlineData("game://UltimaOnline/*")]
-        public void LoadAssetPack(string path)
+        public async Task LoadAssetPack(string path)
         {
-            var asset = (UltimaAssetPack)new Uri(path).GetAssetPack().Result;
+            var asset = await new Uri(path).GetAssetPackAsync() as UltimaAssetPack;
             //foreach (var pack in asset.Packs)
             //{
             //    pack.TestContainsFile();
@@ -23,9 +24,9 @@ namespace Gamer.Estate.Ultima.Tests
 
         [Theory]
         [InlineData("game://UltimaOnline/*")]
-        public void LoadDataPack(string path)
+        public async Task LoadDataPack(string path)
         {
-            var data = (UltimaDataPack)new Uri(path).GetDataPack().Result;
+            var data = await new Uri(path).GetDataPackAsync() as UltimaDataPack;
             //TestLoadCell(data, new Vector3(0, 0, 0));
             //TestAllCells(data);
         }

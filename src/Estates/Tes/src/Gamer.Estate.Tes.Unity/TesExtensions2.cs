@@ -6,7 +6,7 @@ namespace Gamer.Estate.Tes
 {
     public static class TesExtensions2
     {
-        public static Task<IAssetPack> GetAssetPack(this Uri uri)
+        public static Task<IAssetPack> GetAssetPackAsync(this Uri uri)
         {
             var game = uri.ToGame(out var path);
             var filePaths = FileManager.GetFilePaths(path, game);

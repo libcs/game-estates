@@ -12,7 +12,7 @@ namespace Gamer.Estate.Ultima
             return UltimaGame.UltimaOnline;
         }
 
-        public static Task<IDataPack> GetDataPack(this Uri uri)
+        public static Task<IDataPack> GetDataPackAsync(this Uri uri)
         {
             var game = uri.ToGame(out var path);
             uint.TryParse(path, out var map);

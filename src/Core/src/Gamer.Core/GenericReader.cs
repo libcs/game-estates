@@ -16,6 +16,8 @@ namespace Gamer.Core
         protected GenericReader(Stream input) : base(input, new UTF8Encoding(), false) { }
 
         public abstract long Position { get; set; }
+        public abstract long Seek(long offset, SeekOrigin origin);
+        public abstract void Skip(int count);
 
         public abstract byte[] ReadRestOfBytes();
         public abstract void ReadRestOfBytes(byte[] buffer, int startIndex);
@@ -64,8 +66,8 @@ namespace Gamer.Core
             get => BaseStream.Position;
             set => BaseStream.Position = value;
         }
-        public long Seek(long offset, SeekOrigin origin) => BaseStream.Seek(offset, origin);
-        public void Skip(int count) => ReadBytes(count);
+        public override long Seek(long offset, SeekOrigin origin) => BaseStream.Seek(offset, origin);
+        public override void Skip(int count) => BaseStream.Position += count;
 
         public override byte[] ReadRestOfBytes()
         {

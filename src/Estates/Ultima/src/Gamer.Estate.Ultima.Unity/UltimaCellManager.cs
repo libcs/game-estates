@@ -112,7 +112,6 @@ namespace Gamer.Estate.Ultima
             }
         }
 
-
         public InRangeCellInfo StartInstantiatingCell(CELLRecord cell)
         {
             Assert(cell != null);

@@ -25,7 +25,7 @@ namespace Gamer.Estate.Tes.Loader
             //var assetUri = new Uri("game://Fallout4VR/Fallout4*");
             //var dataUri = new Uri("game://Fallout4VR/Fallout4.esm");
 
-            Asset = assetUri.GetAssetPack().Result;
+            Asset = assetUri.GetAssetPackAsync().Result;
             //Data = dataUri.GetDataPack().Result;
 
             // Morrowind

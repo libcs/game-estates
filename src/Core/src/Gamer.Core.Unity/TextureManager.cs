@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
+using static Gamer.Core.Debug;
 
 namespace Gamer.Core
 {
@@ -10,10 +11,7 @@ namespace Gamer.Core
         readonly Dictionary<string, Task<Texture2DInfo>> _textureFilePreloadTasks = new Dictionary<string, Task<Texture2DInfo>>();
         readonly Dictionary<string, Texture2D> _cachedTextures = new Dictionary<string, Texture2D>();
 
-        public TextureManager(IAssetPack asset)
-        {
-            _asset = asset;
-        }
+        public TextureManager(IAssetPack asset) => _asset = asset;
 
         public Texture2D LoadTexture(string texturePath, int method = 0)
         {
@@ -43,7 +41,7 @@ namespace Gamer.Core
 
         Texture2DInfo LoadTextureInfo(string texturePath)
         {
-            Debug.Assert(!_cachedTextures.ContainsKey(texturePath));
+            Assert(!_cachedTextures.ContainsKey(texturePath));
             PreloadTextureFileAsync(texturePath);
             var textureInfo = _textureFilePreloadTasks[texturePath].Result;
             _textureFilePreloadTasks.Remove(texturePath);

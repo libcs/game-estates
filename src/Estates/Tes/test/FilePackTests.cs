@@ -2,6 +2,7 @@ using Gamer.Estate.Nif;
 using Gamer.Estate.Tes.Records;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine;
 using Xunit;
 using Xunit.Abstractions;
@@ -20,9 +21,9 @@ namespace Gamer.Estate.Tes.Tests
         //[InlineData("game://SkyrimVR/Skyrim*")]
         //[InlineData("game://Fallout4/Fallout4*")]
         //[InlineData("game://Fallout4VR/Fallout4*")]
-        public void LoadAssetPack(string path)
+        public async Task LoadAssetPack(string path)
         {
-            var asset = (TesAssetPack)new Uri(path).GetAssetPack().Result;
+            var asset = await new Uri(path).GetAssetPackAsync() as TesAssetPack;
             foreach (var pack in asset.Packs)
             {
                 pack.TestContainsFile();
@@ -40,7 +41,7 @@ namespace Gamer.Estate.Tes.Tests
         [InlineData("game://Fallout4VR/Fallout4.esm")]
         public void LoadDataPack(string path)
         {
-            var data = (TesDataPack)new Uri(path).GetDataPack().Result;
+            var data = (TesDataPack)new Uri(path).GetDataPackAsync().Result;
             TestLoadCell(data, new Vector3(0, 0, 0));
             TestAllCells(data);
 

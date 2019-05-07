@@ -18,7 +18,7 @@ namespace Gamer.Estate.Tes
             return (TesGame)Enum.Parse(typeof(TesGame), game);
         }
 
-        public static Task<IDataPack> GetDataPack(this Uri uri)
+        public static Task<IDataPack> GetDataPackAsync(this Uri uri)
         {
             var game = uri.ToGame(out var path);
             var filePath = FileManager.GetFilePath(path, game);

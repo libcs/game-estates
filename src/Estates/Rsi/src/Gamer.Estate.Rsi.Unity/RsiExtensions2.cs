@@ -7,7 +7,7 @@ namespace Gamer.Estate.Rsi
 {
     public static class RsiExtensions2
     {
-        public static Task<IAssetPack> GetAssetPack(this Uri uri, out PakFile pakFile)
+        public static Task<IAssetPack> GetAssetPackAsync(this Uri uri, out PakFile pakFile)
         {
             var game = uri.ToGame(out var path);
             var filePath = FileManager.GetFilePath(path, game);
