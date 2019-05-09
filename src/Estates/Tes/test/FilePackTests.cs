@@ -1,3 +1,5 @@
+//#define LONGTEST
+
 using Gamer.Estate.Nif;
 using Gamer.Estate.Tes.Records;
 using System;
@@ -15,23 +17,32 @@ namespace Gamer.Estate.Tes.Tests
         public FilePackTests(ITestOutputHelper helper) => LogFunc = x => helper.WriteLine(x.ToString());
 
         [Theory]
+#if LONGTEST
         [InlineData("game://Morrowind/Morrowind.bsa")]
         [InlineData("game://Oblivion/Oblivion*")]
+        [InlineData("game://SkyrimVR/Skyrim*")]
+        [InlineData("game://Fallout4/Fallout4*")]
+        [InlineData("game://Fallout4VR/Fallout4*")]
+#else
+        [InlineData("game://Morrowind/Morrowind.bsa")]
         [InlineData("game://Fallout4VR/Fallout4 - Materials.ba2")]
-        //[InlineData("game://SkyrimVR/Skyrim*")]
-        //[InlineData("game://Fallout4/Fallout4*")]
-        //[InlineData("game://Fallout4VR/Fallout4*")]
+#endif
         public async Task LoadAssetPack(string path)
         {
             var asset = await new Uri(path).GetAssetPackAsync() as TesAssetPack;
             foreach (var pack in asset.Packs)
             {
                 pack.TestContainsFile();
-                pack.TestLoadFileData();
+#if LONGTEST
+                pack.TestLoadFileData(int.MaxValue);
+#else
+                pack.TestLoadFileData(100);
+#endif
             }
         }
 
         [Theory]
+#if LONGTEST
         [InlineData("game://Morrowind/Morrowind.esm")]
         [InlineData("game://Morrowind/Bloodmoon.esm")]
         [InlineData("game://Morrowind/Tribunal.esm")]
@@ -39,6 +50,9 @@ namespace Gamer.Estate.Tes.Tests
         [InlineData("game://SkyrimVR/Skyrim.esm")]
         [InlineData("game://Fallout4/Fallout4.esm")]
         [InlineData("game://Fallout4VR/Fallout4.esm")]
+#else
+        [InlineData("game://Morrowind/Morrowind.esm")]
+#endif
         public void LoadDataPack(string path)
         {
             var data = (TesDataPack)new Uri(path).GetDataPackAsync().Result;

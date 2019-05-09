@@ -1,3 +1,5 @@
+//#define LONGTEST
+
 using System;
 using System.Threading.Tasks;
 using Xunit;
@@ -15,7 +17,11 @@ namespace Gamer.Estate.Rsi.Tests
         public async Task LoadAssetPack(string path)
         {
             var asset = await new Uri(path).GetAssetPackAsync(out var pakFile) as RsiAssetPack;
-            asset.TestLoadFileData();
+//#if LONGTEST
+//            asset.TestLoadFileData(int.MaxValue);
+//#else
+//            asset.TestLoadFileData(100);
+//#endif
         }
     }
 }

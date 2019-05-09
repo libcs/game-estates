@@ -1,0 +1,3 @@
+https://robertsspaceindustries.com/spectrum/community/SC/forum/50172/thread/how-to-start-modding-existing-star-citizen-assets
+https://robertsspaceindustries.com/spectrum/community/SC/forum/50172/thread/howto-create-your-own-art-using-game-assets
+https://github.com/Markemp/Cryengine-Converter

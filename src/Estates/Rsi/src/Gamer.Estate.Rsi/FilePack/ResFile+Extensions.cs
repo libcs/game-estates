@@ -1,6 +1,7 @@
 ﻿using Gamer.Core;
 using Gamer.Core.Format;
 using System;
+using System.Linq;
 using System.IO;
 using System.Threading.Tasks;
 using static Gamer.Core.Debug;
@@ -9,9 +10,9 @@ namespace Gamer.Estate.Rsi.FilePack
 {
     partial class ResFile
     {
-        public void TestLoadFileData()
+        public void TestLoadFileData(int take)
         {
-            foreach (var file in _pakFile._files)
+            foreach (var file in _pakFile._files.Take(take))
             {
                 Log(file.Path);
                 LoadFileData(file);

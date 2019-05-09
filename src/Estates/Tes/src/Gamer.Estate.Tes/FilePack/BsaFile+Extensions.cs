@@ -18,9 +18,9 @@ namespace Gamer.Estate.Tes.FilePack
             }
         }
 
-        public void TestLoadFileData()
+        public void TestLoadFileData(int take)
         {
-            foreach (var file in _files)
+            foreach (var file in _files.Take(take))
             {
                 Log(file.Path);
                 LoadFileData(file);
