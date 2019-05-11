@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>net471</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
@@ -9,8 +9,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\Core\src\Gamer.Core\Gamer.Core.csproj" />
-    <ProjectReference Include="..\..\..\Cry\src\Gamer.Format.Cry\Gamer.Format.Cry.csproj" />
+    <ProjectReference Include="..\..\..\..\Core\src\Gamer.Core.Unity\Gamer.Core.Unity.csproj" />
+    <ProjectReference Include="..\Gamer.Format.Nif\Gamer.Format.Nif.csproj" />
   </ItemGroup>
 
   <ItemGroup>
