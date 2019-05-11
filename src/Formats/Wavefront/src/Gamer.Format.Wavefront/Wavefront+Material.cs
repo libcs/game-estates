@@ -1,15 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Xml.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml;
+﻿using Gamer.Format.Cry;
+using Gamer.Format.Cry.Core;
 using System.IO;
-using System.Xml.Serialization;
-using System.ComponentModel;
-using System.Runtime.Serialization;
 using System.Reflection;
+using static Gamer.Core.Debug;
 
 namespace Gamer.Format.Wavefront
 {
@@ -19,42 +12,35 @@ namespace Gamer.Format.Wavefront
         {
             if (cryEngine.Materials == null)
             {
-                Utils.Log(LogLevelEnum.Debug, "No materials loaded");
+                Log("No materials loaded");
                 return;
             }
 
-            if (!this.OutputFile_Material.Directory.Exists)
-                this.OutputFile_Material.Directory.Create();
+            if (!OutputFile_Material.Directory.Exists)
+                OutputFile_Material.Directory.Create();
 
-            using (StreamWriter file = new StreamWriter(this.OutputFile_Material.FullName))
+            using (var file = new StreamWriter(OutputFile_Material.FullName))
             {
-                file.WriteLine("# cgf-converter .mtl export version {0}", Assembly.GetExecutingAssembly().GetName().Version.ToString());
+                file.WriteLine("# gamer .mtl export version {0}", Assembly.GetExecutingAssembly().GetName().Version.ToString());
                 file.WriteLine("#");
-                foreach (CryEngine_Core.Material material in cryEngine.Materials)
+                foreach (var material in cryEngine.Materials)
                 {
 #if DUMP_JSON
-                    File.WriteAllText(String.Format("_material-{0}.json", material.Name.Replace(@"/", "").Replace(@"\", "")), material.ToJSON());
+                    File.WriteAllText(string.Format("_material-{0}.json", material.Name.Replace(@"/", "").Replace(@"\", "")), material.ToJSON());
 #endif
-       
                     file.WriteLine("newmtl {0}", material.Name);
                     if (material.Diffuse != null)
                     {
                         file.WriteLine("Ka {0:F6} {1:F6} {2:F6}", material.Diffuse.Red, material.Diffuse.Green, material.Diffuse.Blue);    // Ambient
                         file.WriteLine("Kd {0:F6} {1:F6} {2:F6}", material.Diffuse.Red, material.Diffuse.Green, material.Diffuse.Blue);    // Diffuse
                     }
-                    else
-                    {
-                        Utils.Log(LogLevelEnum.Debug, "Skipping Diffuse for {0}", material.Name);
-                    }
+                    else Log($"Skipping Diffuse for {material.Name}");
                     if (material.Specular != null)
                     {
                         file.WriteLine("Ks {0:F6} {1:F6} {2:F6}", material.Specular.Red, material.Specular.Green, material.Specular.Blue); // Specular
                         file.WriteLine("Ns {0:F6}", material.Shininess / 255D);                                                            // Specular Exponent
                     }
-                    else
-                    {
-                        Utils.Log(LogLevelEnum.Debug, "Skipping Specular for {0}", material.Name);
-                    }
+                    else Log($"Skipping Specular for {material.Name}");
                     file.WriteLine("d {0:F6}", material.Opacity);                                                                          // Dissolve
 
                     file.WriteLine("illum 2");  // Highlight on. This is a guess.
@@ -72,75 +58,58 @@ namespace Gamer.Format.Wavefront
                     // 8. Reflection on and Ray trace off
                     // 9. Transparency: Glass on, Reflection: Ray trace off
                     // 10. Casts shadows onto invisible surfaces
-
-                    foreach (CryEngine_Core.Material.Texture texture in material.Textures)
+                    foreach (var texture in material.Textures)
                     {
-                        string textureFile = texture.File;
+                        var textureFile = texture.File;
 
-                        if (this.Args.DataDir != null)
-                            textureFile = Path.Combine(this.Args.DataDir.FullName, textureFile);
+                        if (DataDir != null)
+                            textureFile = Path.Combine(DataDir.FullName, textureFile);
 
                         // TODO: More filehandling here
-                        
-                        if (!this.Args.TiffTextures)
-                            textureFile = textureFile.Replace(".tif", ".dds");
-                        else
-                            textureFile = textureFile.Replace(".dds", ".tif");
-
+                        textureFile = !TiffTextures ? textureFile.Replace(".tif", ".dds") : textureFile.Replace(".dds", ".tif");
                         textureFile = textureFile.Replace(@"/", @"\");
-                        
                         switch (texture.Map)
                         {
-                            case CryEngine_Core.Material.Texture.MapTypeEnum.Diffuse:
+                            case Material.Texture.MapTypeEnum.Diffuse:
                                 file.WriteLine("map_Kd {0}", textureFile);
                                 break;
-
-                            case CryEngine_Core.Material.Texture.MapTypeEnum.Specular:
+                            case Material.Texture.MapTypeEnum.Specular:
                                 file.WriteLine("map_Ks {0}", textureFile);
                                 file.WriteLine("map_Ns {0}", textureFile);
                                 break;
-
-                            case CryEngine_Core.Material.Texture.MapTypeEnum.Bumpmap:
-                            case CryEngine_Core.Material.Texture.MapTypeEnum.Detail:
+                            case Material.Texture.MapTypeEnum.Bumpmap:
+                            case Material.Texture.MapTypeEnum.Detail:
                                 // <Texture Map="Detail" File="textures/unified_detail/metal/metal_scratches_a_detail.tif" />
                                 file.WriteLine("map_bump {0}", textureFile);
                                 break;
-
-                            case CryEngine_Core.Material.Texture.MapTypeEnum.Heightmap:
+                            case Material.Texture.MapTypeEnum.Heightmap:
                                 // <Texture Map="Heightmap" File="objects/spaceships/ships/aegs/gladius/textures/aegs_switches_buttons_disp.tif"/>
                                 file.WriteLine("disp {0}", textureFile);
                                 break;
 
-                            case CryEngine_Core.Material.Texture.MapTypeEnum.Decal:
+                            case Material.Texture.MapTypeEnum.Decal:
                                 // <Texture Map="Decal" File="objects/spaceships/ships/aegs/textures/interior/metal/aegs_int_metal_alum_bare_diff.tif"/>
                                 file.WriteLine("decal {0}", textureFile);
                                 break;
-
-                            case CryEngine_Core.Material.Texture.MapTypeEnum.SubSurface:
+                            case Material.Texture.MapTypeEnum.SubSurface:
                                 // <Texture Map="SubSurface" File="objects/spaceships/ships/aegs/textures/interior/atlas/aegs_int_atlas_retaliator_spec.tif"/>
                                 file.WriteLine("map_Ns {0}", textureFile);
                                 break;
-
-                            case CryEngine_Core.Material.Texture.MapTypeEnum.Custom:
+                            case Material.Texture.MapTypeEnum.Custom:
                                 // <Texture Map="Custom" File="objects/spaceships/ships/aegs/textures/interior/metal/aegs_int_metal_painted_red_ddna.tif"/>
                                 // file.WriteLine("decal {0}", textureFile);
                                 break;
-
-                            case CryEngine_Core.Material.Texture.MapTypeEnum.BlendDetail:
+                            case Material.Texture.MapTypeEnum.BlendDetail:
                                 // <Texture Map="BlendDetail" File="textures/unified_detail/metal/metal_scratches-01_detail.tif">
                                 break;
-
-                            case CryEngine_Core.Material.Texture.MapTypeEnum.Opacity:
+                            case Material.Texture.MapTypeEnum.Opacity:
                                 // <Texture Map="Opacity" File="objects/spaceships/ships/aegs/textures/interior/blend/interior_blnd_a_diff.tif"/>
                                 file.WriteLine("map_d {0}", textureFile);
                                 break;
-
-                            case CryEngine_Core.Material.Texture.MapTypeEnum.Environment:
+                            case Material.Texture.MapTypeEnum.Environment:
                                 // <Texture Map="Environment" File="nearest_cubemap" TexType="7"/>
                                 break;
-
-                            default:
-                                break;
+                            default: break;
                         }
                     }
                     file.WriteLine();
