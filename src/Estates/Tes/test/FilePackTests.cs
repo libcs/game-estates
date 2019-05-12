@@ -1,7 +1,7 @@
 //#define LONGTEST
 
-using Gamer.Estate.Nif;
 using Gamer.Estate.Tes.Records;
+using Gamer.Format.Nif;
 using System;
 using System.Linq;
 using System.Threading.Tasks;

@@ -32,16 +32,16 @@ namespace Gamer.Estate.Ultima.Resources
                         var split = line.Split('\t');
                         if (split.Length >= 3)
                         {
-                            var gumpId = split[0].ToInt32();
+                            var gumpId = split[0].ParseInt32();
                             var aRect = split[1].Split(' ');
                             if (aRect.Length < 4)
                                 continue;
-                            var x = aRect[0].ToInt32();
-                            var y = aRect[1].ToInt32();
-                            var width = aRect[2].ToInt32();
-                            var height = aRect[3].ToInt32();
+                            var x = aRect[0].ParseInt32();
+                            var y = aRect[1].ParseInt32();
+                            var width = aRect[2].ParseInt32();
+                            var height = aRect[3].ParseInt32();
                             var bounds = new RectInt(x, y, width, height);
-                            var dropSound = split[2].ToInt32();
+                            var dropSound = split[2].ParseInt32();
                             var data = new ContainerData(gumpId, bounds, dropSound);
                             if (Default == null)
                                 Default = data;
@@ -50,7 +50,7 @@ namespace Gamer.Estate.Ultima.Resources
                                 var aIds = split[3].Split(',');
                                 for (var i = 0; i < aIds.Length; i++)
                                 {
-                                    var id = aIds[i].ToInt32();
+                                    var id = aIds[i].ParseInt32();
                                     if (_table.ContainsKey(id)) Console.WriteLine(@"Warning: double ItemId entry in Data\containers.cfg");
                                     else _table[id] = data;
                                 }

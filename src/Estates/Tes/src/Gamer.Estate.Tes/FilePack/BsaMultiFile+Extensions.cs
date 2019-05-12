@@ -1,6 +1,6 @@
 ﻿using Gamer.Core;
 using Gamer.Core.Format;
-using Gamer.Estate.Nif.Format;
+using Gamer.Format.Nif;
 using System;
 using System.IO;
 using System.Threading.Tasks;

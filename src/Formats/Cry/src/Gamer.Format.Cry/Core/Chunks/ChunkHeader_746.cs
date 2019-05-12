@@ -9,7 +9,7 @@ namespace Gamer.Format.Cry.Core
         {
             var headerType = r.ReadUInt16() + 0xCCCBF000;
             ChunkType = (ChunkTypeEnum)headerType;
-            Version = (uint)r.ReadUInt16();
+            Version = r.ReadUInt16();
             ID = r.ReadInt32();  
             Size = r.ReadUInt32();
             Offset = r.ReadUInt32();

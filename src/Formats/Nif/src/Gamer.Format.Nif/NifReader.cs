@@ -1,5 +1,6 @@
 ﻿using Gamer.Core;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using static Gamer.Core.Debug;
 
@@ -133,6 +134,14 @@ namespace Gamer.Format.Nif
                 Blocks[i] = NiReaderUtils.ReadNiObject(r);
             Footer = new NiFooter();
             Footer.Deserialize(r);
+        }
+
+        public IEnumerable<string> GetTexturePaths()
+        {
+            foreach (var niObject in Blocks)
+                if (niObject is NiSourceTexture niSourceTexture)
+                    if (!string.IsNullOrEmpty(niSourceTexture.FileName))
+                        yield return niSourceTexture.FileName;
         }
     }
 

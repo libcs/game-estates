@@ -1,5 +1,5 @@
 ﻿using Gamer.Core;
-using Gamer.Estate.Nif.Format;
+using Gamer.Format.Nif;
 using Gamer.Estate.Tes.FilePack;
 using UnityEngine;
 
@@ -23,8 +23,8 @@ namespace Gamer.Estate.Tes
 
         public void PreloadTextureAsync(string texturePath) => _textureManager.PreloadTextureFileAsync(texturePath);
 
-        public GameObject CreateObject(string filePath) => _nifManager.InstantiateNif(filePath);
+        public GameObject CreateObject(string filePath) => _nifManager.InstantiateObj(filePath);
 
-        public void PreloadObjectAsync(string filePath) => _nifManager.PreloadNifFileAsync(filePath);
+        public void PreloadObjectAsync(string filePath) => _nifManager.PreloadObjFileAsync(filePath);
     }
 }

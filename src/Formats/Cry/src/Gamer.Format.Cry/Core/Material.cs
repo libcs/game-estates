@@ -75,48 +75,27 @@ namespace Gamer.Format.Cry.Core
         [XmlRoot(ElementName = "PublicParams")]
         public class PublicParameters
         {
-            [XmlAttribute(AttributeName = "FresnelPower")]
-            public string FresnelPower { get; set; }
-            [XmlAttribute(AttributeName = "GlossFromDiffuseContrast")]
-            public string GlossFromDiffuseContrast { get; set; }
-            [XmlAttribute(AttributeName = "FresnelScale")]
-            public string FresnelScale { get; set; }
-            [XmlAttribute(AttributeName = "GlossFromDiffuseOffset")]
-            public string GlossFromDiffuseOffset { get; set; }
-            [XmlAttribute(AttributeName = "FresnelBias")]
-            public string FresnelBias { get; set; }
-            [XmlAttribute(AttributeName = "GlossFromDiffuseAmount")]
-            public string GlossFromDiffuseAmount { get; set; }
-            [XmlAttribute(AttributeName = "GlossFromDiffuseBrightness")]
-            public string GlossFromDiffuseBrightness { get; set; }
-            [XmlAttribute(AttributeName = "IndirectColor")]
-            public string IndirectColor { get; set; }
-            [XmlAttribute(AttributeName = "SpecMapChannelB")]
-            public string SpecMapChannelB { get; set; }
-            [XmlAttribute(AttributeName = "SpecMapChannelR")]
-            public string SpecMapChannelR { get; set; }
-            [XmlAttribute(AttributeName = "GlossMapChannelB")]
-            public string GlossMapChannelB { get; set; }
-            [XmlAttribute(AttributeName = "SpecMapChannelG")]
-            public string SpecMapChannelG { get; set; }
-            [XmlAttribute(AttributeName = "DirtTint")]
-            public string DirtTint { get; set; }
-            [XmlAttribute(AttributeName = "DirtGlossFactor")]
-            public string DirtGlossFactor { get; set; }
-            [XmlAttribute(AttributeName = "DirtTiling")]
-            public string DirtTiling { get; set; }
-            [XmlAttribute(AttributeName = "DirtStrength")]
-            public string DirtStrength { get; set; }
-            [XmlAttribute(AttributeName = "DirtMapAlphaInfluence")]
-            public string DirtMapAlphaInfluence { get; set; }
-            [XmlAttribute(AttributeName = "DetailBumpTillingU")]
-            public string DetailBumpTillingU { get; set; }
-            [XmlAttribute(AttributeName = "DetailDiffuseScale")]
-            public string DetailDiffuseScale { get; set; }
-            [XmlAttribute(AttributeName = "DetailBumpScale")]
-            public string DetailBumpScale { get; set; }
-            [XmlAttribute(AttributeName = "DetailGlossScale")]
-            public string DetailGlossScale { get; set; }
+            [XmlAttribute(AttributeName = "FresnelPower")] public string FresnelPower { get; set; }
+            [XmlAttribute(AttributeName = "GlossFromDiffuseContrast")] public string GlossFromDiffuseContrast { get; set; }
+            [XmlAttribute(AttributeName = "FresnelScale")] public string FresnelScale { get; set; }
+            [XmlAttribute(AttributeName = "GlossFromDiffuseOffset")] public string GlossFromDiffuseOffset { get; set; }
+            [XmlAttribute(AttributeName = "FresnelBias")] public string FresnelBias { get; set; }
+            [XmlAttribute(AttributeName = "GlossFromDiffuseAmount")] public string GlossFromDiffuseAmount { get; set; }
+            [XmlAttribute(AttributeName = "GlossFromDiffuseBrightness")] public string GlossFromDiffuseBrightness { get; set; }
+            [XmlAttribute(AttributeName = "IndirectColor")] public string IndirectColor { get; set; }
+            [XmlAttribute(AttributeName = "SpecMapChannelB")] public string SpecMapChannelB { get; set; }
+            [XmlAttribute(AttributeName = "SpecMapChannelR")] public string SpecMapChannelR { get; set; }
+            [XmlAttribute(AttributeName = "GlossMapChannelB")] public string GlossMapChannelB { get; set; }
+            [XmlAttribute(AttributeName = "SpecMapChannelG")] public string SpecMapChannelG { get; set; }
+            [XmlAttribute(AttributeName = "DirtTint")] public string DirtTint { get; set; }
+            [XmlAttribute(AttributeName = "DirtGlossFactor")] public string DirtGlossFactor { get; set; }
+            [XmlAttribute(AttributeName = "DirtTiling")] public string DirtTiling { get; set; }
+            [XmlAttribute(AttributeName = "DirtStrength")] public string DirtStrength { get; set; }
+            [XmlAttribute(AttributeName = "DirtMapAlphaInfluence")] public string DirtMapAlphaInfluence { get; set; }
+            [XmlAttribute(AttributeName = "DetailBumpTillingU")] public string DetailBumpTillingU { get; set; }
+            [XmlAttribute(AttributeName = "DetailDiffuseScale")] public string DetailDiffuseScale { get; set; }
+            [XmlAttribute(AttributeName = "DetailBumpScale")] public string DetailBumpScale { get; set; }
+            [XmlAttribute(AttributeName = "DetailGlossScale")] public string DetailGlossScale { get; set; }
         }
 
         [XmlAttribute(AttributeName = "Name"), DefaultValue("")] public string Name { get; set; }

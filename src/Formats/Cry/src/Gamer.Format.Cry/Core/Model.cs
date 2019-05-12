@@ -7,7 +7,7 @@ using static Gamer.Core.Debug;
 namespace Gamer.Format.Cry.Core
 {
     /// <summary>
-    /// CryEngine cgf/cga/skin file handler
+    /// CryObject cgf/cga/skin file handler
     /// 
     /// Structure:
     ///   HEADER        <- Provides information about the format of the file
@@ -214,7 +214,7 @@ namespace Gamer.Format.Cry.Core
             r.BaseStream.Seek(ChunkTableOffset, SeekOrigin.Begin);
             for (var i = 0; i < NumChunks; i++)
             {
-                var header = Chunk.New<ChunkHeader>((UInt32)this.FileVersion);
+                var header = Chunk.New<ChunkHeader>((uint)FileVersion);
                 header.Read(r);
                 _chunks.Add(header);
             }

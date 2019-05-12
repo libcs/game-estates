@@ -14,6 +14,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\Core\src\Gamer.Core.Unity\Gamer.Core.Unity.csproj" />
+    <ProjectReference Include="..\..\..\..\Formats\Cry\src\Gamer.Format.Cry.Unity\Gamer.Format.Cry.Unity.csproj" />
     <ProjectReference Include="..\Gamer.Estate.Rsi\Gamer.Estate.Rsi.csproj" />
   </ItemGroup>
 

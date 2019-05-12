@@ -59,10 +59,10 @@ namespace Gamer.Core
             return color;
         }
 
-        public static bool ToBoolean(this string value) => bool.TryParse(value, out var v) ? v : v;
-        public static double ToDouble(this string value) => double.TryParse(value, out var v) ? v : v;
-        public static TimeSpan ToTimeSpan(this string value) => TimeSpan.TryParse(value, out var v) ? v : v;
-        public static int ToInt32(this string value) => value.StartsWith("0x") ? int.TryParse(value.Substring(2), NumberStyles.HexNumber, null, out var v) ? v : v : int.TryParse(value, out v) ? v : v;
+        public static bool ParseBoolean(this string value) => bool.TryParse(value, out var v) ? v : v;
+        public static double ParseDouble(this string value) => double.TryParse(value, out var v) ? v : v;
+        public static TimeSpan ParseTimeSpan(this string value) => TimeSpan.TryParse(value, out var v) ? v : v;
+        public static int ParseInt32(this string value) => value.StartsWith("0x") ? int.TryParse(value.Substring(2), NumberStyles.HexNumber, null, out var v) ? v : v : int.TryParse(value, out v) ? v : v;
 
         public static class Random
         {

@@ -55,10 +55,7 @@ namespace Gamer.Format.Cry.Core
         public static T New<T>(uint version) where T : Chunk
         {
             if (!_chunkFactoryCache.TryGetValue(typeof(T), out var versionMap))
-            {
-                versionMap = new Dictionary<uint, Func<dynamic>> { };
-                _chunkFactoryCache[typeof(T)] = versionMap;
-            }
+                _chunkFactoryCache[typeof(T)] = versionMap = new Dictionary<uint, Func<dynamic>> { };
             if (!versionMap.TryGetValue(version, out var factory))
             {
                 var targetType = (from type in Assembly.GetExecutingAssembly().GetTypes()
@@ -69,12 +66,10 @@ namespace Gamer.Format.Cry.Core
                                   where type.Name == $"{typeof(T).Name}_{version:X}"
                                   select type).FirstOrDefault();
                 if (targetType != null)
-                    factory = () => { return Activator.CreateInstance(targetType) as T; };
+                    factory = () => Activator.CreateInstance(targetType) as T;
                 _chunkFactoryCache[typeof(T)][version] = factory;
             }
-            if (factory != null)
-                return factory.Invoke() as T;
-            throw new NotSupportedException($"Version {version:X} of {typeof(T).Name} is not supported");
+            return (factory?.Invoke() as T) ?? throw new NotSupportedException($"Version {version:X} of {typeof(T).Name} is not supported"); ;
         }
 
         public void Load(Model model, ChunkHeader header)
@@ -141,7 +136,7 @@ namespace Gamer.Format.Cry.Core
             DataSize = Size; // For SC files, there is no header in chunks.  But need Datasize to calculate things.
             r.BaseStream.Seek(_header.Offset, 0);
             // Star Citizen files don't have the type, version, offset and ID at the start of a chunk, so don't read them.
-            if (_model.FileVersion == FileVersionEnum.CryTek_3_4 || this._model.FileVersion == FileVersionEnum.CryTek_3_5)
+            if (_model.FileVersion == FileVersionEnum.CryTek_3_4 || _model.FileVersion == FileVersionEnum.CryTek_3_5)
             {
                 ChunkType = (ChunkTypeEnum)Enum.ToObject(typeof(ChunkTypeEnum), r.ReadUInt32());
                 Version = r.ReadUInt32();

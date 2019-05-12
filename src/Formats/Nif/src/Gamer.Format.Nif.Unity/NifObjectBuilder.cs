@@ -9,33 +9,33 @@ namespace Gamer.Format.Nif
     {
         const bool KinematicRigidbodies = true;
 
-        readonly NiFile _file;
+        readonly NiFile _obj;
         readonly MaterialManager _materialManager;
         readonly int _markerLayer;
 
-        public NifObjectBuilder(NiFile file, MaterialManager materialManager, int markerLayer)
+        public NifObjectBuilder(NiFile obj, MaterialManager materialManager, int markerLayer)
         {
-            _file = file;
+            _obj = obj;
             _materialManager = materialManager;
             _markerLayer = markerLayer;
         }
 
         public GameObject BuildObject()
         {
-            Assert(_file.Name != null && _file.Footer.Roots.Length > 0);
+            Assert(_obj.Name != null && _obj.Footer.Roots.Length > 0);
 
             // NIF files can have any number of root NiObjects.
             // If there is only one root, instantiate that directly.
             // If there are multiple roots, create a container GameObject and parent it to the roots.
-            if (_file.Footer.Roots.Length == 1)
+            if (_obj.Footer.Roots.Length == 1)
             {
-                var rootNiObject = _file.Blocks[_file.Footer.Roots[0]];
+                var rootNiObject = _obj.Blocks[_obj.Footer.Roots[0]];
                 var gameObject = InstantiateRootNiObject(rootNiObject);
                 // If the file doesn't contain any NiObjects we are looking for, return an empty GameObject.
                 if (gameObject == null)
                 {
-                    Log($"{_file.Name} resulted in a null GameObject when instantiated.");
-                    gameObject = new GameObject(_file.Name);
+                    Log($"{_obj.Name} resulted in a null GameObject when instantiated.");
+                    gameObject = new GameObject(_obj.Name);
                 }
                 // If gameObject != null and the root NiObject is an NiNode, discard any transformations (Morrowind apparently does).
                 else if (rootNiObject is NiNode)
@@ -48,11 +48,11 @@ namespace Gamer.Format.Nif
             }
             else
             {
-                Log(_file.Name + " has multiple roots.");
-                var gameObject = new GameObject(_file.Name);
-                foreach (var rootRef in _file.Footer.Roots)
+                Log(_obj.Name + " has multiple roots.");
+                var gameObject = new GameObject(_obj.Name);
+                foreach (var rootRef in _obj.Footer.Roots)
                 {
-                    var child = InstantiateRootNiObject(_file.Blocks[rootRef]);
+                    var child = InstantiateRootNiObject(_obj.Blocks[rootRef]);
                     if (child != null)
                         child.transform.SetParent(gameObject.transform, false);
                 }
@@ -64,7 +64,7 @@ namespace Gamer.Format.Nif
         {
             var gameObject = InstantiateNiObject(obj);
             ProcessExtraData(obj, out bool shouldAddMissingColliders, out bool isMarker);
-            if (_file.Name != null && IsMarkerFileName(_file.Name))
+            if (_obj.Name != null && IsMarkerFileName(_obj.Name))
             {
                 shouldAddMissingColliders = false;
                 isMarker = true;
@@ -83,7 +83,7 @@ namespace Gamer.Format.Nif
             isMarker = false;
             if (obj is NiObjectNET objNET)
             {
-                var extraData = objNET.ExtraData.Value >= 0 ? (NiExtraData)_file.Blocks[objNET.ExtraData.Value] : null;
+                var extraData = objNET.ExtraData.Value >= 0 ? (NiExtraData)_obj.Blocks[objNET.ExtraData.Value] : null;
                 while (extraData != null)
                 {
                     if (extraData is NiStringExtraData strExtraData)
@@ -97,7 +97,7 @@ namespace Gamer.Format.Nif
                         }
                     }
                     // Move to the next NiExtraData.
-                    extraData = extraData.NextExtraData.Value >= 0 ? (NiExtraData)_file.Blocks[extraData.NextExtraData.Value] : null;
+                    extraData = extraData.NextExtraData.Value >= 0 ? (NiExtraData)_obj.Blocks[extraData.NextExtraData.Value] : null;
                 }
             }
         }
@@ -128,7 +128,7 @@ namespace Gamer.Format.Nif
                 // NiNodes can have child references < 0 meaning null.
                 if (!childIndex.IsNull)
                 {
-                    var child = InstantiateNiObject(_file.Blocks[childIndex.Value]);
+                    var child = InstantiateNiObject(_obj.Blocks[childIndex.Value]);
                     if (child != null)
                         child.transform.SetParent(obj.transform, false);
                 }
@@ -139,7 +139,7 @@ namespace Gamer.Format.Nif
         GameObject InstantiateNiTriShape(NiTriShape triShape, bool visual, bool collidable)
         {
             Assert(visual || collidable);
-            var mesh = NiTriShapeDataToMesh((NiTriShapeData)_file.Blocks[triShape.Data.Value]);
+            var mesh = NiTriShapeDataToMesh((NiTriShapeData)_obj.Blocks[triShape.Data.Value]);
             var obj = new GameObject(triShape.Name);
             if (visual)
             {
@@ -167,7 +167,7 @@ namespace Gamer.Format.Nif
             foreach (var childIndex in collisionNode.Children)
                 // NiNodes can have child references < 0 meaning null.
                 if (!childIndex.IsNull)
-                    AddColliderFromNiObject(_file.Blocks[childIndex.Value], obj);
+                    AddColliderFromNiObject(_obj.Blocks[childIndex.Value], obj);
             ApplyNiAVObject(collisionNode, obj);
             return obj;
         }
@@ -237,7 +237,7 @@ namespace Gamer.Format.Nif
             NiAlphaProperty alphaProperty = null;
             foreach (var propRef in obj.Properties)
             {
-                var prop = _file.Blocks[propRef.Value];
+                var prop = _obj.Blocks[propRef.Value];
                 if (prop is NiTexturingProperty) texturingProperty = (NiTexturingProperty)prop;
                 //else if (prop is NiMaterialProperty) materialProperty = (NiMaterialProperty)prop;
                 else if (prop is NiAlphaProperty) alphaProperty = (NiAlphaProperty)prop;
@@ -321,12 +321,12 @@ namespace Gamer.Format.Nif
         {
             var tp = new MaterialTextures();
             if (ntp.TextureCount < 1) return tp;
-            if (ntp.BaseTexture != null) { var src = (NiSourceTexture)_file.Blocks[ntp.BaseTexture.source.Value]; tp.MainFilePath = src.FileName; }
-            if (ntp.DarkTexture != null) { var src = (NiSourceTexture)_file.Blocks[ntp.DarkTexture.source.Value]; tp.DarkFilePath = src.FileName; }
-            if (ntp.DetailTexture != null) { var src = (NiSourceTexture)_file.Blocks[ntp.DetailTexture.source.Value]; tp.DetailFilePath = src.FileName; }
-            if (ntp.GlossTexture != null) { var src = (NiSourceTexture)_file.Blocks[ntp.GlossTexture.source.Value]; tp.GlossFilePath = src.FileName; }
-            if (ntp.GlowTexture != null) { var src = (NiSourceTexture)_file.Blocks[ntp.GlowTexture.source.Value]; tp.GlowFilePath = src.FileName; }
-            if (ntp.BumpMapTexture != null) { var src = (NiSourceTexture)_file.Blocks[ntp.BumpMapTexture.source.Value]; tp.BumpFilePath = src.FileName; }
+            if (ntp.BaseTexture != null) { var src = (NiSourceTexture)_obj.Blocks[ntp.BaseTexture.source.Value]; tp.MainFilePath = src.FileName; }
+            if (ntp.DarkTexture != null) { var src = (NiSourceTexture)_obj.Blocks[ntp.DarkTexture.source.Value]; tp.DarkFilePath = src.FileName; }
+            if (ntp.DetailTexture != null) { var src = (NiSourceTexture)_obj.Blocks[ntp.DetailTexture.source.Value]; tp.DetailFilePath = src.FileName; }
+            if (ntp.GlossTexture != null) { var src = (NiSourceTexture)_obj.Blocks[ntp.GlossTexture.source.Value]; tp.GlossFilePath = src.FileName; }
+            if (ntp.GlowTexture != null) { var src = (NiSourceTexture)_obj.Blocks[ntp.GlowTexture.source.Value]; tp.GlowFilePath = src.FileName; }
+            if (ntp.BumpMapTexture != null) { var src = (NiSourceTexture)_obj.Blocks[ntp.BumpMapTexture.source.Value]; tp.BumpFilePath = src.FileName; }
             return tp;
         }
 

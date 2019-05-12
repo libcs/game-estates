@@ -9,7 +9,7 @@ namespace Gamer.Format.Nif
         public const float MeterInUnits = meterInYards * yardInUnits;
 
         const int exteriorCellSideLengthInUnits = 128 * yardInUnits;
-        public const float ExteriorCellSideLengthInMeters = (float)exteriorCellSideLengthInUnits / MeterInUnits;
+        public const float ExteriorCellSideLengthInMeters = exteriorCellSideLengthInUnits / MeterInUnits;
 
         public static Quaternion RotationMatrixToQuaternion(Matrix4x4 matrix) => Quaternion.LookRotation(matrix.GetColumn(2), matrix.GetColumn(1));
     }

@@ -1,8 +1,7 @@
 ﻿using Gamer.Core;
 using Gamer.Core.Records;
-using Gamer.Estate.Nif;
-using Gamer.Estate.Nif.Format;
 using Gamer.Estate.Tes.Records;
+using Gamer.Format.Nif;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
