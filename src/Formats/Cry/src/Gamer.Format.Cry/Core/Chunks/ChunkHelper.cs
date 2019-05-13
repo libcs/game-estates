@@ -12,7 +12,7 @@ namespace Gamer.Format.Cry.Core
         public string Name;
         public HelperTypeEnum HelperType;
         public Vector3 Pos;
-        public Matrix44 Transform;
+        public Matrix4x4 Transform;
 
         public override void WriteChunk()
         {

@@ -148,15 +148,15 @@ namespace Gamer.Format.Cry.Core
                             case 0x08:
                                 // These have to be divided by 127 to be used properly (value between 0 and 1)
                                 // Tangent
-                                Tangents[i, 0].w = r.ReadSByte() / 127.0;
-                                Tangents[i, 0].x = r.ReadSByte() / 127.0;
-                                Tangents[i, 0].y = r.ReadSByte() / 127.0;
-                                Tangents[i, 0].z = r.ReadSByte() / 127.0;
+                                Tangents[i, 0].w = r.ReadSByte() / 127.0f;
+                                Tangents[i, 0].x = r.ReadSByte() / 127.0f;
+                                Tangents[i, 0].y = r.ReadSByte() / 127.0f;
+                                Tangents[i, 0].z = r.ReadSByte() / 127.0f;
                                 // Binormal
-                                Tangents[i, 1].w = r.ReadSByte() / 127.0;
-                                Tangents[i, 1].x = r.ReadSByte() / 127.0;
-                                Tangents[i, 1].y = r.ReadSByte() / 127.0;
-                                Tangents[i, 1].z = r.ReadSByte() / 127.0;
+                                Tangents[i, 1].w = r.ReadSByte() / 127.0f;
+                                Tangents[i, 1].x = r.ReadSByte() / 127.0f;
+                                Tangents[i, 1].y = r.ReadSByte() / 127.0f;
+                                Tangents[i, 1].z = r.ReadSByte() / 127.0f;
                                 // Calculate the normal based on the cross product of the tangents.
                                 //Normals[i].x = (Tangents[i,0].y * Tangents[i,1].z - Tangents[i,0].z * Tangents[i,1].y);
                                 //Normals[i].y = 0 - (Tangents[i,0].x * Tangents[i,1].z - Tangents[i,0].z * Tangents[i,1].x); 
@@ -228,10 +228,10 @@ namespace Gamer.Format.Cry.Core
                             {
                                 ushort bver = 0;
                                 var ver = 0F;
-                                Vertices[i].x = Byte2HexIntFracToFloat2(r.ReadUInt16().ToString("X4")) / 127;
-                                Vertices[i].y = Byte2HexIntFracToFloat2(r.ReadUInt16().ToString("X4")) / 127;
-                                Vertices[i].z = Byte2HexIntFracToFloat2(r.ReadUInt16().ToString("X4")) / 127;
-                                Vertices[i].w = Byte2HexIntFracToFloat2(r.ReadUInt16().ToString("X4")) / 127; // Almost always 1
+                                Vertices[i].x = Byte2HexIntFracToFloat2(r.ReadUInt16().ToString("X4")) / 127f;
+                                Vertices[i].y = Byte2HexIntFracToFloat2(r.ReadUInt16().ToString("X4")) / 127f;
+                                Vertices[i].z = Byte2HexIntFracToFloat2(r.ReadUInt16().ToString("X4")) / 127f;
+                                Vertices[i].w = Byte2HexIntFracToFloat2(r.ReadUInt16().ToString("X4")) / 127f; // Almost always 1
                                 // Next structure is Colors, not normals.  For 16 byte elements, normals are calculated from Tangent data.
                                 //RGBColors[i].r = r.ReadByte();
                                 //RGBColors[i].g = r.ReadByte();
@@ -311,15 +311,15 @@ namespace Gamer.Format.Cry.Core
                     Normals = new Vector3[NumElements];
                     for (var i = 0; i < NumElements; i++)
                     {
-                        Tangents[i, 0].w = r.ReadSByte() / 127.0;
-                        Tangents[i, 0].x = r.ReadSByte() / 127.0;
-                        Tangents[i, 0].y = r.ReadSByte() / 127.0;
-                        Tangents[i, 0].z = r.ReadSByte() / 127.0;
+                        Tangents[i, 0].w = r.ReadSByte() / 127.0f;
+                        Tangents[i, 0].x = r.ReadSByte() / 127.0f;
+                        Tangents[i, 0].y = r.ReadSByte() / 127.0f;
+                        Tangents[i, 0].z = r.ReadSByte() / 127.0f;
                         // Binormal
-                        Tangents[i, 1].w = r.ReadSByte() / 127.0;
-                        Tangents[i, 1].x = r.ReadSByte() / 127.0;
-                        Tangents[i, 1].y = r.ReadSByte() / 127.0;
-                        Tangents[i, 1].z = r.ReadSByte() / 127.0;
+                        Tangents[i, 1].w = r.ReadSByte() / 127.0f;
+                        Tangents[i, 1].x = r.ReadSByte() / 127.0f;
+                        Tangents[i, 1].y = r.ReadSByte() / 127.0f;
+                        Tangents[i, 1].z = r.ReadSByte() / 127.0f;
                         // Calculate the normal based on the cross product of the tangents.
                         Normals[i].x = (Tangents[i, 0].y * Tangents[i, 1].z - Tangents[i, 0].z * Tangents[i, 1].y);
                         Normals[i].y = 0 - (Tangents[i, 0].x * Tangents[i, 1].z - Tangents[i, 0].z * Tangents[i, 1].x);

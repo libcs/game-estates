@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace Gamer.Format.Cry
 {
@@ -11,6 +12,6 @@ namespace Gamer.Format.Cry
         const int exteriorCellSideLengthInUnits = 128 * yardInUnits;
         public const float ExteriorCellSideLengthInMeters = exteriorCellSideLengthInUnits / MeterInUnits;
 
-        public static Quaternion RotationMatrixToQuaternion(Matrix4x4 matrix) => Quaternion.LookRotation(matrix.GetColumn(2), matrix.GetColumn(1));
+        public static Quaternion RotationMatrixToQuaternion(Matrix4x4 matrix) => throw new NotImplementedException(); //Quaternion.LookRotation(matrix.GetColumn(2), matrix.GetColumn(1));
     }
 }

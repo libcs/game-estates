@@ -730,7 +730,7 @@ namespace Gamer.Format.Collada
                 source = "#" + daeObject.Library_Geometries.Geometry[0].ID,
                 Bind_Shape_Matrix = new Grendgine_Collada_Float_Array_String
                 {
-                    Value_As_String = CreateStringFromMatrix44(Matrix44.Identity()) // We will assume the BSM is the identity matrix for now
+                    Value_As_String = CreateStringFromMatrix44(Matrix4x4.Identity()) // We will assume the BSM is the identity matrix for now
                 },
                 // Create the 3 sources for this controller:  joints, bind poses, and weights
                 Source = new Grendgine_Collada_Source[3],
@@ -970,7 +970,7 @@ namespace Gamer.Format.Collada
                 Type = Grendgine_Collada_Node_Type.NODE,
                 Matrix = new[] { new Grendgine_Collada_Matrix
                 {
-                    Value_As_String = CreateStringFromMatrix44(Matrix44.Identity())
+                    Value_As_String = CreateStringFromMatrix44(Matrix4x4.Identity())
                 }},
                 Instance_Controller = new[] { new Grendgine_Collada_Instance_Controller {
                     URL = "#Controller",
@@ -1039,10 +1039,10 @@ namespace Gamer.Format.Collada
             var matrixString = new StringBuilder();
             CalculateTransform(nodeChunk);
             matrixString.AppendFormat("{0:F6} {1:F6} {2:F6} {3:F6} {4:F6} {5:F6} {6:F6} {7:F6} {8:F6} {9:F6} {10:F6} {11:F6} {12:F6} {13:F6} {14:F6} {15:F6}",
-                nodeChunk.LocalTransform.m11, nodeChunk.LocalTransform.m12, nodeChunk.LocalTransform.m13, nodeChunk.LocalTransform.m14,
-                nodeChunk.LocalTransform.m21, nodeChunk.LocalTransform.m22, nodeChunk.LocalTransform.m23, nodeChunk.LocalTransform.m24,
-                nodeChunk.LocalTransform.m31, nodeChunk.LocalTransform.m32, nodeChunk.LocalTransform.m33, nodeChunk.LocalTransform.m34,
-                nodeChunk.LocalTransform.m41, nodeChunk.LocalTransform.m42, nodeChunk.LocalTransform.m43, nodeChunk.LocalTransform.m44);
+                nodeChunk.LocalTransform.m00, nodeChunk.LocalTransform.m01, nodeChunk.LocalTransform.m02, nodeChunk.LocalTransform.m03,
+                nodeChunk.LocalTransform.m10, nodeChunk.LocalTransform.m11, nodeChunk.LocalTransform.m12, nodeChunk.LocalTransform.m13,
+                nodeChunk.LocalTransform.m20, nodeChunk.LocalTransform.m21, nodeChunk.LocalTransform.m22, nodeChunk.LocalTransform.m23,
+                nodeChunk.LocalTransform.m30, nodeChunk.LocalTransform.m31, nodeChunk.LocalTransform.m32, nodeChunk.LocalTransform.m33);
             // This will be used to make the Collada node element for Node chunks that point to Helper Chunks and MeshPhysics
             return new Grendgine_Collada_Node
             {
@@ -1078,18 +1078,18 @@ namespace Gamer.Format.Collada
             // Populate the matrix.  This is based on the BONETOWORLD data in this bone.
             var matrixValues = new StringBuilder();
             matrixValues.AppendFormat("{0:F6} {1:F6} {2:F6} {3:F6} {4:F6} {5:F6} {6:F6} {7:F6} {8:F6} {9:F6} {10:F6} {11:F6} 0 0 0 1",
+                bone.LocalTransform.m00,
+                bone.LocalTransform.m01,
+                bone.LocalTransform.m02,
+                bone.LocalTransform.m03,
+                bone.LocalTransform.m10,
                 bone.LocalTransform.m11,
                 bone.LocalTransform.m12,
                 bone.LocalTransform.m13,
-                bone.LocalTransform.m14,
+                bone.LocalTransform.m20,
                 bone.LocalTransform.m21,
                 bone.LocalTransform.m22,
-                bone.LocalTransform.m23,
-                bone.LocalTransform.m24,
-                bone.LocalTransform.m31,
-                bone.LocalTransform.m32,
-                bone.LocalTransform.m33,
-                bone.LocalTransform.m34);
+                bone.LocalTransform.m23);
             CleanNumbers(matrixValues);
 
             // This will be used recursively to create a node object and return it to WriteLibrary_VisualScenes
@@ -1123,10 +1123,10 @@ namespace Gamer.Format.Collada
             // Use same principle as CreateJointNode.  The Transform matrix (Matrix44) is the world transform matrix.
             CalculateTransform(nodeChunk);
             matrixString.AppendFormat("{0:F6} {1:F6} {2:F6} {3:F6} {4:F6} {5:F6} {6:F6} {7:F6} {8:F6} {9:F6} {10:F6} {11:F6} {12:F6} {13:F6} {14:F6} {15:F6}",
-                nodeChunk.LocalTransform.m11, nodeChunk.LocalTransform.m12, nodeChunk.LocalTransform.m13, nodeChunk.LocalTransform.m14,
-                nodeChunk.LocalTransform.m21, nodeChunk.LocalTransform.m22, nodeChunk.LocalTransform.m23, nodeChunk.LocalTransform.m24,
-                nodeChunk.LocalTransform.m31, nodeChunk.LocalTransform.m32, nodeChunk.LocalTransform.m33, nodeChunk.LocalTransform.m34,
-                nodeChunk.LocalTransform.m41, nodeChunk.LocalTransform.m42, nodeChunk.LocalTransform.m43, nodeChunk.LocalTransform.m44);
+                nodeChunk.LocalTransform.m00, nodeChunk.LocalTransform.m01, nodeChunk.LocalTransform.m02, nodeChunk.LocalTransform.m03,
+                nodeChunk.LocalTransform.m10, nodeChunk.LocalTransform.m11, nodeChunk.LocalTransform.m12, nodeChunk.LocalTransform.m13,
+                nodeChunk.LocalTransform.m20, nodeChunk.LocalTransform.m21, nodeChunk.LocalTransform.m22, nodeChunk.LocalTransform.m23,
+                nodeChunk.LocalTransform.m30, nodeChunk.LocalTransform.m31, nodeChunk.LocalTransform.m32, nodeChunk.LocalTransform.m33);
 
             // This gets complicated.  We need to make one instance_material for each material used in this node chunk.  The mat IDs used in this
             // node chunk are stored in meshsubsets, so for each subset we need to grab the mat, get the target (id), and make an instance_material for it.
@@ -1258,26 +1258,26 @@ namespace Gamer.Format.Collada
 
         #endregion
 
-        string CreateStringFromMatrix44(Matrix44 matrix)
+        string CreateStringFromMatrix44(Matrix4x4 matrix)
         {
             var b = new StringBuilder();
             b.AppendFormat("{0:F6} {1:F6} {2:F6} {3:F6} {4:F6} {5:F6} {6:F6} {7:F6} {8:F6} {9:F6} {10:F6} {11:F6} {12:F6} {13:F6} {14:F6} {15:F6}",
+                matrix.m00,
+                matrix.m01,
+                matrix.m02,
+                matrix.m03,
+                matrix.m10,
                 matrix.m11,
                 matrix.m12,
                 matrix.m13,
-                matrix.m14,
+                matrix.m20,
                 matrix.m21,
                 matrix.m22,
                 matrix.m23,
-                matrix.m24,
+                matrix.m30,
                 matrix.m31,
                 matrix.m32,
-                matrix.m33,
-                matrix.m34,
-                matrix.m41,
-                matrix.m42,
-                matrix.m43,
-                matrix.m44);
+                matrix.m33);
             CleanNumbers(b);
             return b.ToString();
         }

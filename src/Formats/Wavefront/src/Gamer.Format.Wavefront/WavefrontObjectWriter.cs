@@ -176,9 +176,9 @@ namespace Gamer.Format.Wavefront
                         if (multiplerX < 1) multiplerX = 1;
                         if (multiplerY < 1) multiplerY = 1;
                         if (multiplerZ < 1) multiplerZ = 1;
-                        tmpVertsUVs.Vertices[j].x = tmpVertsUVs.Vertices[j].x * multiplerX + (tmpMesh.MaxBound.x + tmpMesh.MinBound.x) / 2;
-                        tmpVertsUVs.Vertices[j].y = tmpVertsUVs.Vertices[j].y * multiplerY + (tmpMesh.MaxBound.y + tmpMesh.MinBound.y) / 2;
-                        tmpVertsUVs.Vertices[j].z = tmpVertsUVs.Vertices[j].z * multiplerZ + (tmpMesh.MaxBound.z + tmpMesh.MinBound.z) / 2;
+                        tmpVertsUVs.Vertices[j].x = tmpVertsUVs.Vertices[j].x * multiplerX + (tmpMesh.MaxBound.x + tmpMesh.MinBound.x) / 2f;
+                        tmpVertsUVs.Vertices[j].y = tmpVertsUVs.Vertices[j].y * multiplerY + (tmpMesh.MaxBound.y + tmpMesh.MinBound.y) / 2f;
+                        tmpVertsUVs.Vertices[j].z = tmpVertsUVs.Vertices[j].z * multiplerZ + (tmpMesh.MaxBound.z + tmpMesh.MinBound.z) / 2f;
                         var vertex = chunkNode.GetTransform(tmpVertsUVs.Vertices[j]);
                         w.WriteLine("v {0:F7} {1:F7} {2:F7}", safe(vertex.x), safe(vertex.y), safe(vertex.z));
                     }

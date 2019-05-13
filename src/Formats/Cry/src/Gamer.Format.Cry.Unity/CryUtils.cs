@@ -34,9 +34,9 @@ namespace Gamer.Format.Cry
         public static Quaternion CryEulerAnglesToUnityQuaternion(Vector3 eulerAngles)
         {
             var eulerAngles2 = CryVectorToUnityVector(eulerAngles);
-            var xRot = Quaternion.AngleAxis(Mathf.Rad2Deg * (float)eulerAngles2.x, UnityEngine.Vector3.right);
-            var yRot = Quaternion.AngleAxis(Mathf.Rad2Deg * (float)eulerAngles2.y, UnityEngine.Vector3.up);
-            var zRot = Quaternion.AngleAxis(Mathf.Rad2Deg * (float)eulerAngles2.z, UnityEngine.Vector3.forward);
+            var xRot = Quaternion.AngleAxis(Mathf.Rad2Deg * eulerAngles2.x, UnityEngine.Vector3.right);
+            var yRot = Quaternion.AngleAxis(Mathf.Rad2Deg * eulerAngles2.y, UnityEngine.Vector3.up);
+            var zRot = Quaternion.AngleAxis(Mathf.Rad2Deg * eulerAngles2.z, UnityEngine.Vector3.forward);
             return xRot * zRot * yRot;
         }
     }

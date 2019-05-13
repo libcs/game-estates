@@ -21,27 +21,27 @@ namespace Gamer.Format.Cry.Core
 
         public List<CompiledPhysicalBone> GetAllChildBones(CompiledPhysicalBone bone) => bone.NumChildren > 0 ? PhysicalBoneList.Where(a => bone.childIDs.Contains(a.ControllerID)).ToList() : null;
 
-        protected Matrix44 GetTransformFromParts(Vector3 localTranslation, Matrix33 localRotation) => new Matrix44
+        protected Matrix4x4 GetTransformFromParts(Vector3 localTranslation, Matrix3x3 localRotation) => new Matrix4x4
         {
             // Translation part
-            m14 = localTranslation.x,
-            m24 = localTranslation.y,
-            m34 = localTranslation.z,
+            m03 = localTranslation.x,
+            m13 = localTranslation.y,
+            m23 = localTranslation.z,
             // Rotation part
+            m00 = localRotation.m00,
+            m01 = localRotation.m01,
+            m02 = localRotation.m02,
+            m10 = localRotation.m10,
             m11 = localRotation.m11,
             m12 = localRotation.m12,
-            m13 = localRotation.m13,
+            m20 = localRotation.m20,
             m21 = localRotation.m21,
             m22 = localRotation.m22,
-            m23 = localRotation.m23,
-            m31 = localRotation.m31,
-            m32 = localRotation.m32,
-            m33 = localRotation.m33,
             // Set final row
-            m41 = 0,
-            m42 = 0,
-            m43 = 0,
-            m44 = 1
+            m30 = 0,
+            m31 = 0,
+            m32 = 0,
+            m33 = 1
         };
 
         public override void WriteChunk()

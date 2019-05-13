@@ -30,7 +30,7 @@ namespace Gamer.Format.Cry.Core
         /// <summary>
         /// Transformation Matrix
         /// </summary>
-        public Matrix44 Transform { get; internal set; }
+        public Matrix4x4 Transform { get; internal set; }
         /// <summary>
         /// Position vector of Transform
         /// </summary>
@@ -62,9 +62,9 @@ namespace Gamer.Format.Cry.Core
 
         // Calculated Properties
 
-        public Matrix44 LocalTransform = new Matrix44();            // Because Cryengine tends to store transform relative to world, we have to add all the transforms from the node to the root.  Calculated, row major.
+        public Matrix4x4 LocalTransform = new Matrix4x4();            // Because Cryengine tends to store transform relative to world, we have to add all the transforms from the node to the root.  Calculated, row major.
         public Vector3 LocalTranslation = new Vector3();            // To hold the local rotation vector
-        public Matrix33 LocalRotation = new Matrix33();             // to hold the local rotation matrix
+        public Matrix3x3 LocalRotation = new Matrix3x3();             // to hold the local rotation matrix
         public Vector3 LocalScale = new Vector3();                  // to hold the local scale matrix
 
         ChunkNode _parentNode;
@@ -108,7 +108,7 @@ namespace Gamer.Format.Cry.Core
             ? ParentNode.TransformSoFar.Add(Transform.GetTranslation())
             : Transform.GetTranslation();
 
-        public Matrix33 RotSoFar => ParentNode != null
+        public Matrix3x3 RotSoFar => ParentNode != null
                     ? Transform.GetRotation().Mult(ParentNode.RotSoFar)
                     : _model.RootNode.Transform.GetRotation();
 
@@ -142,24 +142,24 @@ namespace Gamer.Format.Cry.Core
             MatID = r.ReadInt32();  // Material ID?
             SkipBytes(r, 4);
             // Read the 4x4 transform matrix.  Should do a couple of for loops, but data structures...
-            Transform = new Matrix44
+            Transform = new Matrix4x4
             {
+                m00 = r.ReadSingle(),
+                m01 = r.ReadSingle(),
+                m02 = r.ReadSingle(),
+                m03 = r.ReadSingle(),
+                m10 = r.ReadSingle(),
                 m11 = r.ReadSingle(),
                 m12 = r.ReadSingle(),
                 m13 = r.ReadSingle(),
-                m14 = r.ReadSingle(),
+                m20 = r.ReadSingle(),
                 m21 = r.ReadSingle(),
                 m22 = r.ReadSingle(),
                 m23 = r.ReadSingle(),
-                m24 = r.ReadSingle(),
+                m30 = r.ReadSingle(),
                 m31 = r.ReadSingle(),
                 m32 = r.ReadSingle(),
                 m33 = r.ReadSingle(),
-                m34 = r.ReadSingle(),
-                m41 = r.ReadSingle(),
-                m42 = r.ReadSingle(),
-                m43 = r.ReadSingle(),
-                m44 = r.ReadSingle(),
             };
             // Read the position Pos Vector3
             Pos = new Vector3
@@ -202,13 +202,13 @@ namespace Gamer.Format.Cry.Core
             Log($"    Material ID:         {MatID:X}"); // 0x1 is mtllib w children, 0x10 is mtl no children, 0x18 is child
             Log($"    Position:            {Pos.x:F7}   {Pos.y:F7}   {Pos.z:F7}");
             Log($"    Scale:               {Scale.x:F7}   {Scale.y:F7}   {Scale.z:F7}");
-            LogFormat("    Transformation:      {0:F7}  {1:F7}  {2:F7}  {3:F7}", Transform.m11, Transform.m12, Transform.m13, Transform.m14);
-            LogFormat("                         {0:F7}  {1:F7}  {2:F7}  {3:F7}", Transform.m21, Transform.m22, Transform.m23, Transform.m24);
-            LogFormat("                         {0:F7}  {1:F7}  {2:F7}  {3:F7}", Transform.m31, Transform.m32, Transform.m33, Transform.m34);
-            LogFormat("                         {0:F7}  {1:F7}  {2:F7}  {3:F7}", Transform.m41 / 100, Transform.m42 / 100, Transform.m43 / 100, Transform.m44);
+            LogFormat("    Transformation:      {0:F7}  {1:F7}  {2:F7}  {3:F7}", Transform.m00, Transform.m01, Transform.m02, Transform.m03);
+            LogFormat("                         {0:F7}  {1:F7}  {2:F7}  {3:F7}", Transform.m10, Transform.m11, Transform.m12, Transform.m13);
+            LogFormat("                         {0:F7}  {1:F7}  {2:F7}  {3:F7}", Transform.m20, Transform.m21, Transform.m22, Transform.m23);
+            LogFormat("                         {0:F7}  {1:F7}  {2:F7}  {3:F7}", Transform.m30 / 100, Transform.m31 / 100, Transform.m32 / 100, Transform.m33);
             Log($"    Transform_sum:       {TransformSoFar.x:F7}  {TransformSoFar.y:F7}  {TransformSoFar.z:F7}");
             Log($"    Rotation_sum:");
-            RotSoFar.WriteMatrix33();
+            RotSoFar.WriteMatrix3x3();
             Log($"*** END Node Chunk ***");
         }
     }

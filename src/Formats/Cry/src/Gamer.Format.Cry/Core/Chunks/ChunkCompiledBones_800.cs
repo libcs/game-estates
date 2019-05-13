@@ -10,7 +10,7 @@ namespace Gamer.Format.Cry.Core
             base.Read(r);
             SkipBytes(r, 32);  // Padding between the chunk header and the first bone.
             Vector3 localTranslation;
-            Matrix33 localRotation;
+            Matrix3x3 localRotation;
             //  Read the first bone with ReadCompiledBone, then recursively grab all the children for each bone you find.
             //  Each bone structure is 584 bytes, so will need to seek childOffset * 584 each time, and go back.
             NumBones = (int)((Size - 32) / 584);
@@ -52,12 +52,12 @@ namespace Gamer.Format.Cry.Core
         /// Writes the results of common matrix math.  For testing purposes.
         /// </summary>
         /// <param name="localRotation">The matrix that the math functions will be applied to.</param>
-        void WriteMatrices(Matrix33 localRotation)
+        void WriteMatrices(Matrix3x3 localRotation)
         {
-            localRotation.WriteMatrix33("Regular");
-            localRotation.Inverse().WriteMatrix33("Inverse");
-            localRotation.Conjugate().WriteMatrix33("Conjugate");
-            localRotation.ConjugateTranspose().WriteMatrix33("Conjugate Transpose");
+            localRotation.WriteMatrix3x3("Regular");
+            localRotation.Inverse().WriteMatrix3x3("Inverse");
+            localRotation.Conjugate().WriteMatrix3x3("Conjugate");
+            localRotation.ConjugateTranspose().WriteMatrix3x3("Conjugate Transpose");
         }
     }
 }
