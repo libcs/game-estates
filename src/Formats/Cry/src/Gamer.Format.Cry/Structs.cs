@@ -33,7 +33,8 @@ namespace Gamer.Format.Cry
         /// <returns>
         ///   <c>true</c> if this instance is identity; otherwise, <c>false</c>.
         /// </returns>
-        public bool IsIdentity() => Math.Abs(m00 - 1.0) > 0.00001 ||
+        public bool IsIdentity() =>
+            Math.Abs(m00 - 1.0) > 0.00001 ||
             Math.Abs(m01) > 0.00001 ||
             Math.Abs(m02) > 0.00001 ||
             Math.Abs(m10) > 0.00001 ||
@@ -171,7 +172,7 @@ namespace Gamer.Format.Cry
             // NOTE: 0.01 instead of CgfFormat.EPSILON to work around bad files
             if (!IsScaleRotation()) return false;
             var scale = GetScale();
-            return Math.Abs(scale.x - 1.0) > 0.01 || Math.Abs(scale.y - 1.0) > 0.01 || Math.Abs(scale.z - 1.0) > 0.1 ? false : true;
+            return Math.Abs(scale.x - 1.0f) > 0.01f || Math.Abs(scale.y - 1.0f) > 0.01f || Math.Abs(scale.z - 1.0f) > 0.1f ? false : true;
         }
 
         public float Determinant() => this.ToMathMatrix().Determinant();
@@ -271,11 +272,11 @@ namespace Gamer.Format.Cry
         public byte g; // green
         public byte b; // blue
 
-        public IRGB Read(BinaryReader b) => new IRGB
+        public IRGB Read(BinaryReader r) => new IRGB
         {
-            r = b.ReadByte(),
-            g = b.ReadByte(),
-            b = b.ReadByte()
+            r = r.ReadByte(),
+            g = r.ReadByte(),
+            b = r.ReadByte()
         };
     }
 
@@ -289,12 +290,12 @@ namespace Gamer.Format.Cry
         public byte b; // blue
         public byte a; // alpha
 
-        public IRGBA Read(BinaryReader b) => new IRGBA
+        public IRGBA Read(BinaryReader r) => new IRGBA
         {
-            r = b.ReadByte(),
-            g = b.ReadByte(),
-            b = b.ReadByte(),
-            a = b.ReadByte()
+            r = r.ReadByte(),
+            g = r.ReadByte(),
+            b = r.ReadByte(),
+            a = r.ReadByte()
         };
     }
 
@@ -335,12 +336,12 @@ namespace Gamer.Format.Cry
     {
         public float[,] worldToBone;   //  4x3 structure
 
-        public void GetWorldToBone(BinaryReader b)
+        public void GetWorldToBone(BinaryReader r)
         {
             worldToBone = new float[3, 4];
             for (var i = 0; i < 3; i++)
                 for (var j = 0; j < 4; j++)
-                    worldToBone[i, j] = b.ReadSingle();
+                    worldToBone[i, j] = r.ReadSingle();
             //Log($"worldToBone: {worldToBone[i, j]:F7}");
             return;
         }
@@ -401,12 +402,12 @@ namespace Gamer.Format.Cry
     {
         public float[,] boneToWorld;   //  4x3 structure
 
-        public void ReadBoneToWorld(BinaryReader b)
+        public void ReadBoneToWorld(BinaryReader r)
         {
             boneToWorld = new float[3, 4];
             for (var i = 0; i < 3; i++)
                 for (var j = 0; j < 4; j++)
-                    boneToWorld[i, j] = b.ReadSingle();
+                    boneToWorld[i, j] = r.ReadSingle();
             //Log($"boneToWorld: {boneToWorld[i, j]:F7}");
             return;
         }
@@ -458,19 +459,19 @@ namespace Gamer.Format.Cry
         /// <summary>
         /// Read a PhysicsGeometry structure
         /// </summary>
-        /// <param name="b">The b.</param>
-        public void ReadPhysicsGeometry(BinaryReader b)
+        /// <param name="r">The b.</param>
+        public void ReadPhysicsGeometry(BinaryReader r)
         {
-            physicsGeom = b.ReadUInt32();
-            flags = b.ReadUInt32();
-            min.ReadVector3(b);
+            physicsGeom = r.ReadUInt32();
+            flags = r.ReadUInt32();
+            min.ReadVector3(r);
             // min.WriteVector3();
-            max.ReadVector3(b);
+            max.ReadVector3(r);
             // max.WriteVector3();
-            spring_angle.ReadVector3(b);
-            spring_tension.ReadVector3(b);
-            damping.ReadVector3(b);
-            framemtx.ReadMatrix3x3(b);
+            spring_angle.ReadVector3(r);
+            spring_tension.ReadVector3(r);
+            damping.ReadVector3(r);
+            framemtx.ReadMatrix3x3(r);
             return;
         }
 
@@ -505,23 +506,23 @@ namespace Gamer.Format.Cry
 
         public CompiledBone ParentBone { get; set; }
 
-        public void ReadCompiledBone(BinaryReader b)
+        public void ReadCompiledBone(BinaryReader r)
         {
             // Reads just a single 584 byte entry of a bone. At the end the seek position will be advanced, so keep that in mind.
-            ControllerID = b.ReadUInt32(); // unique id of bone (generated from bone name)
+            ControllerID = r.ReadUInt32(); // unique id of bone (generated from bone name)
             physicsGeometry = new PhysicsGeometry[2];
-            physicsGeometry[0].ReadPhysicsGeometry(b); // lod 0 is the physics of alive body, 
-            physicsGeometry[1].ReadPhysicsGeometry(b); // lod 1 is the physics of a dead body
-            mass = b.ReadSingle();
+            physicsGeometry[0].ReadPhysicsGeometry(r); // lod 0 is the physics of alive body, 
+            physicsGeometry[1].ReadPhysicsGeometry(r); // lod 1 is the physics of a dead body
+            mass = r.ReadSingle();
             worldToBone = new WORLDTOBONE();
-            worldToBone.GetWorldToBone(b);
+            worldToBone.GetWorldToBone(r);
             boneToWorld = new BONETOWORLD();
-            boneToWorld.ReadBoneToWorld(b);
-            boneName = b.ReadFString(256);
-            limbID = b.ReadUInt32();
-            offsetParent = b.ReadInt32();
-            numChildren = b.ReadUInt32();
-            offsetChild = b.ReadInt32();
+            boneToWorld.ReadBoneToWorld(r);
+            boneName = r.ReadFString(256);
+            limbID = r.ReadUInt32();
+            offsetParent = r.ReadInt32();
+            numChildren = r.ReadUInt32();
+            offsetChild = r.ReadInt32();
             childIDs = new List<uint>(); // Calculated
         }
 
@@ -577,15 +578,15 @@ namespace Gamer.Format.Cry
 
         public CompiledBone GetBonePartner() => null;
 
-        public void ReadCompiledPhysicalBone(BinaryReader b)
+        public void ReadCompiledPhysicalBone(BinaryReader r)
         {
             // Reads just a single 584 byte entry of a bone. At the end the seek position will be advanced, so keep that in mind.
-            BoneIndex = b.ReadUInt32(); // unique id of bone (generated from bone name)
-            ParentOffset = b.ReadUInt32();
-            NumChildren = b.ReadUInt32();
-            ControllerID = b.ReadUInt32();
-            prop = b.ReadChars(32); // Not sure what this is used for.
-            PhysicsGeometry.ReadPhysicsGeometry(b);
+            BoneIndex = r.ReadUInt32(); // unique id of bone (generated from bone name)
+            ParentOffset = r.ReadUInt32();
+            NumChildren = r.ReadUInt32();
+            ControllerID = r.ReadUInt32();
+            prop = r.ReadChars(32); // Not sure what this is used for.
+            PhysicsGeometry.ReadPhysicsGeometry(r);
             // Calculated values
             childIDs = new List<uint>();
         }

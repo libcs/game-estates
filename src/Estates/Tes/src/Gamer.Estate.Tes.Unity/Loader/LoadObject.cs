@@ -1,5 +1,6 @@
 ﻿using Gamer.Core;
 using System;
+using static Gamer.Core.Debug;
 
 namespace Gamer.Estate.Tes.Loader
 {
@@ -9,6 +10,7 @@ namespace Gamer.Estate.Tes.Loader
 
         public static void Awake()
         {
+            Log("AWAKE");
         }
 
         //var assetUri = "file:///C:/Program%20Files%20(x86)/Steam/steamapps/common/Morrowind/Data%20Files/Morrowind.*";
@@ -18,6 +20,7 @@ namespace Gamer.Estate.Tes.Loader
         //var file4Uri = "http://192.168.1.3/assets/Morrowind/Morrowind.bsa";
         public static void Start()
         {
+            Log("START");
             var assetUri = new Uri("game://Morrowind/Morrowind.bsa");
             //var dataUri = new Uri("game://Morrowind/Morrowind.esm");
             //var assetUri = new Uri("game://SkyrimVR/Skyrim*");

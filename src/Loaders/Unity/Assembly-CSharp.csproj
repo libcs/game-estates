@@ -277,29 +277,11 @@
     <Reference Include="UnityEngine.SpatialTracking">
       <HintPath>C:/Program Files/Unity/Hub/Editor/2018.3.14f1/Editor/Data/UnityExtensions/Unity/UnitySpatialTracking/RuntimeEditor/UnityEngine.SpatialTracking.dll</HintPath>
     </Reference>
-    <Reference Include="Gamer.Base">
-      <HintPath>C:/_GITHUB/libcs/gamer.io.net/src/Loaders/Unity/Assets/Plugins/Gamer.Base.dll</HintPath>
-    </Reference>
-    <Reference Include="Gamer.Base.Unity">
-      <HintPath>C:/_GITHUB/libcs/gamer.io.net/src/Loaders/Unity/Assets/Plugins/Gamer.Base.Unity.dll</HintPath>
-    </Reference>
     <Reference Include="Gamer.Core">
       <HintPath>C:/_GITHUB/libcs/gamer.io.net/src/Loaders/Unity/Assets/Plugins/Gamer.Core.dll</HintPath>
     </Reference>
     <Reference Include="Gamer.Core.Unity">
       <HintPath>C:/_GITHUB/libcs/gamer.io.net/src/Loaders/Unity/Assets/Plugins/Gamer.Core.Unity.dll</HintPath>
-    </Reference>
-    <Reference Include="Gamer.Estate.Nif">
-      <HintPath>C:/_GITHUB/libcs/gamer.io.net/src/Loaders/Unity/Assets/Plugins/Gamer.Estate.Nif.dll</HintPath>
-    </Reference>
-    <Reference Include="Gamer.Estate.Nif.Unity">
-      <HintPath>C:/_GITHUB/libcs/gamer.io.net/src/Loaders/Unity/Assets/Plugins/Gamer.Estate.Nif.Unity.dll</HintPath>
-    </Reference>
-    <Reference Include="Gamer.Estate.Rsi">
-      <HintPath>C:/_GITHUB/libcs/gamer.io.net/src/Loaders/Unity/Assets/Plugins/Gamer.Estate.Rsi.dll</HintPath>
-    </Reference>
-    <Reference Include="Gamer.Estate.Rsi.Unity">
-      <HintPath>C:/_GITHUB/libcs/gamer.io.net/src/Loaders/Unity/Assets/Plugins/Gamer.Estate.Rsi.Unity.dll</HintPath>
     </Reference>
     <Reference Include="Gamer.Estate.Tes">
       <HintPath>C:/_GITHUB/libcs/gamer.io.net/src/Loaders/Unity/Assets/Plugins/Gamer.Estate.Tes.dll</HintPath>
@@ -312,12 +294,6 @@
     </Reference>
     <Reference Include="Gamer.Estate.Ultima.Unity">
       <HintPath>C:/_GITHUB/libcs/gamer.io.net/src/Loaders/Unity/Assets/Plugins/Gamer.Estate.Ultima.Unity.dll</HintPath>
-    </Reference>
-    <Reference Include="Gamer.Format.Cry">
-      <HintPath>C:/_GITHUB/libcs/gamer.io.net/src/Loaders/Unity/Assets/Plugins/Gamer.Format.Cry.dll</HintPath>
-    </Reference>
-    <Reference Include="Gamer.Format.Cry.Unity">
-      <HintPath>C:/_GITHUB/libcs/gamer.io.net/src/Loaders/Unity/Assets/Plugins/Gamer.Format.Cry.Unity.dll</HintPath>
     </Reference>
     <Reference Include="Gamer.Format.Nif">
       <HintPath>C:/_GITHUB/libcs/gamer.io.net/src/Loaders/Unity/Assets/Plugins/Gamer.Format.Nif.dll</HintPath>

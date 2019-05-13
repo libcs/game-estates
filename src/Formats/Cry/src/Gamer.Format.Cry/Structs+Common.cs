@@ -12,8 +12,8 @@
 
         public Vector3(float x, float y, float z) : this() { this.x = x; this.y = y; this.z = z; }
         public Vector3 Add(Vector3 vector) => new Vector3 { x = vector.x + x, y = vector.y + y, z = vector.z + z };
-        public static Vector3 operator +(Vector3 lhs, Vector3 rhs) => new Vector3() { x = lhs.x + rhs.x, y = lhs.y + rhs.y, z = lhs.z + rhs.z };
-        public static Vector3 operator -(Vector3 lhs, Vector3 rhs) => new Vector3() { x = lhs.x - rhs.x, y = lhs.y - rhs.y, z = lhs.z - rhs.z };
+        public static Vector3 operator +(Vector3 lhs, Vector3 rhs) => new Vector3 { x = lhs.x + rhs.x, y = lhs.y + rhs.y, z = lhs.z + rhs.z };
+        public static Vector3 operator -(Vector3 lhs, Vector3 rhs) => new Vector3 { x = lhs.x - rhs.x, y = lhs.y - rhs.y, z = lhs.z - rhs.z };
         public Vector4 ToVector4() => new Vector4 { x = x, y = y, z = z, w = 1 };
     }
 
@@ -57,18 +57,18 @@
         /// <returns></returns>
         public Vector4 Mult4x1(Vector4 vector) => new Vector4
         {
-            x = (m00 * vector.x) + (m10 * vector.y) + (m20 * vector.z) + m30 / 100,
-            y = (m01 * vector.x) + (m11 * vector.y) + (m21 * vector.z) + m31 / 100,
-            z = (m02 * vector.x) + (m12 * vector.y) + (m22 * vector.z) + m32 / 100,
-            w = (m03 * vector.x) + (m13 * vector.y) + (m23 * vector.z) + m33 / 100
+            x = (m00 * vector.x) + (m10 * vector.y) + (m20 * vector.z) + m30 / 100f,
+            y = (m01 * vector.x) + (m11 * vector.y) + (m21 * vector.z) + m31 / 100f,
+            z = (m02 * vector.x) + (m12 * vector.y) + (m22 * vector.z) + m32 / 100f,
+            w = (m03 * vector.x) + (m13 * vector.y) + (m23 * vector.z) + m33 / 100f
         };
 
         public static Vector4 operator *(Matrix4x4 lhs, Vector4 vector) => new Vector4
         {
-            x = (lhs.m00 * vector.x) + (lhs.m10 * vector.y) + (lhs.m20 * vector.z) + lhs.m30 / 100,
-            y = (lhs.m01 * vector.x) + (lhs.m11 * vector.y) + (lhs.m21 * vector.z) + lhs.m31 / 100,
-            z = (lhs.m02 * vector.x) + (lhs.m12 * vector.y) + (lhs.m22 * vector.z) + lhs.m32 / 100,
-            w = (lhs.m03 * vector.x) + (lhs.m13 * vector.y) + (lhs.m23 * vector.z) + lhs.m33 / 100
+            x = (lhs.m00 * vector.x) + (lhs.m10 * vector.y) + (lhs.m20 * vector.z) + lhs.m30 / 100f,
+            y = (lhs.m01 * vector.x) + (lhs.m11 * vector.y) + (lhs.m21 * vector.z) + lhs.m31 / 100f,
+            z = (lhs.m02 * vector.x) + (lhs.m12 * vector.y) + (lhs.m22 * vector.z) + lhs.m32 / 100f,
+            w = (lhs.m03 * vector.x) + (lhs.m13 * vector.y) + (lhs.m23 * vector.z) + lhs.m33 / 100f
         };
 
         public static Matrix4x4 operator *(Matrix4x4 lhs, Matrix4x4 rhs) => new Matrix4x4
@@ -121,9 +121,9 @@
 
         public Vector3 GetScale() => new Vector3
         {
-            x = m30 / 100,
-            y = m31 / 100,
-            z = m32 / 100
+            x = m30 / 100f,
+            y = m31 / 100f,
+            z = m32 / 100f
         };
 
         public Vector3 GetBoneTranslation() => new Vector3
