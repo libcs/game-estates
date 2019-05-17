@@ -41,6 +41,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gamer.Format.Cry", "..\Form
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gamer.Format.Cry.Unity", "..\Formats\Cry\src\Gamer.Format.Cry.Unity\Gamer.Format.Cry.Unity.csproj", "{E9124A68-BD44-4308-94BF-543B84FC97E2}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gamer.Proxy", "..\Core\src\Gamer.Proxy\Gamer.Proxy.csproj", "{58443953-4782-43A5-AA45-82D2630BE7B6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -119,6 +121,10 @@ Global
 		{E9124A68-BD44-4308-94BF-543B84FC97E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E9124A68-BD44-4308-94BF-543B84FC97E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E9124A68-BD44-4308-94BF-543B84FC97E2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{58443953-4782-43A5-AA45-82D2630BE7B6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{58443953-4782-43A5-AA45-82D2630BE7B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{58443953-4782-43A5-AA45-82D2630BE7B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{58443953-4782-43A5-AA45-82D2630BE7B6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -130,6 +136,7 @@ Global
 		{09930D4B-CF89-40F9-AB52-EC41E2FF4FA7} = {83F5D796-8D90-4872-934D-34ABCAFDE642}
 		{693759AB-1CDD-4E5C-9989-2362D562D904} = {83F5D796-8D90-4872-934D-34ABCAFDE642}
 		{E9124A68-BD44-4308-94BF-543B84FC97E2} = {83F5D796-8D90-4872-934D-34ABCAFDE642}
+		{58443953-4782-43A5-AA45-82D2630BE7B6} = {83F5D796-8D90-4872-934D-34ABCAFDE642}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7ACB76E5-A8E8-4292-994C-E0779E009E43}

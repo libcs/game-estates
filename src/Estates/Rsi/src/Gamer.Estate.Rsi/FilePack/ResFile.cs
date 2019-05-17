@@ -16,17 +16,17 @@ namespace Gamer.Estate.Rsi.FilePack
         }
         ~ResFile() => Close();
 
-        public void Close() => _pakFile.Close();
+        public virtual void Close() => _pakFile.Close();
 
         /// <summary>
         /// Determines whether the BSA archive contains a file.
         /// </summary>
-        public bool ContainsFile(string filePath) => _pakFile.ContainsFile(filePath);
+        public virtual bool ContainsFile(string filePath) => _pakFile.ContainsFile(filePath);
 
         /// <summary>
         /// Loads an archived file's data.
         /// </summary>
-        public byte[] LoadFileData(string filePath) => _pakFile.LoadFileData(filePath);
+        public virtual byte[] LoadFileData(string filePath) => _pakFile.LoadFileData(filePath);
 
         /// <summary>
         /// Loads an archived file's data.

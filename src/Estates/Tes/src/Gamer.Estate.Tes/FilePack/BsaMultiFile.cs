@@ -33,7 +33,7 @@ namespace Gamer.Estate.Tes.FilePack
         /// <summary>
         /// Closes this instance.
         /// </summary>
-        public void Close()
+        public virtual void Close()
         {
             foreach (var pack in Packs)
                 pack.Close();

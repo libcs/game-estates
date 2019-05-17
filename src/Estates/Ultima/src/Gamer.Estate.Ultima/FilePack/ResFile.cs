@@ -20,6 +20,6 @@ namespace Gamer.Estate.Ultima.FilePack
         }
         ~ResFile() => Close();
 
-        public void Close() { }
+        public virtual void Close() { }
     }
 }
