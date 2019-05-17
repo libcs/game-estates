@@ -12,6 +12,7 @@ Library/
 UnityGenerated/
 DerivedData/
 Assets/AssetStoreTools*
+Logs/
 *.pidb.meta
 sysinfo.txt
 *.apk
