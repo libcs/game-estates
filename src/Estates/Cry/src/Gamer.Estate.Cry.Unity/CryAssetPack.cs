@@ -2,6 +2,7 @@
 using Gamer.Core;
 using System;
 using UnityEngine;
+using Gamer.Proxy;
 
 namespace Gamer.Estate.Cry
 {
@@ -11,7 +12,7 @@ namespace Gamer.Estate.Cry
         MaterialManager _materialManager;
         object _nifManager;
 
-        public CryAssetPack(PakFile file) : base(file)
+        public CryAssetPack(ProxySink client, PakFile file) : base(client, file)
         {
             _textureManager = new TextureManager(this);
             _materialManager = new MaterialManager(_textureManager);

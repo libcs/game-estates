@@ -7,14 +7,11 @@ namespace Gamer.Estate.Rsi
 {
     public static class RsiExtensions2
     {
-        public static Task<IAssetPack> GetAssetPackAsync(this Uri uri, out PakFile pakFile)
+        public static Task<IAssetPack> GetRsiAssetPackAsync(this Uri uri, out PakFile pakFile)
         {
-            var game = uri.ToGame(out var path);
-            var filePath = FileManager.GetFilePath(path, game);
-            if (filePath == null)
-                throw new InvalidOperationException($"{game} not available");
+            uri.ToRsiGame(out var proxySink, out var filePath);
             pakFile = new PakFile(filePath);
-            return Task.FromResult((IAssetPack)new RsiAssetPack(pakFile));
+            return Task.FromResult((IAssetPack)new RsiAssetPack(proxySink, pakFile));
         }
     }
 }

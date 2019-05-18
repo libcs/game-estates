@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\Core\src\Gamer.Core\Gamer.Core.csproj" />
+    <ProjectReference Include="..\..\..\..\Core\src\Gamer.Proxy\Gamer.Proxy.csproj" />
     <ProjectReference Include="..\..\..\..\Formats\Nif\src\Gamer.Format.Nif\Gamer.Format.Nif.csproj" />
   </ItemGroup>
 

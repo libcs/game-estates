@@ -1,6 +1,7 @@
 ﻿using Gamer.Core;
 using Gamer.Estate.Rsi.FilePack;
 using Gamer.Format.Cry;
+using Gamer.Proxy;
 using UnityEngine;
 
 namespace Gamer.Estate.Rsi
@@ -11,7 +12,7 @@ namespace Gamer.Estate.Rsi
         MaterialManager _materialManager;
         CryManager _cryManager;
 
-        public RsiAssetPack(PakFile file) : base(file)
+        public RsiAssetPack(ProxySink client, PakFile file) : base(client, file)
         {
             _textureManager = new TextureManager(this);
             _materialManager = new MaterialManager(_textureManager);

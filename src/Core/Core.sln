@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gamer.Proxy", "src\Gamer.Pr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gamer.Proxy.Server", "src\Gamer.Proxy.Server\Gamer.Proxy.Server.csproj", "{615CF25F-B647-4D23-B2C8-8E02FDBB1599}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gamer.Proxy.Tests", "src\Gamer.Proxy.Tests\Gamer.Proxy.Tests.csproj", "{B7B18E38-30F2-4EC2-9391-C9D07F8FD322}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{615CF25F-B647-4D23-B2C8-8E02FDBB1599}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{615CF25F-B647-4D23-B2C8-8E02FDBB1599}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{615CF25F-B647-4D23-B2C8-8E02FDBB1599}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B7B18E38-30F2-4EC2-9391-C9D07F8FD322}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B7B18E38-30F2-4EC2-9391-C9D07F8FD322}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B7B18E38-30F2-4EC2-9391-C9D07F8FD322}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B7B18E38-30F2-4EC2-9391-C9D07F8FD322}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

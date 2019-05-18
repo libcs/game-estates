@@ -1,6 +1,7 @@
 ﻿using Gamer.Core;
 using Gamer.Estate.Ultima.FilePack;
 using Gamer.Estate.Ultima.Format;
+using Gamer.Proxy;
 using UnityEngine;
 
 namespace Gamer.Estate.Ultima
@@ -11,7 +12,7 @@ namespace Gamer.Estate.Ultima
         MaterialManager _materialManager;
         SifManager _staManager;
 
-        public UltimaAssetPack()
+        public UltimaAssetPack(ProxySink client) : base(client)
         {
             _textureManager = new TextureManager(this);
             _materialManager = new MaterialManager(_textureManager);

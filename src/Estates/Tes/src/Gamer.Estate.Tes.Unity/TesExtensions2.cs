@@ -6,13 +6,10 @@ namespace Gamer.Estate.Tes
 {
     public static class TesExtensions2
     {
-        public static Task<IAssetPack> GetAssetPackAsync(this Uri uri)
+        public static Task<IAssetPack> GetTesAssetPackAsync(this Uri uri)
         {
-            var game = uri.ToGame(out var path);
-            var filePaths = FileManager.GetFilePaths(path, game);
-            if (filePaths == null)
-                throw new InvalidOperationException($"{game} not available");
-            return Task.FromResult((IAssetPack)new TesAssetPack(filePaths));
+            uri.ToTesGame(out var proxySink, out var filePaths);
+            return Task.FromResult((IAssetPack)new TesAssetPack(proxySink, filePaths));
         }
     }
 }

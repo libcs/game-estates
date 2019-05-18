@@ -1,4 +1,5 @@
 ﻿using Gamer.Core;
+using Gamer.Proxy;
 using System;
 using System.Threading.Tasks;
 
@@ -6,17 +7,22 @@ namespace Gamer.Estate.Ultima
 {
     public static class UltimaExtensions
     {
-        public static UltimaGame ToGame(this Uri uri, out string path)
+        public static UltimaGame ToUltimaGame(this Uri uri, out ProxySink proxySink, out string[] filePaths)
         {
-            path = null;
-            return UltimaGame.UltimaOnline;
+            filePaths = null;
+            // game
+            var game = UltimaGame.UltimaOnline;
+            // scheme
+            proxySink = uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps
+                ? new ProxySinkClient(uri)
+                : new ProxySink();
+            return game;
         }
 
-        public static Task<IDataPack> GetDataPackAsync(this Uri uri)
+        public static Task<IDataPack> GetUltimaDataPackAsync(this Uri uri)
         {
-            var game = uri.ToGame(out var path);
-            uint.TryParse(path, out var map);
-            return Task.FromResult((IDataPack)new UltimaDataPack(map));
+            var game = uri.ToUltimaGame(out var proxySink, out var filePaths);
+            return Task.FromResult((IDataPack)new UltimaDataPack((uint)game));
         }
     }
 }

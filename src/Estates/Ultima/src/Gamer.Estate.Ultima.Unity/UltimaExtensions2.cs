@@ -6,10 +6,10 @@ namespace Gamer.Estate.Ultima
 {
     public static class UltimaExtensions2
     {
-        public static Task<IAssetPack> GetAssetPackAsync(this Uri uri)
+        public static Task<IAssetPack> GetUltimaAssetPackAsync(this Uri uri)
         {
-            var game = uri.ToGame(out var path);
-            return Task.FromResult((IAssetPack)new UltimaAssetPack());
+            uri.ToUltimaGame(out var proxySink, out var filePaths);
+            return Task.FromResult((IAssetPack)new UltimaAssetPack(proxySink));
         }
     }
 }

@@ -16,7 +16,7 @@ namespace Gamer.Estate.Ultima.Tests
         [InlineData("game://UltimaOnline/*")]
         public async Task LoadAssetPack(string path)
         {
-            var asset = await new Uri(path).GetAssetPackAsync() as UltimaAssetPack;
+            var asset = await new Uri(path).GetUltimaAssetPackAsync() as UltimaAssetPack;
             //foreach (var pack in asset.Packs)
             //{
             //    pack.TestContainsFile();
@@ -28,7 +28,7 @@ namespace Gamer.Estate.Ultima.Tests
         [InlineData("game://UltimaOnline/*")]
         public async Task LoadDataPack(string path)
         {
-            var data = await new Uri(path).GetDataPackAsync() as UltimaDataPack;
+            var data = await new Uri(path).GetUltimaDataPackAsync() as UltimaDataPack;
             //TestLoadCell(data, new Vector3(0, 0, 0));
             //TestAllCells(data);
         }

@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\Core\src\Gamer.Core.Unity\Gamer.Core.Unity.csproj" />
+    <ProjectReference Include="..\..\..\..\Core\src\Gamer.Proxy\Gamer.Proxy.csproj" />
     <ProjectReference Include="..\Gamer.Estate.Ultima\Gamer.Estate.Ultima.csproj" />
   </ItemGroup>
 

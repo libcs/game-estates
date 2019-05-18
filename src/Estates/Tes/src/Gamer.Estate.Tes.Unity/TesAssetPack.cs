@@ -2,6 +2,7 @@
 using Gamer.Format.Nif;
 using Gamer.Estate.Tes.FilePack;
 using UnityEngine;
+using Gamer.Proxy;
 
 namespace Gamer.Estate.Tes
 {
@@ -11,8 +12,8 @@ namespace Gamer.Estate.Tes
         MaterialManager _materialManager;
         NifManager _nifManager;
 
-        public TesAssetPack(string filePath) : this(new[] { filePath }) { }
-        public TesAssetPack(string[] filePaths) : base(filePaths)
+        public TesAssetPack(ProxySink proxySink, string filePath) : this(proxySink, new[] { filePath }) { }
+        public TesAssetPack(ProxySink proxySink, string[] filePaths) : base(proxySink, filePaths)
         {
             _textureManager = new TextureManager(this);
             _materialManager = new MaterialManager(_textureManager);

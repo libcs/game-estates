@@ -2,6 +2,6 @@
 {
     public enum UltimaGame
     {
-        UltimaOnline = 1,
+        UltimaOnline = 0,
     }
 }

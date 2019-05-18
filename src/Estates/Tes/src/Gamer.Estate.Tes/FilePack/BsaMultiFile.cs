@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Gamer.Proxy;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -11,17 +12,23 @@ namespace Gamer.Estate.Tes.FilePack
     /// <seealso cref="System.IDisposable" />
     public partial class BsaMultiFile : IDisposable
     {
-        public readonly List<BsaFile> Packs = new List<BsaFile>();
+        readonly ProxySink _proxySink;
+        public readonly List<BsaFile> Packs;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="BsaMultiFile" /> class.
         /// </summary>
+        /// <param name="proxySink">The proxy sink.</param>
         /// <param name="filePaths">The file paths.</param>
         /// <exception cref="System.ArgumentNullException">filePaths</exception>
         /// <exception cref="ArgumentNullException">filePaths</exception>
-        public BsaMultiFile(string[] filePaths)
+        public BsaMultiFile(ProxySink proxySink, string[] filePaths)
         {
+            _proxySink = proxySink;
+            if (proxySink is ProxySinkClient)
+                return;
             var files = (filePaths ?? throw new ArgumentNullException(nameof(filePaths))).Where(x => Path.GetExtension(x) == ".bsa" || Path.GetExtension(x) == ".ba2");
+            Packs = new List<BsaFile>();
             Packs.AddRange(files.Select(x => new BsaFile(x)));
         }
 
@@ -33,10 +40,11 @@ namespace Gamer.Estate.Tes.FilePack
         /// <summary>
         /// Closes this instance.
         /// </summary>
-        public virtual void Close()
+        public void Close()
         {
-            foreach (var pack in Packs)
-                pack.Close();
+            if (Packs != null)
+                foreach (var pack in Packs)
+                    pack.Close();
         }
 
         /// <summary>
@@ -46,7 +54,7 @@ namespace Gamer.Estate.Tes.FilePack
         /// <returns>
         ///   <c>true</c> if the specified file path contains file; otherwise, <c>false</c>.
         /// </returns>
-        public virtual bool ContainsFile(string filePath) => Packs.Any(x => x.ContainsFile(filePath));
+        public bool ContainsFile(string filePath) => _proxySink.ContainsFile(filePath, () => Packs.Any(x => x.ContainsFile(filePath)));
 
         /// <summary>
         /// Loads an archived file's data.
@@ -54,8 +62,8 @@ namespace Gamer.Estate.Tes.FilePack
         /// <param name="filePath">The file path.</param>
         /// <returns></returns>
         /// <exception cref="System.IO.FileNotFoundException">Could not find file \"{filePath}</exception>
-        public virtual byte[] LoadFileData(string filePath) =>
+        public byte[] LoadFileData(string filePath) => _proxySink.LoadFileData(filePath, () =>
             (Packs.FirstOrDefault(x => x.ContainsFile(filePath)) ?? throw new FileNotFoundException($"Could not find file \"{filePath}\" in a BSA file."))
-            .LoadFileData(filePath);
+            .LoadFileData(filePath));
     }
 }

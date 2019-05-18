@@ -1,5 +1,6 @@
 ﻿using Gamer.Core;
 using Gamer.Estate.Tes.Records;
+using Gamer.Proxy;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -19,7 +20,7 @@ namespace Gamer.Estate.Tes.FilePack
         public GameFormat Format;
         public Dictionary<string, RecordGroup> Groups;
 
-        public EsmFile(string filePath, TesGame game)
+        public EsmFile(ProxySink client, string filePath, TesGame game)
         {
             if (filePath == null)
                 return;

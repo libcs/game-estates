@@ -36,6 +36,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\Core\src\Gamer.Core.Unity\Gamer.Core.Unity.csproj" />
+    <ProjectReference Include="..\..\..\..\Core\src\Gamer.Proxy\Gamer.Proxy.csproj" />
     <ProjectReference Include="..\..\..\..\Formats\Nif\src\Gamer.Format.Nif.Unity\Gamer.Format.Nif.Unity.csproj" />
     <ProjectReference Include="..\Gamer.Estate.Tes\Gamer.Estate.Tes.csproj" />
   </ItemGroup>

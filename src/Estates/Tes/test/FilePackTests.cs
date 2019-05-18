@@ -29,7 +29,7 @@ namespace Gamer.Estate.Tes.Tests
 #endif
         public async Task LoadAssetPack(string path)
         {
-            var asset = await new Uri(path).GetAssetPackAsync() as TesAssetPack;
+            var asset = await new Uri(path).GetTesAssetPackAsync() as TesAssetPack;
             foreach (var pack in asset.Packs)
             {
                 pack.TestContainsFile();
@@ -55,7 +55,7 @@ namespace Gamer.Estate.Tes.Tests
 #endif
         public void LoadDataPack(string path)
         {
-            var data = (TesDataPack)new Uri(path).GetDataPackAsync().Result;
+            var data = (TesDataPack)new Uri(path).GetTesDataPackAsync().Result;
             TestLoadCell(data, new Vector3(0, 0, 0));
             TestAllCells(data);
 

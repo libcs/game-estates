@@ -73,14 +73,14 @@ namespace Gamer.Estate.Tes
             catch { return null; }
         }
 
-        public static string GetFilePath(string path, TesGame game) =>
-            _fileDirectories.TryGetValue(game, out var fileDirectory)
-                ? File.Exists(path = Path.Combine(fileDirectory, path)) ? path : null
-                : null;
+        //public static string GetFilePath(string path, TesGame game) =>
+        //    _fileDirectories.TryGetValue(game, out var fileDirectory)
+        //        ? File.Exists(path = Path.Combine(fileDirectory, path)) ? path : null
+        //        : null;
 
-        public static string[] GetFilePaths(string searchPattern, TesGame game) =>
+        public static string[] GetFilePaths(bool many, string pathOrPattern, TesGame game) =>
             _fileDirectories.TryGetValue(game, out var fileDirectory)
-                ? Directory.GetFiles(fileDirectory, searchPattern)
+                ? many ? Directory.GetFiles(fileDirectory, pathOrPattern) : File.Exists(pathOrPattern = Path.Combine(fileDirectory, pathOrPattern)) ? new[] { pathOrPattern } : null
                 : null;
     }
 }
