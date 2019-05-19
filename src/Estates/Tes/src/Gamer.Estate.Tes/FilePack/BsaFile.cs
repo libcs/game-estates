@@ -105,7 +105,6 @@ namespace Gamer.Estate.Tes.FilePack
         FileMetadata[] _files;
         ILookup<ulong, FileMetadata> _filesByHash;
         public string FilePath;
-        public VirtualDirectory RootDir;
 
         public bool IsAtEof => _r.Position >= _r.BaseStream.Length;
 
@@ -486,18 +485,14 @@ namespace Gamer.Estate.Tes.FilePack
                 // Read filename hashes
                 _r.Position = hashTablePosition;
                 for (var i = 0; i < header_FileCount; i++)
-                    _files[i].PathHash = _r.ReadUInt64();
+                    //_files[i].PathHash = _r.ReadUInt64();
+                    _files[i].PathHash = Tes3HashFilePath(_files[i].Path);
 
             }
             else throw new InvalidOperationException("BAD MAGIC");
 
             // Create the file metadata hash table
             _filesByHash = _files.ToLookup(x => x.PathHash);
-
-            // Create a virtual directory tree.
-            RootDir = new VirtualDirectory();
-            foreach (var fileMetadata in _files)
-                RootDir.CreateDescendantFile(fileMetadata.Path);
         }
 
         ulong HashFilePath(string filePath)
