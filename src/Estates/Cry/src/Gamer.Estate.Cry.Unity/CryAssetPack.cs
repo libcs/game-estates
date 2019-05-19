@@ -3,6 +3,8 @@ using Gamer.Core;
 using System;
 using UnityEngine;
 using Gamer.Proxy;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Gamer.Estate.Cry
 {
@@ -26,5 +28,7 @@ namespace Gamer.Estate.Cry
         public GameObject CreateObject(string filePath) => throw new NotImplementedException(); //_nifManager.InstantiateNif(filePath);
 
         public void PreloadObjectAsync(string filePath) => throw new NotImplementedException(); //_nifManager.PreloadNifFileAsync(filePath);
+
+        public Task<HashSet<string>> GetContainsSetAsync() => throw new NotImplementedException();
     }
 }

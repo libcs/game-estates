@@ -1,5 +1,6 @@
 ﻿using Gamer.Core;
 using Gamer.Proxy;
+using Gamer.Proxy.Server;
 using System;
 using System.IO;
 using System.Linq;
@@ -9,10 +10,10 @@ namespace Gamer.Estate.Tes
 {
     public static class TesExtensions
     {
-        public static TesGame ToTesGame(this Uri uri, out ProxySink proxySink, out string[] filePaths)
+        public static TesGame ToTesGame(this Uri uri, Func<HttpResponse> resFunc, out ProxySink proxySink, out string[] filePaths)
         {
             // game
-            var fragment = uri.Scheme == "game" ? uri.Host : uri.Fragment?.Substring(1);
+            var fragment = uri.Scheme == "game" || uri.Scheme == "serv" ? uri.Host : uri.Fragment?.Substring(uri.Fragment.Length != 0 ? 1 : 0);
             var gameName = Enum.GetNames(typeof(TesGame)).FirstOrDefault(x => string.Equals(x, fragment, StringComparison.OrdinalIgnoreCase)) ?? throw new ArgumentOutOfRangeException(nameof(uri), uri.ToString());
             var game = (TesGame)Enum.Parse(typeof(TesGame), gameName);
             // scheme
@@ -24,16 +25,16 @@ namespace Gamer.Estate.Tes
             else
             {
                 var path = uri.IsFile ? uri.LocalPath : uri.LocalPath.Substring(1);
-                proxySink = new ProxySink();
+                proxySink = uri.Scheme == "serv" ? new ProxySinkServer(resFunc) : new ProxySink();
                 var many = Path.GetExtension(path) == ".bsa" || Path.GetExtension(path) == ".ba2";
                 filePaths = FileManager.GetFilePaths(many, path, game) ?? throw new InvalidOperationException($"{game} not available");
             }
             return game;
         }
 
-        public static Task<IDataPack> GetTesDataPackAsync(this Uri uri)
+        public static Task<IDataPack> GetTesDataPackAsync(this Uri uri, Func<HttpResponse> resFunc = null)
         {
-            var game = uri.ToTesGame(out var client, out var filePaths);
+            var game = uri.ToTesGame(resFunc, out var client, out var filePaths);
             return Task.FromResult((IDataPack)new TesDataPack(client, filePaths.Single(), game));
         }
     }

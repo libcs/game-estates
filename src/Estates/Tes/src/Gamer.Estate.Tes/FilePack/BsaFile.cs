@@ -132,21 +132,28 @@ namespace Gamer.Estate.Tes.FilePack
         }
 
         /// <summary>
+        /// Gets the contains set.
+        /// </summary>
+        /// <returns></returns>
+        public HashSet<string> GetContainsSet() => new HashSet<string>(_files.Select(x => x.Path));
+
+        /// <summary>
         /// Determines whether the BSA archive contains a file.
         /// </summary>
-        public bool ContainsFile(string filePath) => _filesByHash.Contains(HashFilePath(filePath));
+        public bool ContainsFile(string filePath) => _filesByHash.Contains(HashFilePath(filePath.Replace('\\', '/')));
 
         /// <summary>
         /// Loads an archived file's data.
         /// </summary>
         public Task<byte[]> LoadFileDataAsync(string filePath)
         {
+            filePath.Replace('\\', '/');
             var files = _filesByHash[HashFilePath(filePath)].ToArray();
             if (files.Length == 0)
                 throw new NotSupportedException();
             if (files.Length == 1)
                 return LoadFileDataAsync(files[0]);
-            var file = files.FirstOrDefault(x => string.Equals(x.Path, filePath.Replace('/', '\\'), StringComparison.OrdinalIgnoreCase));
+            var file = files.FirstOrDefault(x => string.Equals(x.Path, filePath, StringComparison.OrdinalIgnoreCase));
             if (file != null)
                 return LoadFileDataAsync(file);
             throw new FileNotFoundException($"Could not find file \"{filePath}\" in a BSA file.");
@@ -296,7 +303,7 @@ namespace Gamer.Estate.Tes.FilePack
                 for (var i = 0; i < header_NumFiles; i++)
                 {
                     var length = _r.ReadUInt16();
-                    var path = _r.ReadASCIIString(length);
+                    var path = _r.ReadASCIIString(length).Replace('\\', '/');
                     _files[i] = new FileMetadata
                     {
                         Path = path,
@@ -397,7 +404,7 @@ namespace Gamer.Estate.Tes.FilePack
                     buf.Clear();
                     byte curCharAsByte; while ((curCharAsByte = _r.ReadByte()) != 0)
                         buf.Add(curCharAsByte);
-                    var path = Encoding.ASCII.GetString(buf.ToArray());
+                    var path = Encoding.ASCII.GetString(buf.ToArray()).Replace('\\', '/');
                     _files[i] = new FileMetadata
                     {
                         Path = path,
@@ -423,7 +430,7 @@ namespace Gamer.Estate.Tes.FilePack
                 var fileNameIndex = 0U;
                 for (var i = 0; i < header_FolderCount; i++)
                 {
-                    var folder_name = _r.ReadASCIIString(_r.ReadByte(), ASCIIFormat.PossiblyNullTerminated); // BSAReadSizedString
+                    var folder_name = _r.ReadASCIIString(_r.ReadByte(), ASCIIFormat.PossiblyNullTerminated).Replace('\\', '/'); // BSAReadSizedString
                     var folderFiles = foldersFiles[i];
                     for (var j = 0; j < folderFiles; j++)
                     {
@@ -433,9 +440,8 @@ namespace Gamer.Estate.Tes.FilePack
                         var fileMetadata = _files[fileNameIndex++];
                         fileMetadata.SizeFlags = file_SizeFlags;
                         fileMetadata.Offset = file_Offset;
-                        var path = folder_name + "\\" + fileMetadata.Path;
-                        fileMetadata.Path = path;
-                        fileMetadata.PathHash = Tes4HashFilePath(path);
+                        fileMetadata.Path = folder_name + "/" + fileMetadata.Path;
+                        fileMetadata.PathHash = Tes4HashFilePath(fileMetadata.Path);
                     }
                 }
             }
@@ -474,7 +480,7 @@ namespace Gamer.Estate.Tes.FilePack
                     buf.Clear();
                     byte curCharAsByte; while ((curCharAsByte = _r.ReadByte()) != 0)
                         buf.Add(curCharAsByte);
-                    _files[i].Path = Encoding.ASCII.GetString(buf.ToArray());
+                    _files[i].Path = Encoding.ASCII.GetString(buf.ToArray()).Replace('\\', '/');
                 }
 
                 // Read filename hashes
@@ -503,22 +509,22 @@ namespace Gamer.Estate.Tes.FilePack
         // http://en.uesp.net/wiki/Tes3Mod:BSA_File_Format
         static ulong Tes3HashFilePath(string filePath)
         {
-            filePath = filePath.ToLowerInvariant().Replace('/', '\\');
+            filePath = filePath.ToLowerInvariant();
             var len = (uint)filePath.Length;
             Console.WriteLine(len.ToString());
             //
-            uint l = (len >> 1);
+            var l = len >> 1;
             int off, i;
             uint sum, temp, n;
             for (sum = 0, off = 0, i = 0; i < l; i++)
             {
-                sum ^= (uint)(filePath[i]) << (off & 0x1F);
+                sum ^= (uint)filePath[i] << (off & 0x1F);
                 off += 8;
             }
             var value1 = sum;
             for (sum = 0, off = 0; i < len; i++)
             {
-                temp = (uint)(filePath[i]) << (off & 0x1F);
+                temp = (uint)filePath[i] << (off & 0x1F);
                 sum ^= temp;
                 n = temp & 0x1F;
                 sum = (sum << (32 - (int)n)) | (sum >> (int)n);
@@ -531,7 +537,7 @@ namespace Gamer.Estate.Tes.FilePack
         // http://en.uesp.net/wiki/Tes4Mod:Hash_Calculation
         static ulong Tes4HashFilePath(string filePath)
         {
-            filePath = filePath.ToLowerInvariant().Replace('/', '\\');
+            filePath = filePath.ToLowerInvariant();
             return GenHash(Path.ChangeExtension(filePath, null), Path.GetExtension(filePath));
 
             ulong GenHash(string file, string ext)
@@ -541,7 +547,7 @@ namespace Gamer.Estate.Tes.FilePack
                 {
                     hash = (ulong)(
                         (((byte)file[file.Length - 1]) * 0x1) +
-                        ((file.Length > 2 ? (byte)file[file.Length - 2] : (byte)0) * 0x100) +
+                        ((file.Length > 2 ? (byte)file[file.Length - 2] : 0) * 0x100) +
                         (file.Length * 0x10000) +
                         (((byte)file[0]) * 0x1000000)
                     );

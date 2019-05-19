@@ -32,9 +32,11 @@ namespace Gamer.Estate.Tes.Tests
             var uri = new Uri(string.Format(path, _fixture.Target.Port));
             var asset = await uri.GetTesAssetPackAsync();
             // when
-            var exists = asset.ContainsFile(modelPath);
+            var exist0 = asset.ContainsFile(modelPath);
+            var data0 = await asset.LoadFileDataAsync(modelPath);
             // then
-            Assert.True(exists);
+            Assert.True(exist0);
+            Assert.NotNull(data0);
         }
     }
 }

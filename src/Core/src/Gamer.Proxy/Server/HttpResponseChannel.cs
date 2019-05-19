@@ -41,8 +41,13 @@ namespace Gamer.Proxy.Server
         public Task Send(object obj, CancellationToken token)
         {
             var content = Encoding.UTF8.GetBytes(obj.ToString());
-            var writeTask = _stream.WriteAsync(content, 0, content.Length, token);
-            return writeTask.ContinueWith(t => _stream.FlushAsync(token), token);
+            var task = _stream.WriteAsync(content, 0, content.Length, token);
+            if (obj is HttpResponse res && res.ContentBytes != null)
+            {
+                var contentBytes = res.ContentBytes; res.ContentBytes = null;
+                task = task.ContinueWith(t => _stream.WriteAsync(contentBytes, 0, contentBytes.Length, token));
+            }
+            return task.ContinueWith(t => _stream.FlushAsync(token), token);
         }
 
         /// <summary>

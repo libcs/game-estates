@@ -1,6 +1,8 @@
 ﻿using Gamer.Estate.Ultima.Resources;
 using Gamer.Proxy;
 using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Gamer.Estate.Ultima.FilePack
 {
@@ -23,5 +25,11 @@ namespace Gamer.Estate.Ultima.FilePack
         ~ResFile() => Close();
 
         public void Close() { }
+
+        public HashSet<string> GetContainsSet() => throw new NotImplementedException();
+
+        public bool ContainsFile(string filePath) => throw new NotImplementedException();
+
+        public Task<byte[]> LoadFileDataAsync(string filePath) => throw new NotImplementedException();
     }
 }

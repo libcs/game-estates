@@ -7,7 +7,7 @@ using System.Threading;
 
 namespace Gamer.Proxy
 {
-    public class ProxyXTest
+    public class ProxyTargetTest
     {
         IEventChannel _channel;
         ProxyTarget _target;

@@ -1,5 +1,6 @@
 ﻿using Gamer.Core;
 using Gamer.Proxy;
+using Gamer.Proxy.Server;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -8,23 +9,23 @@ namespace Gamer.Estate.Ultima
 {
     public static class UltimaExtensions
     {
-        public static UltimaGame ToUltimaGame(this Uri uri, out ProxySink proxySink, out string[] filePaths)
+        public static UltimaGame ToUltimaGame(this Uri uri, Func<HttpResponse> resFunc, out ProxySink proxySink, out string[] filePaths)
         {
             filePaths = null;
             // game
-            var fragment = uri.Scheme == "game" ? uri.Host : uri.Fragment?.Substring(1);
+            var fragment = uri.Scheme == "game" || uri.Scheme == "serv" ? uri.Host : uri.Fragment?.Substring(uri.Fragment.Length != 0 ? 1 : 0);
             var gameName = Enum.GetNames(typeof(UltimaGame)).FirstOrDefault(x => string.Equals(x, fragment, StringComparison.OrdinalIgnoreCase)) ?? throw new ArgumentOutOfRangeException(nameof(uri), uri.ToString());
             var game = (UltimaGame)Enum.Parse(typeof(UltimaGame), gameName);
             // scheme
             proxySink = uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps
                 ? new ProxySinkClient(uri, "Ultima")
-                : new ProxySink();
+                : uri.Scheme == "serv" ? new ProxySinkServer(resFunc) : new ProxySink();
             return game;
         }
 
-        public static Task<IDataPack> GetUltimaDataPackAsync(this Uri uri)
+        public static Task<IDataPack> GetUltimaDataPackAsync(this Uri uri, Func<HttpResponse> resFunc = null)
         {
-            var game = uri.ToUltimaGame(out var proxySink, out var filePaths);
+            var game = uri.ToUltimaGame(resFunc, out var proxySink, out var filePaths);
             return Task.FromResult((IDataPack)new UltimaDataPack((uint)game));
         }
     }

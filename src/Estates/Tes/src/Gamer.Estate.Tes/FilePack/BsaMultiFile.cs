@@ -49,6 +49,12 @@ namespace Gamer.Estate.Tes.FilePack
         }
 
         /// <summary>
+        /// Gets the contains set.
+        /// </summary>
+        /// <returns></returns>
+        public HashSet<string> GetContainsSet() => _proxySink.GetContainsSet(() => Packs.Aggregate(new HashSet<string>(), (a, b) => { a.UnionWith(b.GetContainsSet()); return a; }));
+
+        /// <summary>
         /// Determines whether the BSA archive contains a file.
         /// </summary>
         /// <param name="filePath">The file path.</param>
@@ -66,5 +72,6 @@ namespace Gamer.Estate.Tes.FilePack
         public Task<byte[]> LoadFileDataAsync(string filePath) => _proxySink.LoadFileDataAsync(filePath, () =>
             (Packs.FirstOrDefault(x => x.ContainsFile(filePath)) ?? throw new FileNotFoundException($"Could not find file \"{filePath}\" in a BSA file."))
             .LoadFileDataAsync(filePath));
+
     }
 }

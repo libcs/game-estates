@@ -1,4 +1,5 @@
 ﻿using Gamer.Proxy.Server;
+using Microsoft.Extensions.Caching.Memory;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -12,6 +13,8 @@ namespace Gamer.Proxy
     /// </summary>
     public class ChannelFactory
     {
+        readonly MemoryCache _cache = new MemoryCache(new MemoryCacheOptions());
+
         /// <summary>
         /// Gets the estates.
         /// </summary>
@@ -42,7 +45,6 @@ namespace Gamer.Proxy
                     await ctx.ResponseChannel.Send(res, ctx.Token)
                          .ContinueWith(t => ctx.ResponseChannel.Close());
                 }
-                else if (!req.Headers.TryGetValue("Est", out var est)) throw new InvalidDataException("Est");
                 else if (req.Uri == ".stream")
                 {
                     res.Headers.Add("Content-Type", "text/event-stream");
@@ -56,8 +58,10 @@ namespace Gamer.Proxy
                             channel.AddChannel(ctx.ResponseChannel, ctx.Token);
                         });
                 }
-                else if (Estates.TryGetValue(est, out var estate))
-                    await HandleEstate(ctx, req, res, estate);
+                // ESTATE
+                else if (!req.Headers.TryGetValue("Estate", out var estateName) || !Estates.TryGetValue(estateName, out var estate))
+                    throw new InvalidDataException("Estate");
+                else await HandleEstate(ctx, req, res, estate);
             }
             var httpServer = new HttpServer(host, port, handler);
             channel.AttachServer(httpServer);
@@ -65,29 +69,25 @@ namespace Gamer.Proxy
             return channel;
         }
 
-        static async Task HandleEstate(HttpContext ctx, HttpRequest req, HttpResponse res, IProxyHandler estate)
+        async Task HandleEstate(HttpContext ctx, HttpRequest req, HttpResponse res, IProxyHandler estate)
         {
-            //req.Uri
-            string content;
-            req.Headers.TryGetValue("Val", out var val);
-            switch (req.Headers.TryGetValue("Obj", out var obj) ? obj : null)
+            req.Headers.TryGetValue("Pack", out var pack);
+            if (req.Uri.StartsWith("/asset/"))
             {
-                case "Asset":
-                    var asset = await estate.AssetPackFunc(new Uri(""));
-                    asset.ContainsFile(val);
-                    await asset.LoadFileDataAsync(val);
-                    content = "";
-                    break;
-                case "Data":
-                    var data = await estate.DataPackFunc(new Uri(""));
-                    content = "";
-                    break;
-                default: throw new ArgumentOutOfRangeException("Obj", obj);
+                var val = req.Uri.Substring(7);
+                var asset = await _cache.GetOrCreateAsync($"a:{pack}", async x => await estate.AssetPackFunc(new Uri(pack), () => res));
+                if (val == ".set") asset.GetContainsSet();
+                else await asset.LoadFileDataAsync(val);
             }
+            else if (req.Uri.StartsWith("/data/"))
+            {
+                var val = req.Uri.Substring(6);
+                var data = await _cache.GetOrCreateAsync($"d:{pack}", async x => await estate.DataPackFunc(new Uri(pack), () => res));
+            }
+            else res.Content = "NONE";
             res.Headers.Add("Content-Type", "text/html");
             res.Headers.Add("Cache-Control", "no-cache");
             res.Headers.Add("Connection", "close");
-            res.Content = content;
             await ctx.ResponseChannel.Send(res, ctx.Token)
                 .ContinueWith(t => ctx.ResponseChannel.Close());
         }

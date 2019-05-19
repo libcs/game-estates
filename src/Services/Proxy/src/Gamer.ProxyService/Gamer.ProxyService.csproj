@@ -20,7 +20,7 @@
     <PackageReference Include="Topshelf" Version="4.2.0" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\Core\src\Gamer.Proxy.Server\Gamer.Proxy.Server.csproj" />
+    <ProjectReference Include="..\..\..\..\Core\src\Gamer.Proxy\Gamer.Proxy.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Extensions.DependencyInjection.Abstractions">

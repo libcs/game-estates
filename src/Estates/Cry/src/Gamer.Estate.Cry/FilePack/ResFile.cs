@@ -1,5 +1,6 @@
 ﻿using Gamer.Proxy;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using static Gamer.Estate.Cry.FilePack.PakFile;
 
@@ -26,6 +27,12 @@ namespace Gamer.Estate.Cry.FilePack
         ~ResFile() => Close();
 
         public void Close() => _pakFile?.Close();
+
+        /// <summary>
+        /// Gets the contains set.
+        /// </summary>
+        /// <returns></returns>
+        public HashSet<string> GetContainsSet() => _proxySink.GetContainsSet(() => _pakFile.GetContainsSet());
 
         /// <summary>
         /// Determines whether the BSA archive contains a file.

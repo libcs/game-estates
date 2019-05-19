@@ -50,6 +50,12 @@ namespace Gamer.Estate.Rsi.FilePack
         }
 
         /// <summary>
+        /// Gets the contains set.
+        /// </summary>
+        /// <returns></returns>
+        public HashSet<string> GetContainsSet() => new HashSet<string>(_files.Select(x => x.Path));
+
+        /// <summary>
         /// Determines whether the BSA archive contains a file.
         /// </summary>
         public bool ContainsFile(string filePath) => _filesByPath.Contains(filePath);

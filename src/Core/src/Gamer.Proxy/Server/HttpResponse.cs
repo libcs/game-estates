@@ -28,6 +28,7 @@ namespace Gamer.Proxy.Server
         /// </summary>
         /// <value>The headers.</value>
         public IDictionary<string, string> Headers { get; }
+
         /// <summary>
         /// Gets or sets the content.
         /// </summary>
@@ -35,19 +36,27 @@ namespace Gamer.Proxy.Server
         public string Content { get; set; }
 
         /// <summary>
+        /// Gets or sets the content bytes.
+        /// </summary>
+        /// <value>
+        /// The content bytes.
+        /// </value>
+        public byte[] ContentBytes { get; set; }
+
+        /// <summary>
         /// Returns a <see cref="System.String" /> that represents this instance.
         /// </summary>
         /// <returns>A <see cref="System.String" /> that represents this instance.</returns>
         public override string ToString()
         {
-            var b = new StringBuilder("HTTP/1.1 " + _statusCode + " " + _statusDescription + "\r\n");
+            var b = new StringBuilder($"HTTP/1.1 {_statusCode} {_statusDescription}\r\n");
             if (Content != null)
             {
                 var byteCount = Encoding.UTF8.GetByteCount(Content);
                 Headers.Add("Content-Length", byteCount.ToString());
             }
             foreach (var header in Headers)
-                b.Append(header.Key + ": " + header.Value + "\r\n");
+                b.Append($"{header.Key}: {header.Value}\r\n");
             b.Append("\r\n");
             if (Content != null)
                 b.Append(Content);

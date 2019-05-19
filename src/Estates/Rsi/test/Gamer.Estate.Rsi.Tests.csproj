@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Core\src\Gamer.Proxy.Server\Gamer.Proxy.Server.csproj" />
+    <ProjectReference Include="..\..\..\Core\src\Gamer.Proxy\Gamer.Proxy.csproj" />
     <ProjectReference Include="..\src\Gamer.Estate.Rsi.Unity\Gamer.Estate.Rsi.Unity.csproj" />
   </ItemGroup>
 

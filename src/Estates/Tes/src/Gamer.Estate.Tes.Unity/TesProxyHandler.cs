@@ -1,5 +1,6 @@
 ﻿using Gamer.Core;
 using Gamer.Proxy;
+using Gamer.Proxy.Server;
 using System;
 using System.Threading.Tasks;
 
@@ -8,7 +9,7 @@ namespace Gamer.Estate.Tes
     public class TesProxyHandler : IProxyHandler
     {
         public string Key => "Tes";
-        public Func<Uri, Task<IAssetPack>> AssetPackFunc => async x => await TesExtensions2.GetTesAssetPackAsync(x);
-        public Func<Uri, Task<IDataPack>> DataPackFunc => TesExtensions.GetTesDataPackAsync;
+        public Func<Uri, Func<HttpResponse>, Task<IAssetPack>> AssetPackFunc => async (a, b) => await TesExtensions2.GetTesAssetPackAsync(a, b);
+        public Func<Uri, Func<HttpResponse>, Task<IDataPack>> DataPackFunc => TesExtensions.GetTesDataPackAsync;
     }
 }
