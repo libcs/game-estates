@@ -16,7 +16,7 @@ namespace Gamer.Estate.Cry
             // scheme
             if (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps)
             {
-                proxySink = new ProxySinkClient(uri);
+                proxySink = new ProxySinkClient(uri, "Cry");
                 filePath = null;
             }
             else

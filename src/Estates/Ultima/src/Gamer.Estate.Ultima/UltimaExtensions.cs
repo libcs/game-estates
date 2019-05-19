@@ -17,7 +17,7 @@ namespace Gamer.Estate.Ultima
             var game = (UltimaGame)Enum.Parse(typeof(UltimaGame), gameName);
             // scheme
             proxySink = uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps
-                ? new ProxySinkClient(uri)
+                ? new ProxySinkClient(uri, "Ultima")
                 : new ProxySink();
             return game;
         }

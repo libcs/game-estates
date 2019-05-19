@@ -31,30 +31,37 @@ namespace Gamer.Proxy
             var channel = new MulticastChannel(replayBufferSize);
             void handler(HttpContext ctx)
             {
-                var httpResponse = new HttpResponse(200, "OK");
-                if (ctx.HttpRequest.Uri == "/")
+                var req = ctx.HttpRequest; var res = new HttpResponse(200, "OK");
+                if (req.Uri == "/")
                 {
-                    httpResponse.Headers.Add("Content-Type", "text/html");
-                    httpResponse.Headers.Add("Connection", "close");
-                    httpResponse.Content = "OK";
-                    ctx.ResponseChannel.Send(httpResponse, ctx.Token).ContinueWith(t => ctx.ResponseChannel.Close());
+                    res.Headers.Add("Content-Type", "text/html");
+                    res.Headers.Add("Connection", "close");
+                    res.Content = "OK";
+                    ctx.ResponseChannel.Send(res, ctx.Token)
+                        .ContinueWith(t => ctx.ResponseChannel.Close());
                 }
-                else if (ctx.HttpRequest.Uri == ".stream")
+                else if (!req.Headers.TryGetValue("Est", out var est)) throw new InvalidDataException("Est");
+                else if (req.Uri == ".stream")
                 {
-                    httpResponse.Headers.Add("Content-Type", "text/event-stream");
-                    httpResponse.Headers.Add("Cache-Control", "no-cache");
-                    httpResponse.Headers.Add("Connection", "keep-alive");
-                    httpResponse.Headers.Add("Access-Control-Allow-Origin", "*");
-                    ctx.ResponseChannel.Send(httpResponse, ctx.Token)
+                    res.Headers.Add("Content-Type", "text/event-stream");
+                    res.Headers.Add("Cache-Control", "no-cache");
+                    res.Headers.Add("Connection", "keep-alive");
+                    res.Headers.Add("Access-Control-Allow-Origin", "*");
+                    ctx.ResponseChannel.Send(res, ctx.Token)
                         .ContinueWith(t =>
                         {
                             ctx.ResponseChannel.Send(new ServerSentEvent("INFO", $"Connected successfully on LOG stream from {host}:{port}"), ctx.Token);
                             channel.AddChannel(ctx.ResponseChannel, ctx.Token);
                         });
                 }
-                else
+                else if (Estates.TryGetValue(est, out var estate))
                 {
-
+                    res.Headers.Add("Content-Type", "text/html");
+                    res.Headers.Add("Cache-Control", "no-cache");
+                    res.Headers.Add("Connection", "close");
+                    res.Content = "OK";
+                    ctx.ResponseChannel.Send(res, ctx.Token)
+                        .ContinueWith(t => ctx.ResponseChannel.Close());
                 }
             }
             var httpServer = new HttpServer(host, port, handler);

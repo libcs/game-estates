@@ -16,7 +16,7 @@ namespace Gamer.Estate.Rsi
             // scheme
             if (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps)
             {
-                proxySink = new ProxySinkClient(uri);
+                proxySink = new ProxySinkClient(uri, "Rsi");
                 filePath = null;
             }
             else

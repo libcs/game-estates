@@ -18,7 +18,7 @@ namespace Gamer.Estate.Tes
             // scheme
             if (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps)
             {
-                proxySink = new ProxySinkClient(uri);
+                proxySink = new ProxySinkClient(uri, "Tes");
                 filePaths = null;
             }
             else

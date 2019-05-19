@@ -25,28 +25,20 @@ namespace Gamer.Proxy
         readonly HttpClient _hc = new HttpClient();
         readonly Uri _address;
 
-        public ProxySinkClient(Uri address)
+        public ProxySinkClient(Uri address, string estate)
         {
             _address = address;
             _wc.OpenReadCompleted += OnOpenReadCompleted;
-            _hc.BaseAddress = _address;
             _hc.DefaultRequestHeaders.Accept.Clear();
             _hc.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            _hc.DefaultRequestHeaders.Add("Est", estate);
         }
 
         public override bool ContainsFile(string filePath, Func<bool> action) =>
-            _cache.GetOrCreateAsync<Dictionary<string, string>>(".list", async x =>
-            {
-                await CallAsync(".list");
-                return null;
-            }).Result.ContainsKey(filePath);
+            _cache.GetOrCreateAsync(".list", async x => await CallAsync<Dictionary<string, string>>("asset", ".list")).Result.ContainsKey(filePath);
 
         public override async Task<byte[]> LoadFileDataAsync(string filePath, Func<Task<byte[]>> action) =>
-            await _cache.GetOrCreateAsync<byte[]>(filePath, x =>
-            {
-                return null;
-            });
-
+            await _cache.GetOrCreateAsync(filePath, async x => await CallAsync<byte[]>("asset", filePath));
 
         // When SSE (Server side event) occurs this fires
         void OnOpenReadCompleted(object sender, OpenReadCompletedEventArgs args)
@@ -62,9 +54,12 @@ namespace Gamer.Proxy
 
         public void OpenSse() => _wc.OpenReadAsync(_address);
 
-        public async Task CallAsync(string method)
+        public async Task<T> CallAsync<T>(string obj, string val)
         {
-            var r = await _hc.GetAsync("api/Department/1");
+            var req = new HttpRequestMessage { RequestUri = _address };
+            req.Headers.Add("Obj", obj);
+            req.Headers.Add("Val", val);
+            var r = await _hc.SendAsync(req);
             if (r.IsSuccessStatusCode)
             {
                 //var department = await r.Content.ReadAsAsync<Department>();
@@ -73,7 +68,7 @@ namespace Gamer.Proxy
             }
             else
                 Console.WriteLine("Internal server Error");
+            return default(T);
         }
-
     }
 }

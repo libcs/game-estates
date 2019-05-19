@@ -16,7 +16,7 @@ namespace Gamer.Estate.Tes.Tests
             Port = HttpServer.FindFreeTcpPort(),
         };
 
-        public TestsFixture() => Target.Initialize(new Dictionary<string, object> { { "", null } });
+        public TestsFixture() => Target.Initialize(new Dictionary<string, object> { { "Tes", null } });
         public void Dispose() => Target.Dispose();
     }
 
