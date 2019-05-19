@@ -36,9 +36,10 @@ namespace Gamer.Proxy
             var channel = new MulticastChannel(replayBufferSize);
             async Task handler(HttpContext ctx)
             {
-                var req = ctx.HttpRequest; var res = new HttpResponse(200, "OK");
+                var req = ctx.HttpRequest;
                 if (req.Uri == "/")
                 {
+                    var res = new HttpResponse(200, "OK");
                     res.Headers.Add("Content-Type", "text/html");
                     res.Headers.Add("Connection", "close");
                     res.Content = "OK";
@@ -47,6 +48,7 @@ namespace Gamer.Proxy
                 }
                 else if (req.Uri == ".stream")
                 {
+                    var res = new HttpResponse(200, "OK");
                     res.Headers.Add("Content-Type", "text/event-stream");
                     res.Headers.Add("Cache-Control", "no-cache");
                     res.Headers.Add("Connection", "keep-alive");
@@ -60,8 +62,14 @@ namespace Gamer.Proxy
                 }
                 // ESTATE
                 else if (!req.Headers.TryGetValue("Estate", out var estateName) || !Estates.TryGetValue(estateName, out var estate))
-                    throw new InvalidDataException("Estate");
-                else await HandleEstate(ctx, req, res, estate);
+                {
+                    var res = new HttpResponse(404, "Not Found");
+                    res.Headers.Add("Content-Type", "text/html");
+                    res.Headers.Add("Connection", "close");
+                    await ctx.ResponseChannel.Send(res, ctx.Token)
+                         .ContinueWith(t => ctx.ResponseChannel.Close());
+                }
+                else await HandleEstate(ctx, req, estate);
             }
             var httpServer = new HttpServer(host, port, handler);
             channel.AttachServer(httpServer);
@@ -69,27 +77,41 @@ namespace Gamer.Proxy
             return channel;
         }
 
-        async Task HandleEstate(HttpContext ctx, HttpRequest req, HttpResponse res, IProxyHandler estate)
+        async Task HandleEstate(HttpContext ctx, HttpRequest req, IProxyHandler estate)
         {
             req.Headers.TryGetValue("Pack", out var pack);
             if (req.Uri.StartsWith("/asset/"))
             {
+                var res = new HttpResponse(200, "OK");
                 var val = req.Uri.Substring(7);
                 var asset = await _cache.GetOrCreateAsync($"a:{pack}", async x => await estate.AssetPackFunc(new Uri(pack), () => res));
                 if (val == ".set") asset.GetContainsSet();
                 else await asset.LoadFileDataAsync(val);
+                res.Headers.Add("Content-Type", "text/html");
+                res.Headers.Add("Cache-Control", "no-cache");
+                res.Headers.Add("Connection", "close");
+                await ctx.ResponseChannel.Send(res, ctx.Token)
+                    .ContinueWith(t => ctx.ResponseChannel.Close());
             }
             else if (req.Uri.StartsWith("/data/"))
             {
+                var res = new HttpResponse(200, "OK");
                 var val = req.Uri.Substring(6);
                 var data = await _cache.GetOrCreateAsync($"d:{pack}", async x => await estate.DataPackFunc(new Uri(pack), () => res));
+                res.Headers.Add("Content-Type", "text/html");
+                res.Headers.Add("Cache-Control", "no-cache");
+                res.Headers.Add("Connection", "close");
+                await ctx.ResponseChannel.Send(res, ctx.Token)
+                    .ContinueWith(t => ctx.ResponseChannel.Close());
             }
-            else res.Content = "NONE";
-            res.Headers.Add("Content-Type", "text/html");
-            res.Headers.Add("Cache-Control", "no-cache");
-            res.Headers.Add("Connection", "close");
-            await ctx.ResponseChannel.Send(res, ctx.Token)
-                .ContinueWith(t => ctx.ResponseChannel.Close());
+            else
+            {
+                var res = new HttpResponse(404, "Not Found");
+                res.Headers.Add("Content-Type", "text/html");
+                res.Headers.Add("Connection", "close");
+                await ctx.ResponseChannel.Send(res, ctx.Token)
+                     .ContinueWith(t => ctx.ResponseChannel.Close());
+            }
         }
 
         static string GetContent(Stream stream)

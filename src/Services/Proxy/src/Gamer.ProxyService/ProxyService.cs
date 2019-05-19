@@ -1,4 +1,5 @@
-﻿using Gamer.Proxy;
+﻿using Gamer.Estate.Tes;
+using Gamer.Proxy;
 using NLog;
 using System;
 using System.Threading;
@@ -53,7 +54,7 @@ namespace Gamer.ProxyService
         public void Start()
         {
             _log.Info("ProxyService");
-            _target.Initialize();
+            _target.Initialize(new TesProxyHandler());
         }
 
         public async void ProxyWatchAsync(CancellationToken cancellationToken)
