@@ -16,23 +16,23 @@ namespace Gamer.Estate.Tes
         const int _detailRadius = 1; //3;
         const string _defaultLandTextureFilePath = "textures/_land_default.dds";
 
-        TesAssetPack _asset;
-        TesDataPack _data;
         TemporalLoadBalancer _loadBalancer;
+        TesAssetPack _assetPack;
+        TesDataPack _dataPack;
         Dictionary<Vector3Int, InRangeCellInfo> _cellObjects = new Dictionary<Vector3Int, InRangeCellInfo>();
 
-        public TesCellManager(TesAssetPack asset, TesDataPack data, TemporalLoadBalancer loadBalancer)
+        public TesCellManager(TemporalLoadBalancer loadBalancer, TesAssetPack assetPack, TesDataPack dataPack)
         {
-            _asset = asset;
-            _data = data;
             _loadBalancer = loadBalancer;
+            _assetPack = assetPack;
+            _dataPack = dataPack;
         }
 
         public Vector3Int GetCellId(Vector3 point, int world) => new Vector3Int(Mathf.FloorToInt(point.x / ConvertUtils.ExteriorCellSideLengthInMeters), Mathf.FloorToInt(point.z / ConvertUtils.ExteriorCellSideLengthInMeters), world);
 
         public InRangeCellInfo StartCreatingCell(Vector3Int cellId)
         {
-            var cell = _data.FindCellRecord(cellId);
+            var cell = _dataPack.FindCellRecord(cellId);
             if (cell != null)
             {
                 var cellInfo = StartInstantiatingCell(cell);
@@ -46,7 +46,7 @@ namespace Gamer.Estate.Tes
         {
             if (world != -1)
                 throw new System.ArgumentOutOfRangeException("world");
-            var cell = _data.FindCellRecordByName(world, id, name);
+            var cell = _dataPack.FindCellRecordByName(world, id, name);
             if (cell != null)
             {
                 var cellInfo = StartInstantiatingCell(cell);
@@ -120,7 +120,7 @@ namespace Gamer.Estate.Tes
             if (!cell.IsInterior)
             {
                 cellObjName = "cell " + cell.GridId.ToString();
-                land = _data.FindLANDRecord(cell.GridId);
+                land = _dataPack.FindLANDRecord(cell.GridId);
             }
             else cellObjName = cell.EDID.Value;
             var cellObj = new GameObject(cellObjName) { tag = "Cell" };
@@ -163,7 +163,7 @@ namespace Gamer.Estate.Tes
                 var landTextureFilePaths = GetLANDTextureFilePaths(land);
                 if (landTextureFilePaths != null)
                     foreach (var landTextureFilePath in landTextureFilePaths)
-                        _asset.PreloadTextureAsync(landTextureFilePath);
+                        _assetPack.PreloadTextureAsync(landTextureFilePath);
                 yield return null;
             }
             // Extract information about referenced objects.
@@ -172,7 +172,7 @@ namespace Gamer.Estate.Tes
             // Start pre-loading all required files for referenced objects. The NIF manager will load the textures as well.
             foreach (var refCellObjInfo in refCellObjInfos)
                 if (refCellObjInfo.ModelFilePath != null)
-                    _asset.PreloadObjectAsync(refCellObjInfo.ModelFilePath);
+                    _assetPack.PreloadObjectAsync(refCellObjInfo.ModelFilePath);
             yield return null;
             // Instantiate terrain.
             if (land != null)
@@ -195,7 +195,7 @@ namespace Gamer.Estate.Tes
 
         RefCellObjInfo[] GetRefCellObjInfos(CELLRecord cell)
         {
-            if (_data.Format != GameFormat.TES3) return new RefCellObjInfo[0];
+            if (_dataPack.Format != GameFormat.TES3) return new RefCellObjInfo[0];
             var refCellObjInfos = new RefCellObjInfo[cell.RefObjs.Count];
             for (var i = 0; i < cell.RefObjs.Count; i++)
             {
@@ -205,7 +205,7 @@ namespace Gamer.Estate.Tes
                 };
                 // Get the record the RefObjDataGroup references.
                 var refObj = (CELLRecord.RefObj)refObjInfo.RefObj;
-                _data.MANYsById.TryGetValue(refObj.EDID.Value, out refObjInfo.ReferencedRecord);
+                _dataPack.MANYsById.TryGetValue(refObj.EDID.Value, out refObjInfo.ReferencedRecord);
                 if (refObjInfo.ReferencedRecord != null)
                 {
                     var modelFileName = (refObjInfo.ReferencedRecord is IHaveMODL modl ? modl.MODL.Value : null);
@@ -229,7 +229,7 @@ namespace Gamer.Estate.Tes
                 // If the object has a model, instantiate it.
                 if (refCellObjInfo.ModelFilePath != null)
                 {
-                    modelObj = _asset.CreateObject(refCellObjInfo.ModelFilePath);
+                    modelObj = _assetPack.CreateObject(refCellObjInfo.ModelFilePath);
                     PostProcessInstantiatedCellObject(modelObj, refCellObjInfo);
                     modelObj.transform.parent = parent.transform;
                 }
@@ -348,7 +348,7 @@ namespace Gamer.Estate.Tes
                     textureFilePaths.Add(_defaultLandTextureFilePath);
                     continue;
                 }
-                var ltex = _data.FindLTEXRecord(textureIndex);
+                var ltex = _dataPack.FindLTEXRecord(textureIndex);
                 var textureFilePath = ltex.ICON.Value;
                 textureFilePaths.Add(textureFilePath);
             }
@@ -406,10 +406,10 @@ namespace Gamer.Estate.Tes
                         textureFilePath = _defaultLandTextureFilePath;
                     else
                     {
-                        var LTEX = _data.FindLTEXRecord(textureIndex);
+                        var LTEX = _dataPack.FindLTEXRecord(textureIndex);
                         textureFilePath = LTEX.ICON.Value;
                     }
-                    var texture = _asset.LoadTexture(textureFilePath);
+                    var texture = _assetPack.LoadTexture(textureFilePath);
                     // Yield after loading each texture to avoid doing too much work on one frame.
                     yield return null;
                     // Create the splat prototype.

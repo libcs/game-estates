@@ -1,6 +1,5 @@
 ﻿using Gamer.Core;
 using Gamer.Proxy;
-using Gamer.Proxy.Server;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,7 +8,7 @@ namespace Gamer.Estate.Ultima
 {
     public static class UltimaExtensions
     {
-        public static UltimaGame ToUltimaGame(this Uri uri, Func<HttpResponse> resFunc, out ProxySink proxySink, out string[] filePaths)
+        public static UltimaGame ToUltimaGame(this Uri uri, Func<object> func, out ProxySink proxySink, out string[] filePaths)
         {
             filePaths = null;
             // game
@@ -19,13 +18,13 @@ namespace Gamer.Estate.Ultima
             // scheme
             proxySink = uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps
                 ? new ProxySinkClient(uri, "Ultima")
-                : uri.Scheme == "serv" ? new ProxySinkServer(resFunc) : new ProxySink();
+                : uri.Scheme == "serv" ? new ProxySinkServer(func) : new ProxySink();
             return game;
         }
 
-        public static Task<IDataPack> GetUltimaDataPackAsync(this Uri uri, Func<HttpResponse> resFunc = null)
+        public static Task<IDataPack> GetUltimaDataPackAsync(this Uri uri, Func<object> func = null)
         {
-            var game = uri.ToUltimaGame(resFunc, out var proxySink, out var filePaths);
+            var game = uri.ToUltimaGame(func, out var proxySink, out var filePaths);
             return Task.FromResult((IDataPack)new UltimaDataPack((uint)game));
         }
     }

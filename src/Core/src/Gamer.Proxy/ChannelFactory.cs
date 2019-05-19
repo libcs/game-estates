@@ -1,4 +1,5 @@
-﻿using Gamer.Proxy.Server;
+﻿using Gamer.Core;
+using Gamer.Proxy.Server;
 using Microsoft.Extensions.Caching.Memory;
 using System;
 using System.Collections.Generic;
@@ -21,7 +22,7 @@ namespace Gamer.Proxy
         /// <value>
         /// The estates.
         /// </value>
-        public IDictionary<string, IProxyHandler> Estates { get; } = new Dictionary<string, IProxyHandler>();
+        public IDictionary<string, IEstateHandler> Estates { get; } = new Dictionary<string, IEstateHandler>();
 
         /// <summary>
         /// Creates the specified host.
@@ -77,16 +78,16 @@ namespace Gamer.Proxy
             return channel;
         }
 
-        async Task HandleEstate(HttpContext ctx, HttpRequest req, IProxyHandler estate)
+        async Task HandleEstate(HttpContext ctx, HttpRequest req, IEstateHandler estate)
         {
             req.Headers.TryGetValue("Pack", out var pack);
             if (req.Uri.StartsWith("/asset/"))
             {
                 var res = new HttpResponse(200, "OK");
                 var val = req.Uri.Substring(7);
-                var asset = await _cache.GetOrCreateAsync($"a:{pack}", async x => await estate.AssetPackFunc(new Uri(pack), () => res));
-                if (val == ".set") asset.GetContainsSet();
-                else await asset.LoadFileDataAsync(val);
+                var assetPack = await _cache.GetOrCreateAsync($"a:{pack}", async x => await estate.AssetPackFunc(new Uri(pack), () => res));
+                if (val == ".set") assetPack.GetContainsSet();
+                else await assetPack.LoadFileDataAsync(val);
                 res.Headers.Add("Content-Type", "text/html");
                 res.Headers.Add("Cache-Control", "no-cache");
                 res.Headers.Add("Connection", "close");
@@ -97,7 +98,7 @@ namespace Gamer.Proxy
             {
                 var res = new HttpResponse(200, "OK");
                 var val = req.Uri.Substring(6);
-                var data = await _cache.GetOrCreateAsync($"d:{pack}", async x => await estate.DataPackFunc(new Uri(pack), () => res));
+                var dataPack = await _cache.GetOrCreateAsync($"d:{pack}", async x => await estate.DataPackFunc(new Uri(pack), () => res));
                 res.Headers.Add("Content-Type", "text/html");
                 res.Headers.Add("Cache-Control", "no-cache");
                 res.Headers.Add("Connection", "close");

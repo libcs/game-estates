@@ -54,7 +54,7 @@ namespace Gamer.ProxyService
         public void Start()
         {
             _log.Info("ProxyService");
-            _target.Initialize(new TesProxyHandler());
+            _target.Initialize(new TesEstateHandler());
         }
 
         public async void ProxyWatchAsync(CancellationToken cancellationToken)

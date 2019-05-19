@@ -7,19 +7,19 @@ namespace Gamer.Proxy
 {
     public class ProxySinkServer : ProxySink
     {
-        readonly Func<HttpResponse> _resFunc;
+        readonly Func<object> _func;
 
-        public ProxySinkServer(Func<HttpResponse> resFunc) => _resFunc = resFunc;
+        public ProxySinkServer(Func<object> func) => _func = func;
 
         public override HashSet<string> GetContainsSet(Func<HashSet<string>> action)
         {
-            var res = _resFunc();
+            var res = (HttpResponse)_func();
             var r = action(); res.ContentBytes = ToBytes(r); return r;
         }
 
         public async override Task<byte[]> LoadFileDataAsync(string filePath, Func<Task<byte[]>> action)
         {
-            var res = _resFunc();
+            var res = (HttpResponse)_func();
             var r = await action(); res.ContentBytes = ToBytes(r); return r;
         }
     }

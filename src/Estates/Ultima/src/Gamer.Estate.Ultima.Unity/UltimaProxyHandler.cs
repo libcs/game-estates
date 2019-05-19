@@ -1,15 +1,14 @@
 ﻿using Gamer.Core;
-using Gamer.Proxy;
-using Gamer.Proxy.Server;
 using System;
 using System.Threading.Tasks;
 
 namespace Gamer.Estate.Ultima
 {
-    public class UltimaProxyHandler : IProxyHandler
+    public class UltimaProxyHandler : IEstateHandler
     {
         public string Key => "Ultima";
-        public Func<Uri, Func<HttpResponse>, Task<IAssetPack>> AssetPackFunc => async (a, b) => await UltimaExtensions2.GetUltimaAssetPackAsync(a, b);
-        public Func<Uri, Func<HttpResponse>, Task<IDataPack>> DataPackFunc => UltimaExtensions.GetUltimaDataPackAsync;
+        public Func<Uri, Func<object>, Task<IAssetPack>> AssetPackFunc => async (a, b) => await UltimaExtensions2.GetUltimaAssetPackAsync(a, b);
+        public Func<Uri, Func<object>, Task<IDataPack>> DataPackFunc => UltimaExtensions.GetUltimaDataPackAsync;
+        public Func<TemporalLoadBalancer, IAssetPack, IDataPack, Func<object>, ICellManager> CellManagerFunc => UltimaExtensions2.GetUltimaCellManager;
     }
 }

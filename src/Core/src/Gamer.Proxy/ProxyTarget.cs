@@ -1,4 +1,5 @@
-﻿using Gamer.Proxy.Server;
+﻿using Gamer.Core;
+using Gamer.Proxy.Server;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -20,9 +21,9 @@ namespace Gamer.Proxy
         public ProxyTarget() { }
         public ProxyTarget(ChannelFactory channelFactory) => _channelFactory = channelFactory;
 
-        public IDictionary<string, IProxyHandler> Estates => _channelFactory.Estates;
+        public IDictionary<string, IEstateHandler> Estates => _channelFactory.Estates;
 
-        public void Initialize(params IProxyHandler[] estates)
+        public void Initialize(params IEstateHandler[] estates)
         {
             if (estates != null)
                 foreach (var estate in estates)

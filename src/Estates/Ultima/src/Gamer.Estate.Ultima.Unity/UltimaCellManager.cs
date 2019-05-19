@@ -16,23 +16,23 @@ namespace Gamer.Estate.Ultima
         const int _cellRadius = 2;
         const int _detailRadius = 2;
 
-        UltimaAssetPack _asset;
-        UltimaDataPack _data;
+        UltimaAssetPack _assetPack;
+        UltimaDataPack _dataPack;
         TemporalLoadBalancer _loadBalancer;
         Dictionary<Vector3Int, InRangeCellInfo> _cellObjects = new Dictionary<Vector3Int, InRangeCellInfo>();
 
-        public UltimaCellManager(UltimaAssetPack asset, UltimaDataPack data, TemporalLoadBalancer loadBalancer)
+        public UltimaCellManager(TemporalLoadBalancer loadBalancer, UltimaAssetPack assetPack, UltimaDataPack dataPack)
         {
-            _asset = asset;
-            _data = data;
             _loadBalancer = loadBalancer;
+            _assetPack = assetPack;
+            _dataPack = dataPack;
         }
 
         public Vector3Int GetCellId(Vector3 point, int world) => new Vector3Int(Mathf.FloorToInt(point.x / ConvertUtils.ExteriorCellSideLengthInMeters), Mathf.FloorToInt(point.z / ConvertUtils.ExteriorCellSideLengthInMeters), world);
 
         public InRangeCellInfo StartCreatingCell(Vector3Int cellId)
         {
-            var cell = _data.FindCellRecord(cellId);
+            var cell = _dataPack.FindCellRecord(cellId);
             if (cell != null)
             {
                 var cellInfo = StartInstantiatingCell(cell);
@@ -46,7 +46,7 @@ namespace Gamer.Estate.Ultima
         {
             if (world != -1)
                 throw new System.ArgumentOutOfRangeException("world");
-            var cell = _data.FindCellRecordByName(world, id, name);
+            var cell = _dataPack.FindCellRecordByName(world, id, name);
             if (cell != null)
             {
                 var cellInfo = StartInstantiatingCell(cell);
@@ -120,7 +120,7 @@ namespace Gamer.Estate.Ultima
             if (!cell.IsInterior)
             {
                 cellObjName = string.Format("cell-{0:00}x{1:00}", cell.GridId.x, cell.GridId.y);
-                land = _data.FindLANDRecord(cell.GridId);
+                land = _dataPack.FindLANDRecord(cell.GridId);
             }
             else cellObjName = cell.Name;
             var cellObj = new GameObject(cellObjName) { tag = "Cell" };
@@ -165,7 +165,7 @@ namespace Gamer.Estate.Ultima
                 var landTextureFilePaths = GetLANDTextureFilePaths(land);
                 if (landTextureFilePaths != null)
                     foreach (var landTextureFilePath in landTextureFilePaths)
-                        _asset.PreloadTextureAsync(landTextureFilePath);
+                        _assetPack.PreloadTextureAsync(landTextureFilePath);
                 yield return null;
             }
             // Extract information about referenced objects.
@@ -174,7 +174,7 @@ namespace Gamer.Estate.Ultima
             // Start pre-loading all required files for referenced objects. The NIF manager will load the textures as well.
             foreach (var refCellObjInfo in refCellObjInfos)
                 if (refCellObjInfo.ModelFilePath != null)
-                    _asset.PreloadObjectAsync(refCellObjInfo.ModelFilePath);
+                    _assetPack.PreloadObjectAsync(refCellObjInfo.ModelFilePath);
             yield return null;
             // Instantiate terrain.
             if (land != null)
@@ -206,7 +206,7 @@ namespace Gamer.Estate.Ultima
                 };
                 // Get the record the RefObjDataGroup references.
                 var refObj = (CELLRecord.RefObj)refObjInfo.RefObj;
-                _data.objectsByIDString.TryGetValue(refObj.Name, out refObjInfo.ReferencedRecord);
+                _dataPack.objectsByIDString.TryGetValue(refObj.Name, out refObjInfo.ReferencedRecord);
                 if (refObjInfo.ReferencedRecord != null)
                 {
                     var modelFileName = RecordUtils.GetModelFileName(refObjInfo.ReferencedRecord);
@@ -230,7 +230,7 @@ namespace Gamer.Estate.Ultima
                 // If the object has a model, instantiate it.
                 if (refCellObjInfo.ModelFilePath != null)
                 {
-                    modelObj = _asset.CreateObject(refCellObjInfo.ModelFilePath);
+                    modelObj = _assetPack.CreateObject(refCellObjInfo.ModelFilePath);
                     PostProcessInstantiatedCellObject(modelObj, refCellObjInfo);
                     modelObj.transform.parent = parent.transform;
                 }
@@ -389,7 +389,7 @@ namespace Gamer.Estate.Ultima
                 {
                     // Load terrain texture.
                     var textureFilePath = $"tex{textureIndex}";
-                    var texture = _asset.LoadTexture(textureFilePath);
+                    var texture = _assetPack.LoadTexture(textureFilePath);
                     // Yield after loading each texture to avoid doing too much work on one frame.
                     yield return null;
                     // Create the splat prototype.

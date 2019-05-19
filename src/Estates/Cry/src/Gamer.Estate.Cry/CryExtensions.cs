@@ -1,5 +1,4 @@
 ﻿using Gamer.Proxy;
-using Gamer.Proxy.Server;
 using System;
 using System.Linq;
 
@@ -7,7 +6,7 @@ namespace Gamer.Estate.Cry
 {
     public static class CryExtensions
     {
-        public static CryGame ToCryGame(this Uri uri, Func<HttpResponse> resFunc, out ProxySink proxySink, out string filePath)
+        public static CryGame ToCryGame(this Uri uri, Func<object> func, out ProxySink proxySink, out string filePath)
         {
             var path = "Data.p4k";
             // game
@@ -22,7 +21,7 @@ namespace Gamer.Estate.Cry
             }
             else
             {
-                proxySink = uri.Scheme == "serv" ? new ProxySinkServer(resFunc) : new ProxySink();
+                proxySink = uri.Scheme == "serv" ? new ProxySinkServer(func) : new ProxySink();
                 filePath = FileManager.GetFilePath(path, game) ?? throw new InvalidOperationException($"{game} not available");
             }
             return game;
