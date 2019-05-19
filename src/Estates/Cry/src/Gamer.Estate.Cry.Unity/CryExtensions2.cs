@@ -7,10 +7,10 @@ namespace Gamer.Estate.Cry
 {
     public static class CryExtensions2
     {
-        public static Task<IAssetPack> GetCryAssetPackAsync(this Uri uri, out PakFile pakFile)
+        public static Task<IAssetPack> GetCryAssetPackAsync(this Uri uri)
         {
             uri.ToCryGame(out var proxySink, out var filePath);
-            pakFile = new PakFile(filePath);
+            var pakFile = new PakFile(filePath);
             return Task.FromResult((IAssetPack)new CryAssetPack(proxySink, pakFile));
         }
     }

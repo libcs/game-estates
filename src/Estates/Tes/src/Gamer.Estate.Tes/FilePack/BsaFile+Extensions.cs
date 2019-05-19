@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using static Gamer.Core.Debug;
 
 namespace Gamer.Estate.Tes.FilePack
@@ -23,7 +24,7 @@ namespace Gamer.Estate.Tes.FilePack
             foreach (var file in _files.Take(take))
             {
                 Log(file.Path);
-                LoadFileData(file);
+                LoadFileDataAsync(file).Wait();
             }
         }
     }

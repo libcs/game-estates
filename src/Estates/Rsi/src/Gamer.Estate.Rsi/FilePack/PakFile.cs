@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using ZstdNet;
 
 namespace Gamer.Estate.Rsi.FilePack
@@ -56,20 +57,20 @@ namespace Gamer.Estate.Rsi.FilePack
         /// <summary>
         /// Loads an archived file's data.
         /// </summary>
-        public byte[] LoadFileData(string filePath)
+        public Task<byte[]> LoadFileDataAsync(string filePath)
         {
             var files = _filesByPath[filePath].ToArray();
             if (files.Length == 0)
                 throw new NotSupportedException();
             if (files.Length == 1)
-                return LoadFileData(files[0]);
+                return LoadFileDataAsync(files[0]);
             throw new NotSupportedException();
         }
 
         /// <summary>
         /// Loads an archived file's data.
         /// </summary>
-        internal byte[] LoadFileData(FileMetadata file)
+        internal Task<byte[]> LoadFileDataAsync(FileMetadata file)
         {
             var buf = new byte[file.Size];
             lock (_r)
@@ -80,7 +81,7 @@ namespace Gamer.Estate.Rsi.FilePack
             if (file.Compressed)
                 using (var decompressor = new Decompressor())
                 {
-                    try { return decompressor.Unwrap(buf); }
+                    try { return Task.FromResult(decompressor.Unwrap(buf)); }
                     catch (ZstdException e)
                     {
                         Console.WriteLine($"Skipping the following file because it is broken. Size: {file.Size}");
@@ -88,7 +89,7 @@ namespace Gamer.Estate.Rsi.FilePack
                         return null;
                     }
                 }
-            return buf;
+            return Task.FromResult(buf);
         }
 
         static readonly byte[] HeaderMagic = { 0x50, 0x4B, 0x03, 0x14 };

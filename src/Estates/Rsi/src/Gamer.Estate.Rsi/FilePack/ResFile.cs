@@ -1,5 +1,6 @@
 ﻿using Gamer.Proxy;
 using System;
+using System.Threading.Tasks;
 using static Gamer.Estate.Rsi.FilePack.PakFile;
 
 namespace Gamer.Estate.Rsi.FilePack
@@ -34,11 +35,11 @@ namespace Gamer.Estate.Rsi.FilePack
         /// <summary>
         /// Loads an archived file's data.
         /// </summary>
-        public byte[] LoadFileData(string filePath) => _proxySink.LoadFileData(filePath, () => _pakFile.LoadFileData(filePath));
+        public Task<byte[]> LoadFileDataAsync(string filePath) => _proxySink.LoadFileDataAsync(filePath, () => _pakFile.LoadFileDataAsync(filePath));
 
         /// <summary>
         /// Loads an archived file's data.
         /// </summary>
-        internal byte[] LoadFileData(FileMetadata file) => _pakFile.LoadFileData(file);
+        internal Task<byte[]> LoadFileDataAsync(FileMetadata file) => _pakFile.LoadFileDataAsync(file);
     }
 }

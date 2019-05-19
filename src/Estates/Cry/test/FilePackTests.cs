@@ -16,7 +16,7 @@ namespace Gamer.Estate.Cry.Tests
         [InlineData("game://Abc/")]
         public async Task LoadAssetPack(string path)
         {
-            var asset = await new Uri(path).GetCryAssetPackAsync(out var pakFile) as CryAssetPack;
+            var asset = await new Uri(path).GetCryAssetPackAsync() as CryAssetPack;
 //#if LONGTEST
 //            asset.TestLoadFileData(int.MaxValue);
 //#else

@@ -1,5 +1,6 @@
 ﻿using Gamer.Proxy.Server;
 using System;
+using System.Collections.Generic;
 using System.Threading;
 
 namespace Gamer.Proxy
@@ -19,8 +20,13 @@ namespace Gamer.Proxy
         public ProxyTarget() { }
         public ProxyTarget(ChannelFactory channelFactory) => _channelFactory = channelFactory;
 
-        public void Initialize()
+        public IDictionary<string, object> Estates => _channelFactory.Estates;
+
+        public void Initialize(IDictionary<string, object> estates = null)
         {
+            if (estates != null)
+                foreach (var estate in estates)
+                    _channelFactory.Estates.Add(estate);
             Initialized = true;
             _channel = Active ? _channelFactory.Create(Host, Port, HttpServer.FindCertificate(Certificate), ReplayBufferSize) : null;
         }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace Gamer.Proxy
 {
@@ -6,6 +7,6 @@ namespace Gamer.Proxy
     {
         public override bool ContainsFile(string filePath, Func<bool> action) => action();
 
-        public override byte[] LoadFileData(string filePath, Func<byte[]> action) => action();
+        public override Task<byte[]> LoadFileDataAsync(string filePath, Func<Task<byte[]>> action) => action();
     }
 }

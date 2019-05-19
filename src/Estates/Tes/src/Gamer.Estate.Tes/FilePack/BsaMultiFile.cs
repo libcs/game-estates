@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Gamer.Estate.Tes.FilePack
 {
@@ -62,8 +63,8 @@ namespace Gamer.Estate.Tes.FilePack
         /// <param name="filePath">The file path.</param>
         /// <returns></returns>
         /// <exception cref="System.IO.FileNotFoundException">Could not find file \"{filePath}</exception>
-        public byte[] LoadFileData(string filePath) => _proxySink.LoadFileData(filePath, () =>
+        public Task<byte[]> LoadFileDataAsync(string filePath) => _proxySink.LoadFileDataAsync(filePath, () =>
             (Packs.FirstOrDefault(x => x.ContainsFile(filePath)) ?? throw new FileNotFoundException($"Could not find file \"{filePath}\" in a BSA file."))
-            .LoadFileData(filePath));
+            .LoadFileDataAsync(filePath));
     }
 }

@@ -16,7 +16,7 @@ namespace Gamer.Estate.Rsi.Tests
         [InlineData("game://StarCitizen/")]
         public async Task LoadAssetPack(string path)
         {
-            var asset = await new Uri(path).GetRsiAssetPackAsync(out var pakFile) as RsiAssetPack;
+            var asset = await new Uri(path).GetRsiAssetPackAsync() as RsiAssetPack;
 //#if LONGTEST
 //            asset.TestLoadFileData(int.MaxValue);
 //#else

@@ -15,7 +15,7 @@ namespace Gamer.Estate.Tes.FilePack
             var filePath = FindTexture(texturePath);
             if (filePath != null)
             {
-                var fileData = LoadFileData(filePath);
+                var fileData = LoadFileDataAsync(filePath).Result;
                 return Task.Run(() =>
                 {
                     var fileExtension = Path.GetExtension(filePath);
@@ -29,7 +29,7 @@ namespace Gamer.Estate.Tes.FilePack
 
         public Task<object> LoadObjectInfoAsync(string filePath)
         {
-            var fileData = LoadFileData(filePath);
+            var fileData = LoadFileDataAsync(filePath).Result;
             return Task.Run(() =>
             {
                 var file = new NiFile(Path.GetFileNameWithoutExtension(filePath));

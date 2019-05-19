@@ -1,12 +1,11 @@
 using Gamer.Proxy;
 using Gamer.Proxy.Server;
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Gamer.Estate.Tes.Tests
+namespace Gamer.Estate.Ultima.Tests
 {
     public class TestsFixture : IDisposable
     {
@@ -16,7 +15,7 @@ namespace Gamer.Estate.Tes.Tests
             Port = HttpServer.FindFreeTcpPort(),
         };
 
-        public TestsFixture() => Target.Initialize(new Dictionary<string, object> { { "", null } });
+        public TestsFixture() => Target.Initialize();
         public void Dispose() => Target.Dispose();
     }
 
@@ -26,14 +25,14 @@ namespace Gamer.Estate.Tes.Tests
         public ProxyIntegrationTests(TestsFixture fixture, ITestOutputHelper helper) { _fixture = fixture; Core.Debug.LogFunc = x => helper.WriteLine(x.ToString()); }
 
         [Theory]
-        [InlineData("http://localhost:{0}/Morrowind.bsa#Morrowind", "meshes/i/in_dae_room_l_floor_01.nif")]
+        [InlineData("http://localhost:{0}/Abc", "xxx")]
         public async Task LoadAssetPack(string path, string modelPath)
         {
             // given
             var uri = new Uri(string.Format(path, _fixture.Target.Port));
-            var asset = await uri.GetTesAssetPackAsync() as TesAssetPack;
+            var asset = await uri.GetUltimaAssetPackAsync() as UltimaAssetPack;
             // when
-            var exists = asset.ContainsFile(modelPath);
+            var exists = true; // asset.ContainsFile(modelPath);
             // then
             Assert.True(exists);
         }

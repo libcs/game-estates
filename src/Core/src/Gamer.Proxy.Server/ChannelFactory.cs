@@ -1,4 +1,5 @@
 ﻿using Gamer.Proxy.Server;
+using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography.X509Certificates;
 
@@ -9,6 +10,14 @@ namespace Gamer.Proxy
     /// </summary>
     public class ChannelFactory
     {
+        /// <summary>
+        /// Gets the estates.
+        /// </summary>
+        /// <value>
+        /// The estates.
+        /// </value>
+        public IDictionary<string, object> Estates { get; } = new Dictionary<string, object>();
+
         /// <summary>
         /// Creates the specified host.
         /// </summary>
@@ -42,6 +51,10 @@ namespace Gamer.Proxy
                             ctx.ResponseChannel.Send(new ServerSentEvent("INFO", $"Connected successfully on LOG stream from {host}:{port}"), ctx.Token);
                             channel.AddChannel(ctx.ResponseChannel, ctx.Token);
                         });
+                }
+                else
+                {
+
                 }
             }
             var httpServer = new HttpServer(host, port, handler);

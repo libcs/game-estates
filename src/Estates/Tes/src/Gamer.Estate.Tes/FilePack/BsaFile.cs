@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Gamer.Estate.Tes.FilePack
 {
@@ -138,23 +139,23 @@ namespace Gamer.Estate.Tes.FilePack
         /// <summary>
         /// Loads an archived file's data.
         /// </summary>
-        public byte[] LoadFileData(string filePath)
+        public Task<byte[]> LoadFileDataAsync(string filePath)
         {
             var files = _filesByHash[HashFilePath(filePath)].ToArray();
             if (files.Length == 0)
                 throw new NotSupportedException();
             if (files.Length == 1)
-                return LoadFileData(files[0]);
+                return LoadFileDataAsync(files[0]);
             var file = files.FirstOrDefault(x => string.Equals(x.Path, filePath.Replace('/', '\\'), StringComparison.OrdinalIgnoreCase));
             if (file != null)
-                return LoadFileData(file);
+                return LoadFileDataAsync(file);
             throw new FileNotFoundException($"Could not find file \"{filePath}\" in a BSA file.");
         }
 
         /// <summary>
         /// Loads an archived file's data.
         /// </summary>
-        byte[] LoadFileData(FileMetadata file)
+        Task<byte[]> LoadFileDataAsync(FileMetadata file)
         {
             _r.Position = file.Offset;
             var fileSize = (int)file.Size;
@@ -273,7 +274,7 @@ namespace Gamer.Estate.Tes.FilePack
                     //content.append(QByteArray::fromRawData(dds2, sizeof(dx10Header)));
                 }
             }
-            return fileData;
+            return Task.FromResult(fileData);
         }
 
         void ReadMetadata()

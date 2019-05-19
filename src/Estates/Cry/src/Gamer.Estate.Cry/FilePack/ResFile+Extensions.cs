@@ -15,7 +15,7 @@ namespace Gamer.Estate.Cry.FilePack
             foreach (var file in _pakFile._files.Take(take))
             {
                 Log(file.Path);
-                LoadFileData(file);
+                LoadFileDataAsync(file).Wait();
             }
         }
 
@@ -24,7 +24,7 @@ namespace Gamer.Estate.Cry.FilePack
             var filePath = FindTexture(texturePath);
             if (filePath != null)
             {
-                var fileData = LoadFileData(filePath);
+                var fileData = LoadFileDataAsync(filePath).Result;
                 return Task.Run(() =>
                 {
                     var fileExtension = Path.GetExtension(filePath);
@@ -38,7 +38,7 @@ namespace Gamer.Estate.Cry.FilePack
 
         public Task<object> LoadObjectInfoAsync(string filePath)
         {
-            var fileData = LoadFileData(filePath);
+            var fileData = LoadFileDataAsync(filePath).Result;
             return Task.Run(() =>
             {
                 return Task.FromResult<object>(null);

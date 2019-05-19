@@ -20,9 +20,9 @@ namespace Gamer.Proxy
             public string dt { get; set; }
         }
 
-        readonly HttpClient _hc = new HttpClient();
         readonly MemoryCache _cache = new MemoryCache(new MemoryCacheOptions());
         readonly WebClient _wc = new WebClient();
+        readonly HttpClient _hc = new HttpClient();
         readonly Uri _address;
 
         public ProxySinkClient(Uri address)
@@ -35,13 +35,14 @@ namespace Gamer.Proxy
         }
 
         public override bool ContainsFile(string filePath, Func<bool> action) =>
-            _cache.GetOrCreate<Dictionary<string, string>>(".list", x =>
+            _cache.GetOrCreateAsync<Dictionary<string, string>>(".list", async x =>
             {
+                await CallAsync(".list");
                 return null;
-            }).ContainsKey(filePath);
+            }).Result.ContainsKey(filePath);
 
-        public override byte[] LoadFileData(string filePath, Func<byte[]> action) =>
-            _cache.GetOrCreate<byte[]>(filePath, x =>
+        public override async Task<byte[]> LoadFileDataAsync(string filePath, Func<Task<byte[]>> action) =>
+            await _cache.GetOrCreateAsync<byte[]>(filePath, x =>
             {
                 return null;
             });
@@ -61,7 +62,7 @@ namespace Gamer.Proxy
 
         public void OpenSse() => _wc.OpenReadAsync(_address);
 
-        public async Task CallAsync()
+        public async Task CallAsync(string method)
         {
             var r = await _hc.GetAsync("api/Department/1");
             if (r.IsSuccessStatusCode)
@@ -71,9 +72,7 @@ namespace Gamer.Proxy
                 //Console.WriteLine("No of Employee in Department: {0}", department.Employees.Count);
             }
             else
-            {
                 Console.WriteLine("Internal server Error");
-            }
         }
 
     }

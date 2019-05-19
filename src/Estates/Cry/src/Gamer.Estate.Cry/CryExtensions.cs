@@ -10,10 +10,8 @@ namespace Gamer.Estate.Cry
         {
             var path = "Data.p4k";
             // game
-            var host = uri.Host;
-            if (host.StartsWith("#"))
-                host = host.Substring(1);
-            var gameName = Enum.GetNames(typeof(CryGame)).FirstOrDefault(x => string.Equals(x, host, StringComparison.OrdinalIgnoreCase)) ?? throw new ArgumentOutOfRangeException(nameof(host), host);
+            var fragment = uri.Scheme == "game" ? uri.Host : uri.Fragment?.Substring(1);
+            var gameName = Enum.GetNames(typeof(CryGame)).FirstOrDefault(x => string.Equals(x, fragment, StringComparison.OrdinalIgnoreCase)) ?? throw new ArgumentOutOfRangeException(nameof(uri), uri.ToString());
             var game = (CryGame)Enum.Parse(typeof(CryGame), gameName);
             // scheme
             if (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps)

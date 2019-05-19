@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Gamer.Estate.Cry.FilePack
 {
@@ -54,20 +55,20 @@ namespace Gamer.Estate.Cry.FilePack
         /// <summary>
         /// Loads an archived file's data.
         /// </summary>
-        public byte[] LoadFileData(string filePath)
+        public Task<byte[]> LoadFileDataAsync(string filePath)
         {
             var files = _filesByPath[filePath].ToArray();
             if (files.Length == 0)
                 throw new NotSupportedException();
             if (files.Length == 1)
-                return LoadFileData(files[0]);
+                return LoadFileDataAsync(files[0]);
             throw new NotSupportedException();
         }
 
         /// <summary>
         /// Loads an archived file's data.
         /// </summary>
-        internal byte[] LoadFileData(FileMetadata file)
+        internal Task<byte[]> LoadFileDataAsync(FileMetadata file)
         {
             throw new NotSupportedException();
         }
