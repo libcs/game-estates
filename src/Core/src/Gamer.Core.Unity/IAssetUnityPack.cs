@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Gamer.Core
 {
-    public interface IAssetPack : IDisposable
+    public interface IAssetUnityPack : IAssetPack
     {
         Task<Texture2DInfo> LoadTextureInfoAsync(string texturePath);
         Texture2D LoadTexture(string texturePath, int method = 0);

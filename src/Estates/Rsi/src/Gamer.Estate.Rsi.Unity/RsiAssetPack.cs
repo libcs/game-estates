@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Gamer.Estate.Rsi
 {
-    public class RsiAssetPack : ResFile, IAssetPack
+    public class RsiAssetPack : ResFile, IAssetUnityPack
     {
         TextureManager _textureManager;
         MaterialManager _materialManager;

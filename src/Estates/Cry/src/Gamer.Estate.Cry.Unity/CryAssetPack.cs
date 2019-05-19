@@ -6,7 +6,7 @@ using Gamer.Proxy;
 
 namespace Gamer.Estate.Cry
 {
-    public class CryAssetPack : ResFile, IAssetPack
+    public class CryAssetPack : ResFile, IAssetUnityPack
     {
         TextureManager _textureManager;
         MaterialManager _materialManager;

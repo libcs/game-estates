@@ -5,7 +5,7 @@ namespace Gamer.Estate.Tes.Loader
 {
     public static class LoadObject
     {
-        static IAssetPack Asset;
+        static IAssetUnityPack Asset;
 
         public static void Awake()
         {

@@ -1,7 +1,6 @@
 using Gamer.Proxy;
 using Gamer.Proxy.Server;
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
@@ -16,7 +15,7 @@ namespace Gamer.Estate.Tes.Tests
             Port = HttpServer.FindFreeTcpPort(),
         };
 
-        public TestsFixture() => Target.Initialize(new Dictionary<string, object> { { "Tes", null } });
+        public TestsFixture() => Target.Initialize(new TesProxyHandler());
         public void Dispose() => Target.Dispose();
     }
 
@@ -31,7 +30,7 @@ namespace Gamer.Estate.Tes.Tests
         {
             // given
             var uri = new Uri(string.Format(path, _fixture.Target.Port));
-            var asset = await uri.GetTesAssetPackAsync() as TesAssetPack;
+            var asset = await uri.GetTesAssetPackAsync();
             // when
             var exists = asset.ContainsFile(modelPath);
             // then

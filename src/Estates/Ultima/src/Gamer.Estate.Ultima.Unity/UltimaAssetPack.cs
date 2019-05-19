@@ -1,4 +1,6 @@
-﻿using Gamer.Core;
+﻿using System;
+using System.Threading.Tasks;
+using Gamer.Core;
 using Gamer.Estate.Ultima.FilePack;
 using Gamer.Estate.Ultima.Format;
 using Gamer.Proxy;
@@ -6,7 +8,7 @@ using UnityEngine;
 
 namespace Gamer.Estate.Ultima
 {
-    public class UltimaAssetPack : ResFile, IAssetPack
+    public class UltimaAssetPack : ResFile, IAssetUnityPack
     {
         TextureManager _textureManager;
         MaterialManager _materialManager;
@@ -26,5 +28,9 @@ namespace Gamer.Estate.Ultima
         public GameObject CreateObject(string filePath) => _staManager.InstantiateSta(filePath);
 
         public void PreloadObjectAsync(string filePath) => _staManager.PreloadStaFileAsync(filePath);
+
+        public bool ContainsFile(string filePath) => throw new NotImplementedException();
+
+        public Task<byte[]> LoadFileDataAsync(string filePath) => throw new NotImplementedException();
     }
 }

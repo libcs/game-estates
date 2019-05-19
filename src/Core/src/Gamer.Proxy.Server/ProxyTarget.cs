@@ -20,13 +20,13 @@ namespace Gamer.Proxy
         public ProxyTarget() { }
         public ProxyTarget(ChannelFactory channelFactory) => _channelFactory = channelFactory;
 
-        public IDictionary<string, object> Estates => _channelFactory.Estates;
+        public IDictionary<string, IProxyHandler> Estates => _channelFactory.Estates;
 
-        public void Initialize(IDictionary<string, object> estates = null)
+        public void Initialize(params IProxyHandler[] estates)
         {
             if (estates != null)
                 foreach (var estate in estates)
-                    _channelFactory.Estates.Add(estate);
+                    _channelFactory.Estates.Add(estate.Key, estate);
             Initialized = true;
             _channel = Active ? _channelFactory.Create(Host, Port, HttpServer.FindCertificate(Certificate), ReplayBufferSize) : null;
         }

@@ -15,7 +15,7 @@ namespace Gamer.Estate.Cry.Tests
             Port = HttpServer.FindFreeTcpPort(),
         };
 
-        public TestsFixture() => Target.Initialize();
+        public TestsFixture() => Target.Initialize(new CryProxyHandler());
         public void Dispose() => Target.Dispose();
     }
 
@@ -30,7 +30,7 @@ namespace Gamer.Estate.Cry.Tests
         {
             // given
             var uri = new Uri(string.Format(path, _fixture.Target.Port));
-            var asset = await uri.GetCryAssetPackAsync() as CryAssetPack;
+            var asset = await uri.GetCryAssetPackAsync();
             // when
             var exists = asset.ContainsFile(modelPath);
             // then

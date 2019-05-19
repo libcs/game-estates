@@ -6,7 +6,7 @@ using Gamer.Proxy;
 
 namespace Gamer.Estate.Tes
 {
-    public class TesAssetPack : BsaMultiFile, IAssetPack
+    public class TesAssetPack : BsaMultiFile, IAssetUnityPack
     {
         TextureManager _textureManager;
         MaterialManager _materialManager;

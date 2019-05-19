@@ -19,7 +19,7 @@ namespace Gamer.Proxy.Server
     {
         readonly int _port;
         readonly IPAddress _host;
-        readonly Action<HttpContext> _handler;
+        readonly Func<HttpContext, Task> _handler;
         volatile bool _running;
         volatile bool _disposed;
         X509Certificate _serverCertificate;
@@ -31,7 +31,7 @@ namespace Gamer.Proxy.Server
         /// <param name="host">The host.</param>
         /// <param name="port">The port.</param>
         /// <param name="handler">The handler.</param>
-        public HttpServer(string host, int port, Action<HttpContext> handler)
+        public HttpServer(string host, int port, Func<HttpContext, Task> handler)
         {
             _port = port;
             _handler = handler;
@@ -83,7 +83,7 @@ namespace Gamer.Proxy.Server
                     return;
                 var responseChannel = new HttpResponseChannel(client, stream);
                 var httpContext = new HttpContext(httpRequest, responseChannel, cancelTokenSource.Token);
-                _handler(httpContext);
+                await _handler(httpContext);
             }
             catch (Exception e)
             {

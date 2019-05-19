@@ -12,4 +12,8 @@
     <None Remove="**\*.swift" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Gamer.Proxy\Gamer.Proxy.csproj" />
+  </ItemGroup>
+
 </Project>

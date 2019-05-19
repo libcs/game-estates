@@ -11,14 +11,14 @@ namespace Gamer.Format.Nif
     /// </summary>
     public class NifManager
     {
-        readonly IAssetPack _asset;
+        readonly IAssetUnityPack _asset;
         readonly MaterialManager _materialManager;
         GameObject _prefabContainerObj;
         readonly Dictionary<string, Task<object>> _objFilePreloadTasks = new Dictionary<string, Task<object>>();
         readonly Dictionary<string, GameObject> _objPrefabs = new Dictionary<string, GameObject>();
         readonly int _markerLayer;
 
-        public NifManager(IAssetPack asset, MaterialManager materialManager, int markerLayer)
+        public NifManager(IAssetUnityPack asset, MaterialManager materialManager, int markerLayer)
         {
             _asset = asset;
             _materialManager = materialManager;

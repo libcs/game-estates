@@ -15,7 +15,7 @@ namespace Gamer.Estate.Ultima.Tests
             Port = HttpServer.FindFreeTcpPort(),
         };
 
-        public TestsFixture() => Target.Initialize();
+        public TestsFixture() => Target.Initialize(new UltimaProxyHandler());
         public void Dispose() => Target.Dispose();
     }
 
@@ -30,7 +30,7 @@ namespace Gamer.Estate.Ultima.Tests
         {
             // given
             var uri = new Uri(string.Format(path, _fixture.Target.Port));
-            var asset = await uri.GetUltimaAssetPackAsync() as UltimaAssetPack;
+            var asset = await uri.GetUltimaAssetPackAsync();
             // when
             var exists = true; // asset.ContainsFile(modelPath);
             // then
