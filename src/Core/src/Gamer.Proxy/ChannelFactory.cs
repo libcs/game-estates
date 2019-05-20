@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace Gamer.Proxy
 {
@@ -78,6 +79,7 @@ namespace Gamer.Proxy
             return channel;
         }
 
+        static AsyncLocal<HttpResponse> _asyncRes = new AsyncLocal<HttpResponse>();
         async Task HandleEstate(HttpContext ctx, HttpRequest req, IEstateHandler estate)
         {
             req.Headers.TryGetValue("Pack", out var pack);
@@ -85,7 +87,8 @@ namespace Gamer.Proxy
             {
                 var res = new HttpResponse(200, "OK");
                 var val = req.Uri.Substring(7);
-                var assetPack = await _cache.GetOrCreateAsync($"a:{pack}", async x => await estate.AssetPackFunc(new Uri(pack), () => res));
+                _asyncRes.Value = res;
+                var assetPack = await _cache.GetOrCreateAsync($"a:{pack}", async x => await estate.AssetPackFunc(new Uri(pack), () => _asyncRes.Value));
                 if (val == ".set") assetPack.GetContainsSet();
                 else await assetPack.LoadFileDataAsync(val);
                 res.Headers.Add("Content-Type", "text/html");
@@ -98,7 +101,8 @@ namespace Gamer.Proxy
             {
                 var res = new HttpResponse(200, "OK");
                 var val = req.Uri.Substring(6);
-                var dataPack = await _cache.GetOrCreateAsync($"d:{pack}", async x => await estate.DataPackFunc(new Uri(pack), () => res));
+                _asyncRes.Value = res;
+                var dataPack = await _cache.GetOrCreateAsync($"d:{pack}", async x => await estate.DataPackFunc(new Uri(pack), () => _asyncRes.Value));
                 res.Headers.Add("Content-Type", "text/html");
                 res.Headers.Add("Cache-Control", "no-cache");
                 res.Headers.Add("Connection", "close");
