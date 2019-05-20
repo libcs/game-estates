@@ -1,5 +1,4 @@
 //#define LONGTEST
-
 using System;
 using System.Threading.Tasks;
 using Xunit;
@@ -16,8 +15,8 @@ namespace Gamer.Estate.Ultima.Tests
         [InlineData("game://UltimaOnline/*")]
         public async Task LoadAssetPack(string path)
         {
-            var asset = await new Uri(path).GetUltimaAssetPackAsync() as UltimaAssetPack;
-            //foreach (var pack in asset.Packs)
+            var assetPack = await new Uri(path).GetUltimaAssetPackAsync() as UltimaAssetPack;
+            //foreach (var pack in assetPack.Packs)
             //{
             //    pack.TestContainsFile();
             //    pack.TestLoadFileData();
@@ -28,9 +27,9 @@ namespace Gamer.Estate.Ultima.Tests
         [InlineData("game://UltimaOnline/*")]
         public async Task LoadDataPack(string path)
         {
-            var data = await new Uri(path).GetUltimaDataPackAsync() as UltimaDataPack;
-            //TestLoadCell(data, new Vector3(0, 0, 0));
-            //TestAllCells(data);
+            var dataPack = await new Uri(path).GetUltimaDataPackAsync() as UltimaDataPack;
+            //TestLoadCell(dataPack, new Vector3(0, 0, 0));
+            //TestAllCells(dataPack);
         }
 
         //public static Vector3Int GetCellId(Vector3 point, int world) => new Vector3Int(Mathf.FloorToInt(point.x / ConvertUtils.ExteriorCellSideLengthInMeters), Mathf.FloorToInt(point.z / ConvertUtils.ExteriorCellSideLengthInMeters), world);

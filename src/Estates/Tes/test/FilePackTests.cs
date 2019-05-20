@@ -1,5 +1,4 @@
 //#define LONGTEST
-
 using Gamer.Estate.Tes.Records;
 using Gamer.Format.Nif;
 using System;
@@ -8,13 +7,26 @@ using System.Threading.Tasks;
 using UnityEngine;
 using Xunit;
 using Xunit.Abstractions;
-using static Gamer.Core.Debug;
 
 namespace Gamer.Estate.Tes.Tests
 {
     public class FilePackTests
     {
-        public FilePackTests(ITestOutputHelper helper) => LogFunc = x => helper.WriteLine(x.ToString());
+        public FilePackTests(ITestOutputHelper helper) => Core.Debug.LogFunc = x => helper.WriteLine(x.ToString());
+
+        [Theory]
+        [InlineData("game://Morrowind/Morrowind.bsa", "textures/Tx_BC_moss.dds")]
+        public async Task LoadAssetPack(string path, string modelPath)
+        {
+            // given
+            var assetPack = await new Uri(path).GetTesAssetPackAsync();
+            // when
+            var exist0 = assetPack.ContainsFile(modelPath);
+            var data0 = await assetPack.LoadFileDataAsync(modelPath);
+            // then
+            Assert.True(exist0);
+            Assert.NotNull(data0);
+        }
 
         [Theory]
 #if LONGTEST
@@ -27,10 +39,10 @@ namespace Gamer.Estate.Tes.Tests
         [InlineData("game://Morrowind/Morrowind.bsa")]
         [InlineData("game://Fallout4VR/Fallout4 - Materials.ba2")]
 #endif
-        public async Task LoadAssetPack(string path)
+        public async Task LoadAssetPackAll(string path)
         {
-            var asset = await new Uri(path).GetTesAssetPackAsync() as TesAssetPack;
-            foreach (var pack in asset.Packs)
+            var assetPack = await new Uri(path).GetTesAssetPackAsync() as TesAssetPack;
+            foreach (var pack in assetPack.Packs)
             {
                 pack.TestContainsFile();
 #if LONGTEST
@@ -55,10 +67,9 @@ namespace Gamer.Estate.Tes.Tests
 #endif
         public void LoadDataPack(string path)
         {
-            var data = (TesDataPack)new Uri(path).GetTesDataPackAsync().Result;
-            TestLoadCell(data, new Vector3(0, 0, 0));
-            TestAllCells(data);
-
+            var dataPack = (TesDataPack)new Uri(path).GetTesDataPackAsync().Result;
+            TestLoadCell(dataPack, new Vector3(0, 0, 0));
+            TestAllCells(dataPack);
 
             ////TestLoadCell(new Vector3(((-2 << 5) + 1) * ConvertUtils.ExteriorCellSideLengthInMeters, 0, ((-1 << 5) + 1) * ConvertUtils.ExteriorCellSideLengthInMeters));
             ////TestLoadCell(new Vector3((-1 << 3) * ConvertUtils.ExteriorCellSideLengthInMeters, 0, (-1 << 3) * ConvertUtils.ExteriorCellSideLengthInMeters));
@@ -81,7 +92,7 @@ namespace Gamer.Estate.Tes.Tests
         static void TestAllCells(TesDataPack data)
         {
             foreach (var record in data.Groups["CELL"].Records.Cast<CELLRecord>())
-                Log(record.EDID.Value);
+                Debug.Log(record.EDID.Value);
         }
     }
 }

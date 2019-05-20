@@ -27,12 +27,11 @@ namespace Gamer.Estate.Tes.FilePack
             FilePath = filePath;
             Format = GetFormat();
             _r = new BinaryFileReader(File.Open(filePath, FileMode.Open, FileAccess.Read));
-            var watch = new Stopwatch();
-            watch.Start();
+            //var watch = new Stopwatch(); watch.Start();
             Read(1);
-            Log($"Loading: {watch.ElapsedMilliseconds}");
+            //Log($"Loading: {watch.ElapsedMilliseconds}");
             Process();
-            watch.Stop();
+            //watch.Stop();
             GameFormat GetFormat()
             {
                 switch (game)

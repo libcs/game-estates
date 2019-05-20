@@ -4,11 +4,10 @@ namespace Gamer.Core.Components
 {
     public class DayNightCycle : MonoBehaviour
     {
-        Transform _transform = null;
+        Transform _transform;
         Quaternion _originalOrientation;
 
-        [SerializeField]
-        float _rotationTime = 0.5f;
+        [SerializeField] float _rotationTime = 0.5f;
 
         void Start()
         {
@@ -17,9 +16,6 @@ namespace Gamer.Core.Components
             RenderSettings.sun = GetComponent<Light>();
         }
 
-        void Update()
-        {
-            _transform.Rotate(_rotationTime * Time.deltaTime, 0.0f, 0.0f);
-        }
+        void Update() => _transform.Rotate(_rotationTime * Time.deltaTime, 0.0f, 0.0f);
     }
 }

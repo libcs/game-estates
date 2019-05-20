@@ -1,6 +1,7 @@
 ﻿using Gamer.Core.UI;
 using System;
 using UnityEngine;
+using static Gamer.Core.Debug;
 
 namespace Gamer.Core.Components
 {
@@ -8,6 +9,8 @@ namespace Gamer.Core.Components
     {
         const RenderingPath RenderPath = RenderingPath.Forward;
         const float CameraFarClip = 500.0f;
+        const bool HasRunAndSlow = false;
+        const bool HasLight = false;
 
         Transform _camTransform;
         Transform _transform;
@@ -15,7 +18,7 @@ namespace Gamer.Core.Components
         Rigidbody _rigidbody;
         UICrosshair _crosshair;
         bool _isGrounded = false;
-        bool _isFlying = true;
+        bool _isFlying = false;
 
         [Header("Movement Settings")]
         public float slowSpeed = 3;
@@ -77,7 +80,7 @@ namespace Gamer.Core.Components
                 newVelocity.y = 5;
                 _rigidbody.velocity = newVelocity;
             }
-            if (InputManager.GetButtonDown("Light"))
+            if (HasLight && InputManager.GetButtonDown("Light"))
                 lantern.enabled = !lantern.enabled;
             //// clamp
             //var lastPostion = _transform.position;
@@ -91,11 +94,8 @@ namespace Gamer.Core.Components
         void FixedUpdate()
         {
             _isGrounded = CalculateIsGrounded();
-            if (_isGrounded || IsFlying)
-                SetVelocity();
-            else if (!_isGrounded || !IsFlying)
-                ApplyAirborneForce();
-
+            if (_isGrounded || IsFlying) SetVelocity();
+            else if (!_isGrounded || !IsFlying) ApplyAirborneForce();
         }
 
         void Rotate()
@@ -118,7 +118,7 @@ namespace Gamer.Core.Components
             // Make eulerAngles.x range from -180 to 180 so we can clamp it between a negative and positive angle.
             if (eulerAngles.x > 180)
                 eulerAngles.x = eulerAngles.x - 360;
-            var deltaMouse = mouseSensitivity * (new Vector2(InputManager.GetAxis("Mouse X"), InputManager.GetAxis("Mouse Y")));
+            var deltaMouse = mouseSensitivity * new Vector2(InputManager.GetAxis("Mouse X"), InputManager.GetAxis("Mouse Y"));
             eulerAngles.x = Mathf.Clamp(eulerAngles.x - deltaMouse.y, minVerticalAngle, maxVerticalAngle);
             eulerAngles.y = Mathf.Repeat(eulerAngles.y + deltaMouse.x, 360);
             _camTransform.localEulerAngles = new Vector3(eulerAngles.x, 0, 0);
@@ -168,8 +168,8 @@ namespace Gamer.Core.Components
         float CalculateSpeed()
         {
             var speed = normalSpeed;
-            if (InputManager.GetButton("Run")) speed = fastSpeed;
-            else if (InputManager.GetButton("Slow")) speed = slowSpeed;
+            if (HasRunAndSlow && InputManager.GetButton("Run")) speed = fastSpeed;
+            else if (HasRunAndSlow && InputManager.GetButton("Slow")) speed = slowSpeed;
             if (IsFlying) speed *= flightSpeedMultiplier;
             return speed;
         }

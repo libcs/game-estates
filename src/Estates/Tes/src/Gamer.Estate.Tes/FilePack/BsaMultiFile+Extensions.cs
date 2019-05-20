@@ -44,8 +44,8 @@ namespace Gamer.Estate.Tes.FilePack
         string FindTexture(string texturePath)
         {
             var textureName = Path.GetFileNameWithoutExtension(texturePath);
-            var textureNameInTexturesDir = $"textures/{textureName}";
-            var filePath = $"{textureNameInTexturesDir}.dds";
+            var textureNameInTexturesDir = "textures/" + textureName;
+            var filePath = textureNameInTexturesDir + ".dds";
             if (ContainsFile(filePath))
                 return filePath;
             //filePath = textureNameInTexturesDir + ".tga";
@@ -58,7 +58,6 @@ namespace Gamer.Estate.Tes.FilePack
             //filePath = texturePathWithoutExtension + ".tga";
             //if (ContainsFile(filePath))
             //    return filePath;
-            // Could not find the file.
             return null;
         }
     }

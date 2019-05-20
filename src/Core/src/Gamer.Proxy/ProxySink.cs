@@ -67,7 +67,7 @@ namespace Gamer.Proxy
                 using (var s = new MemoryStream(data))
                 using (var w = new BinaryReader(s))
                 {
-                    var d = new HashSet<string>();
+                    var d = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
                     var count = w.ReadInt32();
                     for (var i = 0; i < count; i++)
                         d.Add(w.ReadString());

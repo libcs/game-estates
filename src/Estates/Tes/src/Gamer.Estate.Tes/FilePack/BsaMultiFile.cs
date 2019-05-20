@@ -52,7 +52,7 @@ namespace Gamer.Estate.Tes.FilePack
         /// Gets the contains set.
         /// </summary>
         /// <returns></returns>
-        public HashSet<string> GetContainsSet() => _proxySink.GetContainsSet(() => Packs.Aggregate(new HashSet<string>(), (a, b) => { a.UnionWith(b.GetContainsSet()); return a; }));
+        public HashSet<string> GetContainsSet() => _proxySink.GetContainsSet(() => Packs.Aggregate(new HashSet<string>(StringComparer.OrdinalIgnoreCase), (a, b) => { a.UnionWith(b.GetContainsSet()); return a; }));
 
         /// <summary>
         /// Determines whether the BSA archive contains a file.

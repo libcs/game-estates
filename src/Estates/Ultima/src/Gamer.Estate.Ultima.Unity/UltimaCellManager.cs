@@ -268,7 +268,7 @@ namespace Gamer.Estate.Ultima
                     }
                 }
             }
-            else Log("Unknown Object: " + ((CELLRecord.RefObj)refCellObjInfo.RefObj).Name);
+            //else Log("Unknown Object: " + ((CELLRecord.RefObj)refCellObjInfo.RefObj).Name);
         }
 
         const bool RenderLightShadows = false;

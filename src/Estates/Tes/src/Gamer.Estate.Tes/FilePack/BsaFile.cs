@@ -134,7 +134,7 @@ namespace Gamer.Estate.Tes.FilePack
         /// Gets the contains set.
         /// </summary>
         /// <returns></returns>
-        public HashSet<string> GetContainsSet() => new HashSet<string>(_files.Select(x => x.Path));
+        public HashSet<string> GetContainsSet() => new HashSet<string>(_files.Select(x => x.Path), StringComparer.OrdinalIgnoreCase);
 
         /// <summary>
         /// Determines whether the BSA archive contains a file.
@@ -146,10 +146,10 @@ namespace Gamer.Estate.Tes.FilePack
         /// </summary>
         public Task<byte[]> LoadFileDataAsync(string filePath)
         {
-            filePath.Replace('\\', '/');
+            filePath = filePath.Replace('\\', '/');
             var files = _filesByHash[HashFilePath(filePath)].ToArray();
             if (files.Length == 0)
-                throw new NotSupportedException();
+                throw new FileNotFoundException($"Could not find file \"{filePath}\" in a BSA file.");
             if (files.Length == 1)
                 return LoadFileDataAsync(files[0]);
             var file = files.FirstOrDefault(x => string.Equals(x.Path, filePath, StringComparison.OrdinalIgnoreCase));

@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net471</TargetFramework>
+  </PropertyGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="copy &quot;$(TargetDir)Unity.Loader.*&quot; &quot;$(ProjectDir)..\Unity\Assets\Plugins\&quot;&#xD;&#xA;" />
+  </Target>
+
+  <ItemGroup>
+    <None Remove="**\*.swift" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Estates\Tes\src\Gamer.Estate.Tes.Unity\Gamer.Estate.Tes.Unity.csproj" />
+    <ProjectReference Include="..\..\Estates\Ultima\src\Gamer.Estate.Ultima.Unity\Gamer.Estate.Ultima.Unity.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="UnityEngine">
+      <HintPath>..\..\..\lib\Unity\UnityEngine.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

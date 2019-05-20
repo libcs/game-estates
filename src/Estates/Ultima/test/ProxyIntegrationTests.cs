@@ -30,7 +30,7 @@ namespace Gamer.Estate.Ultima.Tests
         {
             // given
             var uri = new Uri(string.Format(path, _fixture.Target.Port));
-            var asset = await uri.GetUltimaAssetPackAsync();
+            var assetPack = await uri.GetUltimaAssetPackAsync();
             // when
             var exists = true; // asset.ContainsFile(modelPath);
             // then

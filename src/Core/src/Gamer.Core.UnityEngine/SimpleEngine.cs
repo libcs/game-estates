@@ -2,18 +2,19 @@
 using Gamer.Core.Records;
 using System;
 using UnityEngine;
+using static Gamer.Core.Debug;
 
 namespace Gamer.Core
 {
-    public class SimpleEngine
+    public class SimpleEngine : IDisposable
     {
+        const bool DayNightCycle = false;
+        const bool RenderSunShadows = false;
+        const float AmbientIntensity = 1.5f;
+
         const float DesiredWorkTimePerFrame = 1.0f / 200;
         protected const int CellRadiusOnLoad = 2;
         public static SimpleEngine Instance;
-
-        const bool DayNightCycle = true;
-        const bool RenderSunShadows = true;
-        const float AmbientIntensity = 1.5f;
 
         public readonly IAssetPack AssetPack;
         public readonly IDataPack DataPack;
@@ -21,11 +22,13 @@ namespace Gamer.Core
         public readonly TemporalLoadBalancer LoadBalancer = new TemporalLoadBalancer();
         readonly GameObject _sunObj;
 
-        public SimpleEngine(IEstateHandler handler, Uri assetPack, Uri dataPack) : this(handler, handler.AssetPackFunc(assetPack, null).Result, handler.DataPackFunc(dataPack, null).Result) { }
+        public SimpleEngine(IEstateHandler handler, Uri assetPack, Uri dataPack) : this(handler, handler?.AssetPackFunc(assetPack, null).Result, handler?.DataPackFunc(dataPack, null).Result) { }
         public SimpleEngine(IEstateHandler handler, IAssetPack assetPack, IDataPack dataPack)
         {
-            AssetPack = assetPack;
-            DataPack = dataPack;
+            if (handler == null)
+                throw new ArgumentNullException(nameof(handler));
+            AssetPack = assetPack ?? throw new ArgumentNullException(nameof(assetPack));
+            DataPack = dataPack ?? throw new ArgumentNullException(nameof(dataPack));
             CellManager = handler.CellManagerFunc(LoadBalancer, assetPack, dataPack, null);
 
             // ambient
@@ -60,6 +63,22 @@ namespace Gamer.Core
             //Cursor.SetCursor(Asset.LoadTexture("tx_cursor", 1), Vector2.zero, CursorMode.Auto);
         }
 
+        public void Dispose()
+        {
+            AssetPack.Dispose();
+            DataPack.Dispose();
+        }
+
+        public virtual void Update()
+        {
+            if (_playerCameraObj == null)
+                return;
+            // The current cell can be null if the player is outside of the defined game world.
+            if (_currentCell == null || !_currentCell.IsInterior)
+                CellManager.UpdateCells(_playerCameraObj.transform.position, _currentWorld);
+            LoadBalancer.RunTasks(DesiredWorkTimePerFrame);
+        }
+
         #region Player Spawn
 
         protected int _currentWorld;
@@ -74,6 +93,8 @@ namespace Gamer.Core
 
         protected virtual GameObject CreatePlayer(GameObject playerPrefab, Vector3 position, out GameObject playerCamera)
         {
+            if (playerPrefab == null)
+                throw new InvalidOperationException("playerPrefab missing");
             var player = GameObject.FindWithTag("Player");
             if (player == null)
             {
@@ -100,7 +121,7 @@ namespace Gamer.Core
         {
             var cellId = CellManager.GetCellId(position, _currentWorld);
             _currentCell = DataPack.FindCellRecord(cellId);
-            Debug.Assert(_currentCell != null);
+            Assert(_currentCell != null);
             CreatePlayer(playerPrefab, position, out _playerCameraObj);
             var cellInfo = CellManager.StartCreatingCell(cellId);
             LoadBalancer.WaitForTask(cellInfo.ObjectsCreationCoroutine);
@@ -150,13 +171,5 @@ namespace Gamer.Core
         }
 
         #endregion
-
-        public virtual void Update()
-        {
-            // The current cell can be null if the player is outside of the defined game world.
-            if (_currentCell == null || !_currentCell.IsInterior)
-                CellManager.UpdateCells(_playerCameraObj.transform.position, _currentWorld);
-            LoadBalancer.RunTasks(DesiredWorkTimePerFrame);
-        }
     }
 }

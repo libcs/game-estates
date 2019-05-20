@@ -139,7 +139,7 @@ namespace Gamer.Estate.Tes
                 Object.Destroy(cellInfo.GameObject);
                 _cellObjects.Remove(cellId);
             }
-            else Log("Tried to destroy a cell that isn't created.");
+            else Log("Tried to destroy a cell that is not created.");
         }
 
         public void DestroyAllCells()
@@ -199,19 +199,16 @@ namespace Gamer.Estate.Tes
             var refCellObjInfos = new RefCellObjInfo[cell.RefObjs.Count];
             for (var i = 0; i < cell.RefObjs.Count; i++)
             {
-                var refObjInfo = new RefCellObjInfo
-                {
-                    RefObj = cell.RefObjs[i]
-                };
+                var refObjInfo = new RefCellObjInfo { RefObj = cell.RefObjs[i] };
                 // Get the record the RefObjDataGroup references.
                 var refObj = (CELLRecord.RefObj)refObjInfo.RefObj;
                 _dataPack.MANYsById.TryGetValue(refObj.EDID.Value, out refObjInfo.ReferencedRecord);
                 if (refObjInfo.ReferencedRecord != null)
                 {
-                    var modelFileName = (refObjInfo.ReferencedRecord is IHaveMODL modl ? modl.MODL.Value : null);
+                    var modelFileName = refObjInfo.ReferencedRecord is IHaveMODL modl ? modl.MODL.Value : null;
                     // If the model file name is valid, store the model file path.
                     if (!string.IsNullOrEmpty(modelFileName))
-                        refObjInfo.ModelFilePath = "meshes\\" + modelFileName;
+                        refObjInfo.ModelFilePath = "meshes/" + modelFileName;
                 }
                 refCellObjInfos[i] = refObjInfo;
             }
@@ -267,7 +264,7 @@ namespace Gamer.Estate.Tes
                     }
                 }
             }
-            else Log("Unknown Object: " + ((CELLRecord.RefObj)refCellObjInfo.RefObj).EDID.Value);
+            //else Log("Unknown Object: " + ((CELLRecord.RefObj)refCellObjInfo.RefObj).EDID.Value);
         }
 
         const bool RenderLightShadows = false;
@@ -342,7 +339,7 @@ namespace Gamer.Estate.Tes
             var distinctTextureIndices = land.VTEX.Value.TextureIndicesT3.Distinct().ToList();
             for (var i = 0; i < distinctTextureIndices.Count; i++)
             {
-                var textureIndex = ((short)distinctTextureIndices[i] - 1);
+                var textureIndex = (short)distinctTextureIndices[i] - 1;
                 if (textureIndex < 0)
                 {
                     textureFilePaths.Add(_defaultLandTextureFilePath);
@@ -441,7 +438,7 @@ namespace Gamer.Estate.Tes
                 {
                     var xMajor = x / 4;
                     var xMinor = x - (xMajor * 4);
-                    var texIndex = ((short)textureIndices[(yMajor * 64) + (xMajor * 16) + (yMinor * 4) + xMinor] - 1);
+                    var texIndex = (short)textureIndices[(yMajor * 64) + (xMajor * 16) + (yMinor * 4) + xMinor] - 1;
                     if (texIndex >= 0) { var splatIndex = texInd2SplatInd[(ushort)texIndex]; alphaMap[y, x, splatIndex] = 1; }
                     else alphaMap[y, x, 0] = 1;
                 }

@@ -1,5 +1,4 @@
 //#define LONGTEST
-
 using System;
 using System.Threading.Tasks;
 using Xunit;
@@ -16,12 +15,12 @@ namespace Gamer.Estate.Rsi.Tests
         [InlineData("game://StarCitizen/")]
         public async Task LoadAssetPack(string path)
         {
-            var asset = await new Uri(path).GetRsiAssetPackAsync() as RsiAssetPack;
-//#if LONGTEST
-//            asset.TestLoadFileData(int.MaxValue);
-//#else
-//            asset.TestLoadFileData(100);
-//#endif
+            var assetPack = await new Uri(path).GetRsiAssetPackAsync() as RsiAssetPack;
+            //#if LONGTEST
+            //            assetPack.TestLoadFileData(int.MaxValue);
+            //#else
+            //            assetPack.TestLoadFileData(100);
+            //#endif
         }
     }
 }

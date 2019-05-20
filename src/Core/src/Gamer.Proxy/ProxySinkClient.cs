@@ -34,6 +34,6 @@ namespace Gamer.Proxy
             _cache.GetOrCreateAsync("/asset/.set", async x => await CallAsync<HashSet<string>>("/asset/.set")).Result.Contains(filePath.Replace('\\', '/'));
 
         public override async Task<byte[]> LoadFileDataAsync(string filePath, Func<Task<byte[]>> action) =>
-            await _cache.GetOrCreateAsync($"/asset/{filePath.Replace('\\', '/')}", async x => await CallAsync<byte[]>(filePath.Replace('\\', '/')));
+            await _cache.GetOrCreateAsync($"/asset/{filePath.Replace('\\', '/')}", async x => await CallAsync<byte[]>($"/asset/{filePath.Replace('\\', '/')}"));
     }
 }

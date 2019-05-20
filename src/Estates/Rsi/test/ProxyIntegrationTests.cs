@@ -15,7 +15,7 @@ namespace Gamer.Estate.Rsi.Tests
             Port = HttpServer.FindFreeTcpPort(),
         };
 
-        public TestsFixture() => Target.Initialize(new RsiProxyHandler());
+        public TestsFixture() => Target.Initialize(new RsiEstateHandler());
         public void Dispose() => Target.Dispose();
     }
 
@@ -30,9 +30,9 @@ namespace Gamer.Estate.Rsi.Tests
         {
             // given
             var uri = new Uri(string.Format(path, _fixture.Target.Port));
-            var asset = await uri.GetRsiAssetPackAsync();
+            var assetPack = await uri.GetRsiAssetPackAsync();
             // when
-            var exists = asset.ContainsFile(modelPath);
+            var exists = assetPack.ContainsFile(modelPath);
             // then
             Assert.True(exists);
         }
