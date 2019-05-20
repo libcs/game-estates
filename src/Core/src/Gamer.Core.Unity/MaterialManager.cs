@@ -4,8 +4,14 @@ using UnityEngine.Rendering;
 
 namespace Gamer.Core
 {
+    /// <summary>
+    /// MatTestMode
+    /// </summary>
     public enum MatTestMode { Always, Less, LEqual, Equal, GEqual, Greater, NotEqual, Never }
 
+    /// <summary>
+    /// MaterialType
+    /// </summary>
     public enum MaterialType { None, Default, Standard, BumpedDiffuse, Unlit }
 
     public struct MaterialTextures
@@ -53,11 +59,8 @@ namespace Gamer.Core
         }
 
         public Material BuildMaterialFromProperties(MaterialProps mp) => _material.BuildMaterialFromProperties(mp);
-
         Material BuildMaterial() => _material.BuildMaterial();
-
         Material BuildMaterialBlended(BlendMode sourceBlendMode, BlendMode destinationBlendMode) => _material.BuildMaterialBlended(sourceBlendMode, destinationBlendMode);
-
         Material BuildMaterialTested(float cutoff = 0.5f) => _material.BuildMaterialTested(cutoff);
     }
 }

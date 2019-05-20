@@ -1,12 +1,9 @@
 ﻿using Gamer.Core;
-using Gamer.Estate.Tes.Records;
-using Gamer.Format.Nif;
 using System;
-using System.Linq;
 using UnityEngine;
 using static Gamer.Core.Debug;
 
-namespace Gamer.Estate.Tes.Loader
+namespace Gamer.Estate.Ultima.Loader
 {
     public static class LoadData
     {
@@ -16,19 +13,9 @@ namespace Gamer.Estate.Tes.Loader
 
         public static void Start()
         {
-            var dataUri = new Uri("game://Morrowind/Morrowind.esm");
-            //var dataUri = new Uri("game://Morrowind/Bloodmoon.esm");
-            //var dataUri = new Uri("game://Morrowind/Tribunal.esm");
+            var dataUri = new Uri("game://Zero/");
 
-            //var dataUri = new Uri("game://Oblivion/Oblivion.esm");
-
-            //var dataUri = new Uri("game://SkyrimVR/Skyrim.esm");
-
-            //var dataUri = new Uri("game://Fallout4/Fallout4.esm");
-
-            //var dataUri = new Uri("game://Fallout4VR/Fallout4.esm");
-
-            DataPack = dataUri.GetTesDataPackAsync().Result;
+            DataPack = dataUri.GetUltimaDataPackAsync().Result;
 
             //TestLoadCell(new Vector3(((-2 << 5) + 1) * ConvertUtils.ExteriorCellSideLengthInMeters, 0, ((-1 << 5) + 1) * ConvertUtils.ExteriorCellSideLengthInMeters));
             //TestLoadCell(new Vector3((-1 << 3) * ConvertUtils.ExteriorCellSideLengthInMeters, 0, (-1 << 3) * ConvertUtils.ExteriorCellSideLengthInMeters));
@@ -44,17 +31,17 @@ namespace Gamer.Estate.Tes.Loader
         {
             var cellId = GetCellId(position, 60);
             var cell = DataPack.FindCellRecord(cellId);
-            var land = ((TesDataPack)DataPack).FindLANDRecord(cellId);
-            Log($"LAND #{land?.Id}");
+            var land = ((UltimaDataPack)DataPack).FindLANDRecord(cellId);
+            Log($"LAND #{land?.GridId}");
         }
 
-        static void TestAllCells()
-        {
-            var cells = ((TesDataPack)DataPack).Groups["CELL"].Records;
-            Log($"CELLS: {cells.Count}");
-            foreach (var record in cells.Cast<CELLRecord>())
-                Log(record.EDID.Value);
-        }
+        //static void TestAllCells()
+        //{
+        //    var cells = ((UltimaDataPack)DataPack).Groups["CELL"].Records;
+        //    Log($"CELLS: {cells.Count}");
+        //    foreach (var record in cells.Cast<CELLRecord>())
+        //        Log(record.EDID.Value);
+        //}
 
         public static void OnDestroy() { DataPack?.Dispose(); DataPack = null; }
         public static void Update() { }

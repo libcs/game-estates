@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace Gamer.Estate.Ultima
 {
-    public class UltimaProxyHandler : IEstateHandler
+    public class UltimaEstateHandler : IEstateHandler
     {
         public string Key => "Ultima";
         public Func<Uri, Func<object>, Task<IAssetPack>> AssetPackFunc => async (a, b) => await UltimaExtensions2.GetUltimaAssetPackAsync(a, b);

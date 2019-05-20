@@ -36,7 +36,7 @@ namespace Gamer.ProxyService
         {
             try
             {
-                ProxyWatchAsync(cancellationToken);
+                ProxyWatch(cancellationToken);
                 Ready[0].Wait(cancellationToken);
             }
             catch (Exception e)
@@ -57,7 +57,7 @@ namespace Gamer.ProxyService
             _target.Initialize(new TesEstateHandler());
         }
 
-        public async void ProxyWatchAsync(CancellationToken cancellationToken)
+        public void ProxyWatch(CancellationToken cancellationToken)
         {
             Console.WriteLine("Watching...");
             while (!cancellationToken.IsCancellationRequested)

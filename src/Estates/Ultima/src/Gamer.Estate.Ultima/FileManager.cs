@@ -1,6 +1,7 @@
 ﻿using Gamer.Estate.Ultima.Resources.IO;
 using System;
 using System.IO;
+using System.Text;
 using static Gamer.Core.Debug;
 using static Microsoft.Win32.Registry;
 
@@ -40,8 +41,8 @@ namespace Gamer.Estate.Ultima
 
         static FileManager()
         {
-            Log($"Initializing UO Data. Is64Bit = {Is64Bit}");
-            Log("Looking for UO Installation:");
+            var b = new StringBuilder();
+            b.AppendLine($"Looking for UO Installation: Is64Bit = {Is64Bit}");
             for (var i = 0; i < _knownRegkeys.Length; i++)
             {
                 var exePath = GetExePath(Is64Bit ? $"Wow6432Node\\{_knownRegkeys[i]}" : _knownRegkeys[i]);
@@ -49,22 +50,22 @@ namespace Gamer.Estate.Ultima
                 {
                     if (IsClientIsCompatible(exePath))
                     {
-                        Log($"Compatible: {exePath}");
+                        b.AppendLine($"Compatible: {exePath}");
                         _fileDirectory = exePath;
                     }
-                    else Log($"Incompatible: {exePath}");
+                    else b.AppendLine($"Incompatible: {exePath}");
                 }
             }
             if (_fileDirectory != null)
             {
-                Log(string.Empty);
-                Log($"Selected: {_fileDirectory}");
+                b.AppendLine($"Selected: {_fileDirectory}");
                 var clientVersion = string.Join(".", ClientVersion.ClientExe);
                 var patchVersion = string.Join(".", PatchVersion);
-                Log($"Client.Exe version: {clientVersion}; Patch version reported to server: {patchVersion}");
+                b.AppendLine($"Client.Exe version: {clientVersion}; Patch version reported to server: {patchVersion}");
                 if (!ClientVersion.EqualTo(PatchVersion, ClientVersion.DefaultVersion))
-                    Log($"Note from ZaneDubya: I will not support any code where the Patch version is not {string.Join(".", ClientVersion.DefaultVersion)}");
+                    b.AppendLine($"Note from ZaneDubya: I will not support any code where the Patch version is not {string.Join(".", ClientVersion.DefaultVersion)}");
             }
+            Log(b.ToString());
         }
 
         static bool IsClientIsCompatible(string path)
@@ -122,12 +123,7 @@ namespace Gamer.Estate.Ultima
 
         public static bool Exists(string name)
         {
-            try
-            {
-                name = Path.Combine(_fileDirectory, name);
-                Log($"Checking if file exists [{name}]");
-                return File.Exists(name);
-            }
+            try { return File.Exists(Path.Combine(_fileDirectory, name)); }
             catch { return false; }
         }
         public static bool Exists(string name, int index, string type) => Exists($"{name}{index}.{type}");

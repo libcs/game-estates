@@ -12,13 +12,13 @@ Library/
 UnityGenerated/
 DerivedData/
 Assets/AssetStoreTools*
-Assets/_*
 Logs/
 *.pidb.meta
 sysinfo.txt
 *.apk
 *.unitypackage
 UIElementsSchema/
+**/Assets/_Ter*
 
 # Unity3D Plugins
 **/Assets/Plugins/**/*
