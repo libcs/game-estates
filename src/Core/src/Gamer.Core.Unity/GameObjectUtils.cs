@@ -35,10 +35,10 @@ namespace Gamer.Core
         /// <param name="heightPercents">Terrain height percentages ranging from 0 to 1.</param>
         /// <param name="maxHeight">The maximum height of the terrain, corresponding to a height percentage of 1.</param>
         /// <param name="heightSampleDistance">The horizontal/vertical distance between height samples.</param>
-        /// <param name="splatPrototypes">The textures used by the terrain.</param>
+        /// <param name="terrainLayers">The textures used by the terrain.</param>
         /// <param name="alphaMap">Texture blending information.</param>
         /// <returns>A TerrainData instance.</returns>
-        public static TerrainData CreateTerrainData(int offset, float[,] heightPercents, float maxHeight, float heightSampleDistance, SplatPrototype[] splatPrototypes, float[,,] alphaMap)
+        public static TerrainData CreateTerrainData(int offset, float[,] heightPercents, float maxHeight, float heightSampleDistance, TerrainLayer[] terrainLayers, float[,,] alphaMap)
         {
             Assert(heightPercents.GetLength(0) == heightPercents.GetLength(1) && maxHeight >= 0 && heightSampleDistance >= 0);
 
@@ -58,7 +58,7 @@ namespace Gamer.Core
             }
             else terrainData.size = new Vector3(terrainWidth, 1, terrainWidth);
 
-            terrainData.splatPrototypes = splatPrototypes;
+            terrainData.terrainLayers = terrainLayers;
             if (alphaMap != null)
             {
                 Assert(alphaMap.GetLength(0) == alphaMap.GetLength(1));
@@ -74,13 +74,13 @@ namespace Gamer.Core
         /// <param name="heightPercents">Terrain height percentages ranging from 0 to 1.</param>
         /// <param name="maxHeight">The maximum height of the terrain, corresponding to a height percentage of 1.</param>
         /// <param name="heightSampleDistance">The horizontal/vertical distance between height samples.</param>
-        /// <param name="splatPrototypes">The textures used by the terrain.</param>
+        /// <param name="terrainLayers">The textures used by the terrain.</param>
         /// <param name="alphaMap">Texture blending information.</param>
         /// <param name="position">The position of the terrain.</param>
         /// <returns>A terrain GameObject.</returns>
-        public static GameObject CreateTerrain(int offset, float[,] heightPercents, float maxHeight, float heightSampleDistance, SplatPrototype[] splatPrototypes, float[,,] alphaMap, Vector3 position)
+        public static GameObject CreateTerrain(int offset, float[,] heightPercents, float maxHeight, float heightSampleDistance, TerrainLayer[] terrainLayers, float[,,] alphaMap, Vector3 position)
         {
-            var terrainData = CreateTerrainData(offset, heightPercents, maxHeight, heightSampleDistance, splatPrototypes, alphaMap);
+            var terrainData = CreateTerrainData(offset, heightPercents, maxHeight, heightSampleDistance, terrainLayers, alphaMap);
             return CreateTerrainFromTerrainData(terrainData, position);
         }
 

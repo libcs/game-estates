@@ -376,11 +376,11 @@ namespace Gamer.Estate.Ultima
                 for (var x = 0; x < LAND_SIDELENGTH; x++)
                     heights[y, x] = Utils.ChangeRange(heights[y, x], minHeight, maxHeight, 0, 1);
             // Texture the terrain.
-            SplatPrototype[] splatPrototypes = null;
+            TerrainLayer[] terrainLayers = null;
             float[,,] alphaMap = null;
             var textureIndices = land.Tiles.Select(x => x.TextureId).ToArray();
             // Create splat prototypes.
-            var splatPrototypeList = new List<SplatPrototype>();
+            var terrainLayerList = new List<TerrainLayer>();
             var texInd2SplatInd = new Dictionary<short, int>();
             for (var i = 0; i < textureIndices.Length; i++)
             {
@@ -393,24 +393,24 @@ namespace Gamer.Estate.Ultima
                     // Yield after loading each texture to avoid doing too much work on one frame.
                     yield return null;
                     // Create the splat prototype.
-                    var splat = new SplatPrototype
+                    var layer = new TerrainLayer
                     {
-                        texture = texture,
+                        diffuseTexture = texture,
                         smoothness = 0,
                         metallic = 0,
                         tileSize = new Vector2(6, 6)
                     };
                     // Update collections.
-                    var splatIndex = splatPrototypeList.Count;
-                    splatPrototypeList.Add(splat);
+                    var splatIndex = terrainLayerList.Count;
+                    terrainLayerList.Add(layer);
                     texInd2SplatInd.Add(textureIndex, splatIndex);
                 }
             }
-            splatPrototypes = splatPrototypeList.ToArray();
+            terrainLayers = terrainLayerList.ToArray();
             // Create the alpha map.
             var VTEX_ROWS = 16;
             var VTEX_COLUMNS = VTEX_ROWS;
-            alphaMap = new float[VTEX_ROWS, VTEX_COLUMNS, splatPrototypes.Length];
+            alphaMap = new float[VTEX_ROWS, VTEX_COLUMNS, terrainLayers.Length];
             for (var y = 0; y < VTEX_ROWS; y++)
             {
                 var yMajor = y / 4;
@@ -430,7 +430,7 @@ namespace Gamer.Estate.Ultima
             var heightRange = maxHeight - minHeight;
             var terrainPosition = new Vector3(ConvertUtils.ExteriorCellSideLengthInMeters * land.GridId.x, minHeight / ConvertUtils.MeterInUnits, ConvertUtils.ExteriorCellSideLengthInMeters * land.GridId.y);
             var heightSampleDistance = ConvertUtils.ExteriorCellSideLengthInMeters / LAND_SIDELENGTH;
-            var terrain = GameObjectUtils.CreateTerrain(0, heights, heightRange / ConvertUtils.MeterInUnits, heightSampleDistance, splatPrototypes, alphaMap, terrainPosition);
+            var terrain = GameObjectUtils.CreateTerrain(0, heights, heightRange / ConvertUtils.MeterInUnits, heightSampleDistance, terrainLayers, alphaMap, terrainPosition);
             terrain.GetComponent<Terrain>().materialType = Terrain.MaterialType.BuiltInLegacyDiffuse;
             terrain.transform.parent = parent.transform;
             terrain.isStatic = true;
