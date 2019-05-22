@@ -29,6 +29,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gamer.Format.Wavefront.Test
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gamer.Format.Cry.Unity", "Cry\src\Gamer.Format.Cry.Unity\Gamer.Format.Cry.Unity.csproj", "{C2628988-7D50-417F-A4E0-F592DCEC7ABB}"
 EndProject
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "Gamer.Format.Nif.Niftools", "Nif\src\Gamer.Format.Nif.Niftools\Gamer.Format.Nif.Niftools.pyproj", "{7C73E29B-9EE3-4148-99AD-CD1667C57F6D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gamer.Format.Nif.Last", "Nif\src\Gamer.Format.Nif.Last\Gamer.Format.Nif.Last.csproj", "{2C08B30C-52D5-447D-922F-E0570E88B160}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -83,6 +87,12 @@ Global
 		{C2628988-7D50-417F-A4E0-F592DCEC7ABB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C2628988-7D50-417F-A4E0-F592DCEC7ABB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C2628988-7D50-417F-A4E0-F592DCEC7ABB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7C73E29B-9EE3-4148-99AD-CD1667C57F6D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7C73E29B-9EE3-4148-99AD-CD1667C57F6D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2C08B30C-52D5-447D-922F-E0570E88B160}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2C08B30C-52D5-447D-922F-E0570E88B160}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2C08B30C-52D5-447D-922F-E0570E88B160}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2C08B30C-52D5-447D-922F-E0570E88B160}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

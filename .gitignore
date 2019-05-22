@@ -2,8 +2,8 @@
 *.db
 *.opendb
 *.csproj.user
-.vs
-.vscode
+.vs/
+.vscode/
 packages/
 packages.config
 
@@ -23,6 +23,9 @@ UIElementsSchema/
 # Unity3D Plugins
 **/Assets/Plugins/**/*
 
+# Python
+__pycache__/
+
 # Makefiles
 Makefile
 *.make
@@ -37,6 +40,7 @@ Makefile
 *.sublime-workspace
 
 # Directories we don't ever want to commit
+_build
 bin
 obj
 temp

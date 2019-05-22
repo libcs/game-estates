@@ -11,7 +11,7 @@ namespace Gamer.Format.Wavefront
 {
     public partial class WavefrontObjectWriter : CryObjectWriter
     {
-        public WavefrontObjectWriter(CryFile cryEngine) : base(cryEngine) { }
+        public WavefrontObjectWriter(CryFile cryFile) : base(cryFile) { }
 
         public FileInfo OutputFile_Model { get; internal set; }
         public FileInfo OutputFile_Material { get; internal set; }
@@ -51,38 +51,38 @@ namespace Gamer.Format.Wavefront
             if (!OutputFile_Model.Directory.Exists)
                 OutputFile_Model.Directory.Create();
 
-            WriteMaterial(CryData);
+            WriteMaterial(CryFile);
 
             using (var file = new StreamWriter(OutputFile_Model.FullName))
             {
-                file.WriteLine("# cgf-converter .obj export version {0}", Assembly.GetExecutingAssembly().GetName().Version.ToString());
+                file.WriteLine($"# cgf-converter .obj export version {Assembly.GetExecutingAssembly().GetName().Version}");
                 file.WriteLine("#");
                 if (OutputFile_Material.Exists)
-                    file.WriteLine("mtllib {0}", OutputFile_Material.Name);
+                    file.WriteLine($"mtllib {OutputFile_Material.Name}");
 
                 FaceIndex = 1;
-                var nullParents = CryData.NodeMap.Values.Where(p => p.ParentNode == null).ToArray();
+                var nullParents = CryFile.NodeMap.Values.Where(p => p.ParentNode == null).ToArray();
                 if (nullParents.Length > 1)
                     foreach (var node in nullParents)
                         Log($"Rendering node with null parent {node.Name}");
 
-                foreach (ChunkNode node in CryData.NodeMap.Values)
+                foreach (ChunkNode node in CryFile.NodeMap.Values)
                 {
                     // Don't render shields
                     if (SkipShieldNodes && node.Name.StartsWith("$shield"))
                     {
-                        Log("Skipped shields node {node.Name}");
+                        Log($"Skipped shields node {node.Name}");
                         continue;
                     }
                     // Don't render shields
                     if (SkipProxyNodes && node.Name.StartsWith("proxy"))
                     {
-                        Log("Skipped proxy node {node.Name}");
+                        Log($"Skipped proxy node {node.Name}");
                         continue;
                     }
                     if (node.ObjectChunk == null)
                     {
-                        Log("Skipped node with missing Object {node.Name}");
+                        Log($"Skipped node with missing Object {node.Name}");
                         continue;
                     }
                     switch (node.ObjectChunk.ChunkType)
@@ -106,7 +106,7 @@ namespace Gamer.Format.Wavefront
                 }
 
                 // If this is a .chr file, just write out the hitbox info.  OBJ files can't do armatures.
-                foreach (ChunkCompiledPhysicalProxies tmpProxy in CryData.Chunks.Where(a => a.ChunkType == ChunkTypeEnum.CompiledPhysicalProxies))
+                foreach (ChunkCompiledPhysicalProxies tmpProxy in CryFile.Chunks.Where(a => a.ChunkType == ChunkTypeEnum.CompiledPhysicalProxies))
                     WriteObjHitBox(file, tmpProxy); // TODO: align these properly
             }
         }
@@ -218,14 +218,14 @@ namespace Gamer.Format.Wavefront
                     w.WriteLine("s {0}", FaceIndex++);
 
                 // WRITE MATERIAL BLOCK (USEMTL)
-                if (CryData.Materials.Length > meshSubset.MatID)
-                    w.WriteLine("usemtl {0}", CryData.Materials[meshSubset.MatID].Name);
+                if (CryFile.Materials.Length > meshSubset.MatID)
+                    w.WriteLine("usemtl {0}", CryFile.Materials[meshSubset.MatID].Name);
                 else
                 {
-                    if (CryData.Materials.Length > 0)
+                    if (CryFile.Materials.Length > 0)
                         Log($"Missing Material {meshSubset.MatID}");
                     // The material file doesn't have any elements with the Name of the material.  Use the object name.
-                    w.WriteLine("usemtl {0}_{1}", CryData.RootNode.Name, meshSubset.MatID);
+                    w.WriteLine("usemtl {0}_{1}", CryFile.RootNode.Name, meshSubset.MatID);
                 }
 
                 // Now write out the faces info based on the MtlName

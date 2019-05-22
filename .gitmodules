@@ -4,3 +4,9 @@
 [submodule "lib/GameNetCore"]
 	path = lib/GameNetCore
 	url = git@github.com:bclnet/GameNetCore.git
+[submodule "src/Formats/Nif/src/Niftools/kfmxml"]
+	path = src/Formats/Nif/src/Niftools/kfmxml
+	url = git@github.com:niftools/kfmxml.git
+[submodule "src/Formats/Nif/src/Niftools/nifxml"]
+	path = src/Formats/Nif/src/Niftools/nifxml
+	url = git@github.com:niftools/nifxml.git

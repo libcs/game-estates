@@ -27,7 +27,7 @@ namespace Gamer.Format.Collada
         public Grendgine_Collada daeObject = new Grendgine_Collada();       // This is the serializable class.
         XmlSerializer mySerializer = new XmlSerializer(typeof(Grendgine_Collada));
 
-        public ColladaObjectWriter(CryFile cryEngine) : base(cryEngine) { }
+        public ColladaObjectWriter(CryFile cryFile) : base(cryFile) { }
 
         public override void Write(string outputDir = null, bool preservePath = true)
         {
@@ -35,9 +35,9 @@ namespace Gamer.Format.Collada
             // At this point, we should have a cryData.Asset object, fully populated.
             Log("*** Starting WriteCOLLADA() ***");
 
-            Log($"Number of models: {CryData.Models.Count}");
-            for (var i = 0; i < CryData.Models.Count; i++)
-                Log($"\tNumber of nodes in model: {CryData.Models[i].NodeMap.Count}");
+            Log($"Number of models: {CryFile.Models.Count}");
+            for (var i = 0; i < CryFile.Models.Count; i++)
+                Log($"\tNumber of nodes in model: {CryFile.Models[i].NodeMap.Count}");
 
             #region Output testing
 
@@ -85,7 +85,7 @@ namespace Gamer.Format.Collada
             WriteLibrary_Materials();
             WriteLibrary_Geometries();
             // If there is Skinning info, create the controller library and set up visual scene to refer to it.  Otherwise just write the Visual Scene
-            if (CryData.SkinningInfo.HasSkinningInfo)
+            if (CryFile.SkinningInfo.HasSkinningInfo)
             {
                 WriteLibrary_Controllers();
                 WriteLibrary_VisualScenesWithSkeleton();
@@ -133,11 +133,11 @@ namespace Gamer.Format.Collada
                 Author = "Author",
                 Author_Website = "https://github.com",
                 Author_Email = "mail@mail",
-                Source_Data = CryData.RootNode.Name // The cgf/cga/skin/whatever file we read
+                Source_Data = CryFile.RootNode.Name // The cgf/cga/skin/whatever file we read
             };
             // Get the actual file creators from the Source Chunk
             contributors[1] = new Grendgine_Collada_Asset_Contributor();
-            foreach (ChunkSourceInfo tmpSource in CryData.Chunks.Where(a => a.ChunkType == ChunkTypeEnum.SourceInfo))
+            foreach (ChunkSourceInfo tmpSource in CryFile.Chunks.Where(a => a.ChunkType == ChunkTypeEnum.SourceInfo))
             {
                 contributors[1].Author = tmpSource.Author;
                 contributors[1].Source_Data = tmpSource.SourceFile;
@@ -150,7 +150,7 @@ namespace Gamer.Format.Collada
                 Meter = 1.0,
                 Name = "meter"
             };
-            asset.Title = CryData.RootNode.Name;
+            asset.Title = CryFile.RootNode.Name;
             daeObject.Asset = asset;
             daeObject.Asset.Contributor = contributors;
         }
@@ -164,34 +164,34 @@ namespace Gamer.Format.Collada
             //Console.WriteLine($"Number of images { CryData.Materials.Length}");
             // We now have the image library set up.  start to populate.
             //foreach (CryEngine_Core.Material material in CryData.Materials)
-            for (var k = 0; k < CryData.Materials.Length; k++)
+            for (var k = 0; k < CryFile.Materials.Length; k++)
             {
                 // each mat will have a number of texture files.  Need to create an <image> for each of them.
                 //var numTextures = material.Textures.Length;
-                var numTextures = CryData.Materials[k].Textures.Length;
+                var numTextures = CryFile.Materials[k].Textures.Length;
                 for (var i = 0; i < numTextures; i++)
                 {
                     // For each texture in the material, we make a new <image> object and add it to the list. 
                     var tmpImage = new Grendgine_Collada_Image
                     {
-                        ID = CryData.Materials[k].Name + "_" + CryData.Materials[k].Textures[i].Map,
-                        Name = CryData.Materials[k].Name + "_" + CryData.Materials[k].Textures[i].Map,
+                        ID = CryFile.Materials[k].Name + "_" + CryFile.Materials[k].Textures[i].Map,
+                        Name = CryFile.Materials[k].Name + "_" + CryFile.Materials[k].Textures[i].Map,
                         Init_From = new Grendgine_Collada_Init_From()
                     };
                     // Build the URI path to the file as a .dds, clean up the slashes.
                     StringBuilder b;
-                    if (CryData.Materials[k].Textures[i].File.Contains(@"/") || CryData.Materials[k].Textures[i].File.Contains(@"\"))
+                    if (CryFile.Materials[k].Textures[i].File.Contains(@"/") || CryFile.Materials[k].Textures[i].File.Contains(@"\"))
                     {
                         // if Datadir is empty, need a clean name and can only search in the current directory.  If Datadir is provided, then look there.
                         if (DataDir == null)
                         {
-                            b = new StringBuilder(CleanMtlFileName(CryData.Materials[k].Textures[i].File) + ".dds");
+                            b = new StringBuilder(CleanMtlFileName(CryFile.Materials[k].Textures[i].File) + ".dds");
                             if (TiffTextures) b.Replace(".dds", ".tif");
                         }
-                        else b = new StringBuilder(@"/" + DataDir.FullName.Replace(" ", @"%20") + @"/" + CryData.Materials[k].Textures[i].File);
+                        else b = new StringBuilder(@"/" + DataDir.FullName.Replace(" ", @"%20") + @"/" + CryFile.Materials[k].Textures[i].File);
                     }
                     else
-                        b = new StringBuilder(CryData.Materials[k].Textures[i].File);
+                        b = new StringBuilder(CryFile.Materials[k].Textures[i].File);
                     if (!TiffTextures)
                     {
                         b.Replace(".tif", ".dds");
@@ -215,7 +215,7 @@ namespace Gamer.Format.Collada
             var libraryMaterials = new Grendgine_Collada_Library_Materials();
             // We have our top level.
             daeObject.Library_Materials = libraryMaterials;
-            var numMaterials = CryData.Materials.Length;
+            var numMaterials = CryFile.Materials.Length;
             // Now create a material for each material in the object
             Log($"Number of materials: {numMaterials}");
             var materials = new Grendgine_Collada_Material[numMaterials];
@@ -227,17 +227,17 @@ namespace Gamer.Format.Collada
                 };
                 // Name is blank if it's a material file with no submats.  Set to file name.
                 // Need material ID here, so the meshes can reference it.  Use the chunk ID.
-                if (CryData.Materials[i].Name == null)
+                if (CryFile.Materials[i].Name == null)
                 {
-                    tmpMaterial.Name = CryData.RootNode.Name;
-                    tmpMaterial.ID = CryData.RootNode.Name;
-                    tmpMaterial.Instance_Effect.URL = "#" + CryData.RootNode.Name + "-effect";
+                    tmpMaterial.Name = CryFile.RootNode.Name;
+                    tmpMaterial.ID = CryFile.RootNode.Name;
+                    tmpMaterial.Instance_Effect.URL = "#" + CryFile.RootNode.Name + "-effect";
                 }
                 else
                 {
-                    tmpMaterial.Name = CryData.Materials[i].Name;
-                    tmpMaterial.ID = CryData.Materials[i].Name + "-material";          // this is the order the materials appear in the .mtl file.  Needed for geometries.
-                    tmpMaterial.Instance_Effect.URL = "#" + CryData.Materials[i].Name + "-effect";
+                    tmpMaterial.Name = CryFile.Materials[i].Name;
+                    tmpMaterial.ID = CryFile.Materials[i].Name + "-material";          // this is the order the materials appear in the .mtl file.  Needed for geometries.
+                    tmpMaterial.Instance_Effect.URL = "#" + CryFile.Materials[i].Name + "-effect";
                 }
                 // The # in front of tmpMaterial.name is needed to reference the effect in Library_effects.
                 materials[i] = tmpMaterial;
@@ -250,15 +250,15 @@ namespace Gamer.Format.Collada
             // The Effects library.  This is actual material stuff, so... let's get into it!  First, let's make a library effects object
             var libraryEffects = new Grendgine_Collada_Library_Effects();
             // Like materials.  We will need one effect for each material.
-            var numEffects = CryData.Materials.Length;
+            var numEffects = CryFile.Materials.Length;
             var effects = new Grendgine_Collada_Effect[numEffects];
             for (var i = 0; i < numEffects; i++)
             {
                 var tmpEffect = effects[i] = new Grendgine_Collada_Effect
                 {
                     //Name = CryData.Materials[i].Name,
-                    ID = CryData.Materials[i].Name + "-effect",
-                    Name = CryData.Materials[i].Name
+                    ID = CryFile.Materials[i].Name + "-effect",
+                    Name = CryFile.Materials[i].Name
                 };
                 // create the profile_common for the effect
                 var profiles = new List<Grendgine_Collada_Profile_COMMON>();
@@ -273,24 +273,24 @@ namespace Gamer.Format.Collada
                 #region MATERIALS SAMPLER AND SURFACE
 
                 // Check to see if the texture exists, and if so make a sampler and surface.
-                var numTextures = CryData.Materials[i].Textures.Length;
-                for (var j = 0; j < CryData.Materials[i].Textures.Length; j++)
+                var numTextures = CryFile.Materials[i].Textures.Length;
+                for (var j = 0; j < CryFile.Materials[i].Textures.Length; j++)
                 {
                     // Add the Surface node
                     var texSurface = new Grendgine_Collada_New_Param
                     {
-                        sID = CleanMtlFileName(CryData.Materials[i].Textures[j].File) + "-surface",
+                        sID = CleanMtlFileName(CryFile.Materials[i].Textures[j].File) + "-surface",
                         Surface = new Grendgine_Collada_Surface
                         {
                             Type = "2D",
                             //Init_From = new Grendgine_Collada_Init_From { Uri = CleanName(texture.File) },
-                            Init_From = new Grendgine_Collada_Init_From { Uri = CryData.Materials[i].Name + "_" + CryData.Materials[i].Textures[j].Map },
+                            Init_From = new Grendgine_Collada_Init_From { Uri = CryFile.Materials[i].Name + "_" + CryFile.Materials[i].Textures[j].Map },
                         },
                     };
                     // Add the Sampler node
                     var texSampler = new Grendgine_Collada_New_Param
                     {
-                        sID = CleanMtlFileName(CryData.Materials[i].Textures[j].File) + "-sampler",
+                        sID = CleanMtlFileName(CryFile.Materials[i].Textures[j].File) + "-sampler",
                         Sampler2D = new Grendgine_Collada_Sampler2D { Source = texSurface.sID }
                     };
                     newparams.Add(texSurface);
@@ -309,11 +309,11 @@ namespace Gamer.Format.Collada
                     Specular = new Grendgine_Collada_FX_Common_Color_Or_Texture_Type(),
                     Emission = new Grendgine_Collada_FX_Common_Color_Or_Texture_Type
                     {
-                        Color = new Grendgine_Collada_Color { sID = "emission", Value_As_String = CryData.Materials[i].__Emissive.Replace(",", " ") }
+                        Color = new Grendgine_Collada_Color { sID = "emission", Value_As_String = CryFile.Materials[i].__Emissive.Replace(",", " ") }
                     },
                     Shininess = new Grendgine_Collada_FX_Common_Float_Or_Param_Type
                     {
-                        Float = new Grendgine_Collada_SID_Float { sID = "shininess", Value = (float)CryData.Materials[i].Shininess }
+                        Float = new Grendgine_Collada_SID_Float { sID = "shininess", Value = (float)CryFile.Materials[i].Shininess }
                     },
                     Index_Of_Refraction = new Grendgine_Collada_FX_Common_Float_Or_Param_Type
                     {
@@ -321,7 +321,7 @@ namespace Gamer.Format.Collada
                     },
                     Transparent = new Grendgine_Collada_FX_Common_Color_Or_Texture_Type
                     {
-                        Color = new Grendgine_Collada_Color { Value_As_String = (1 - CryData.Materials[i].Opacity).ToString() }, // Subtract from 1 for proper value.
+                        Color = new Grendgine_Collada_Color { Value_As_String = (1 - CryFile.Materials[i].Opacity).ToString() }, // Subtract from 1 for proper value.
                         Opaque = new Grendgine_Collada_FX_Opaque_Channel()
                     }
                 };
@@ -330,7 +330,7 @@ namespace Gamer.Format.Collada
                 // Add all the emissive, etc features to the phong
                 // Need to check if a texture exists.  If so, refer to the sampler.  Should be a <Texture Map="Diffuse" line if there is a map.
                 bool diffound = false, specfound = false;
-                foreach (var texture in CryData.Materials[i].Textures)
+                foreach (var texture in CryFile.Materials[i].Textures)
                 {
                     //Console.WriteLine("Processing material texture {0}", CleanName(texture.File));
                     if (texture.Map == Material.Texture.MapTypeEnum.Diffuse)
@@ -358,9 +358,9 @@ namespace Gamer.Format.Collada
                         } };
                 }
                 if (!diffound)
-                    phong.Diffuse.Color = new Grendgine_Collada_Color { sID = "diffuse", Value_As_String = CryData.Materials[i].__Diffuse.Replace(",", " ") };
+                    phong.Diffuse.Color = new Grendgine_Collada_Color { sID = "diffuse", Value_As_String = CryFile.Materials[i].__Diffuse.Replace(",", " ") };
                 if (!specfound)
-                    phong.Specular.Color = new Grendgine_Collada_Color { sID = "specular", Value_As_String = CryData.Materials[i].__Specular != null ? CryData.Materials[i].__Specular.Replace(",", " ") : "1 1 1" };
+                    phong.Specular.Color = new Grendgine_Collada_Color { sID = "specular", Value_As_String = CryFile.Materials[i].__Specular != null ? CryFile.Materials[i].__Specular.Replace(",", " ") : "1 1 1" };
 
                 #endregion
 
@@ -382,7 +382,7 @@ namespace Gamer.Format.Collada
 
             // For each of the nodes, we need to write the geometry.
             // Use a foreach statement to get all the node chunks.  This will get us the meshes, which will contain the vertex, UV and normal info.
-            foreach (ChunkNode nodeChunk in CryData.Chunks.Where(a => a.ChunkType == ChunkTypeEnum.Node))
+            foreach (ChunkNode nodeChunk in CryFile.Chunks.Where(a => a.ChunkType == ChunkTypeEnum.Node))
             {
                 // Create a geometry object.  Use the chunk ID for the geometry ID
                 // Will have to be careful with this, since with .cga/.cgam pairs will need to match by Name.
@@ -540,7 +540,7 @@ namespace Gamer.Format.Collada
                             {
                                 // Rotate/translate the vertex
                                 // Dymek's code to rescale by bounding box.  Only apply to geometry (cga or cgf), and not skin or chr objects.
-                                if (!CryData.InputFile.EndsWith("skin") && !CryData.InputFile.EndsWith("chr"))
+                                if (!CryFile.InputFile.EndsWith("skin") && !CryFile.InputFile.EndsWith("chr"))
                                 {
                                     var multiplerX = Math.Abs(tmpMeshChunk.MinBound.x - tmpMeshChunk.MaxBound.x) / 2f;
                                     var multiplerY = Math.Abs(tmpMeshChunk.MinBound.y - tmpMeshChunk.MaxBound.y) / 2f;
@@ -622,7 +622,7 @@ namespace Gamer.Format.Collada
                                 },
                                 VCount = new Grendgine_Collada_Int_Array_String { Value_As_String = b0.ToString().TrimEnd() },
                                 P = new Grendgine_Collada_Int_Array_String { Value_As_String = b1.ToString().TrimEnd() },
-                                Material = CryData.Materials.Count() != 0 ? CryData.Materials[tmpMeshSubsets.MeshSubsets[j].MatID].Name + "-material" : null
+                                Material = CryFile.Materials.Count() != 0 ? CryFile.Materials[tmpMeshSubsets.MeshSubsets[j].MatID].Name + "-material" : null
                             };
                         }
 
@@ -741,15 +741,15 @@ namespace Gamer.Format.Collada
 
             // JOINTS SOURCE
             var boneNames = new StringBuilder();
-            for (var i = 0; i < CryData.SkinningInfo.CompiledBones.Count; i++)
-                boneNames.Append(CryData.SkinningInfo.CompiledBones[i].boneName.Replace(' ', '_') + " ");
+            for (var i = 0; i < CryFile.SkinningInfo.CompiledBones.Count; i++)
+                boneNames.Append(CryFile.SkinningInfo.CompiledBones[i].boneName.Replace(' ', '_') + " ");
             skin.Source[0] = new Grendgine_Collada_Source
             {
                 ID = "Controller-joints",
                 Name_Array = new Grendgine_Collada_Name_Array()
                 {
                     ID = "Controller-joints-array",
-                    Count = CryData.SkinningInfo.CompiledBones.Count,
+                    Count = CryFile.SkinningInfo.CompiledBones.Count,
                     Value_Pre_Parse = boneNames.ToString().TrimEnd()
                 },
                 Technique_Common = new Grendgine_Collada_Technique_Common_Source
@@ -757,7 +757,7 @@ namespace Gamer.Format.Collada
                     Accessor = new Grendgine_Collada_Accessor
                     {
                         Source = "#Controller-joints-array",
-                        Count = (uint)CryData.SkinningInfo.CompiledBones.Count,
+                        Count = (uint)CryFile.SkinningInfo.CompiledBones.Count,
                         Stride = 1
                     }
                 }
@@ -770,15 +770,15 @@ namespace Gamer.Format.Collada
                 Float_Array = new Grendgine_Collada_Float_Array
                 {
                     ID = "Controller-bind_poses-array",
-                    Count = CryData.SkinningInfo.CompiledBones.Count * 16,
-                    Value_As_String = GetBindPoseArray(CryData.SkinningInfo.CompiledBones)
+                    Count = CryFile.SkinningInfo.CompiledBones.Count * 16,
+                    Value_As_String = GetBindPoseArray(CryFile.SkinningInfo.CompiledBones)
                 },
                 Technique_Common = new Grendgine_Collada_Technique_Common_Source
                 {
                     Accessor = new Grendgine_Collada_Accessor
                     {
                         Source = "#Controller-bind_poses-array",
-                        Count = (uint)CryData.SkinningInfo.CompiledBones.Count,
+                        Count = (uint)CryFile.SkinningInfo.CompiledBones.Count,
                         Stride = 16,
                         Param = new[] { new Grendgine_Collada_Param { Name = "TRANSFORM", Type = "float4x4" } }
                     }
@@ -787,17 +787,17 @@ namespace Gamer.Format.Collada
 
             // WEIGHTS SOURCE
             var weights = new StringBuilder();
-            var weightsCount = CryData.SkinningInfo.IntVertices == null ? CryData.SkinningInfo.BoneMapping.Count : CryData.SkinningInfo.Ext2IntMap.Count;
+            var weightsCount = CryFile.SkinningInfo.IntVertices == null ? CryFile.SkinningInfo.BoneMapping.Count : CryFile.SkinningInfo.Ext2IntMap.Count;
             // This is a case where there are bones, and only Bone Mapping data from a datastream chunk.  Skin files.
-            if (CryData.SkinningInfo.IntVertices == null)
-                for (var i = 0; i < CryData.SkinningInfo.BoneMapping.Count; i++)
+            if (CryFile.SkinningInfo.IntVertices == null)
+                for (var i = 0; i < CryFile.SkinningInfo.BoneMapping.Count; i++)
                     for (var j = 0; j < 4; j++)
-                        weights.Append(((float)CryData.SkinningInfo.BoneMapping[i].Weight[j] / 255).ToString() + " ");
+                        weights.Append(((float)CryFile.SkinningInfo.BoneMapping[i].Weight[j] / 255).ToString() + " ");
             // Bones and int verts.  Will use int verts for weights, but this doesn't seem perfect either.
             else
-                for (var i = 0; i < CryData.SkinningInfo.Ext2IntMap.Count; i++)
+                for (var i = 0; i < CryFile.SkinningInfo.Ext2IntMap.Count; i++)
                     for (var j = 0; j < 4; j++)
-                        weights.Append(CryData.SkinningInfo.IntVertices[CryData.SkinningInfo.Ext2IntMap[i]].Weights[j] + " ");
+                        weights.Append(CryFile.SkinningInfo.IntVertices[CryFile.SkinningInfo.Ext2IntMap[i]].Weights[j] + " ");
             CleanNumbers(weights);
             skin.Source[2] = new Grendgine_Collada_Source()
             {
@@ -831,33 +831,33 @@ namespace Gamer.Format.Collada
 
             // VERTEX WEIGHTS
             var vCount = new StringBuilder();
-            for (var i = 0; i < CryData.SkinningInfo.BoneMapping.Count; i++)
+            for (var i = 0; i < CryFile.SkinningInfo.BoneMapping.Count; i++)
                 vCount.Append("4 ");
             var vertices = new StringBuilder();
             var idx = 0;
-            if (!CryData.Models[0].SkinningInfo.HasIntToExtMapping)
-                for (var i = 0; i < CryData.SkinningInfo.BoneMapping.Count; i++)
+            if (!CryFile.Models[0].SkinningInfo.HasIntToExtMapping)
+                for (var i = 0; i < CryFile.SkinningInfo.BoneMapping.Count; i++)
                 {
                     var wholePart = i / 4;
-                    vertices.Append(CryData.SkinningInfo.BoneMapping[i].BoneIndex[0] + " " + idx + " ");
-                    vertices.Append(CryData.SkinningInfo.BoneMapping[i].BoneIndex[1] + " " + (idx + 1) + " ");
-                    vertices.Append(CryData.SkinningInfo.BoneMapping[i].BoneIndex[2] + " " + (idx + 2) + " ");
-                    vertices.Append(CryData.SkinningInfo.BoneMapping[i].BoneIndex[3] + " " + (idx + 3) + " ");
+                    vertices.Append(CryFile.SkinningInfo.BoneMapping[i].BoneIndex[0] + " " + idx + " ");
+                    vertices.Append(CryFile.SkinningInfo.BoneMapping[i].BoneIndex[1] + " " + (idx + 1) + " ");
+                    vertices.Append(CryFile.SkinningInfo.BoneMapping[i].BoneIndex[2] + " " + (idx + 2) + " ");
+                    vertices.Append(CryFile.SkinningInfo.BoneMapping[i].BoneIndex[3] + " " + (idx + 3) + " ");
                     idx = idx + 4;
                 }
             else
-                for (var i = 0; i < CryData.SkinningInfo.Ext2IntMap.Count; i++)
+                for (var i = 0; i < CryFile.SkinningInfo.Ext2IntMap.Count; i++)
                 {
                     var wholePart = i / 4;
-                    vertices.Append(CryData.SkinningInfo.IntVertices[CryData.SkinningInfo.Ext2IntMap[i]].BoneIDs[0] + " " + idx + " ");
-                    vertices.Append(CryData.SkinningInfo.IntVertices[CryData.SkinningInfo.Ext2IntMap[i]].BoneIDs[1] + " " + (idx + 1) + " ");
-                    vertices.Append(CryData.SkinningInfo.IntVertices[CryData.SkinningInfo.Ext2IntMap[i]].BoneIDs[2] + " " + (idx + 2) + " ");
-                    vertices.Append(CryData.SkinningInfo.IntVertices[CryData.SkinningInfo.Ext2IntMap[i]].BoneIDs[3] + " " + (idx + 3) + " ");
+                    vertices.Append(CryFile.SkinningInfo.IntVertices[CryFile.SkinningInfo.Ext2IntMap[i]].BoneIDs[0] + " " + idx + " ");
+                    vertices.Append(CryFile.SkinningInfo.IntVertices[CryFile.SkinningInfo.Ext2IntMap[i]].BoneIDs[1] + " " + (idx + 1) + " ");
+                    vertices.Append(CryFile.SkinningInfo.IntVertices[CryFile.SkinningInfo.Ext2IntMap[i]].BoneIDs[2] + " " + (idx + 2) + " ");
+                    vertices.Append(CryFile.SkinningInfo.IntVertices[CryFile.SkinningInfo.Ext2IntMap[i]].BoneIDs[3] + " " + (idx + 3) + " ");
                     idx = idx + 4;
                 }
             skin.Vertex_Weights = new Grendgine_Collada_Vertex_Weights
             {
-                Count = CryData.SkinningInfo.BoneMapping.Count,
+                Count = CryFile.SkinningInfo.BoneMapping.Count,
                 VCount = new Grendgine_Collada_Int_Array_String
                 {
                     Value_As_String = vCount.ToString().TrimEnd()
@@ -913,21 +913,21 @@ namespace Gamer.Format.Collada
             var nodes = new List<Grendgine_Collada_Node>();
 
             // Check to see if there is a CompiledBones chunk.  If so, add a Node.
-            if (CryData.Chunks.Any(a => a.ChunkType == ChunkTypeEnum.CompiledBones || a.ChunkType == ChunkTypeEnum.CompiledBonesSC))
-                nodes.Add(CreateJointNode(CryData.Bones.RootBone));
+            if (CryFile.Chunks.Any(a => a.ChunkType == ChunkTypeEnum.CompiledBones || a.ChunkType == ChunkTypeEnum.CompiledBonesSC))
+                nodes.Add(CreateJointNode(CryFile.Bones.RootBone));
 
             // Geometry visual Scene.
-            if (CryData.Models.Count > 1) // Star Citizen model with .cga/.cgam pair.
+            if (CryFile.Models.Count > 1) // Star Citizen model with .cga/.cgam pair.
             {
                 // First model file (.cga or .cgf) will contain the main Root Node, along with all non geometry Node chunks (placeholders).
                 // Second one will have all the datastreams, but needs to be tied to the RootNode of the first model.
                 // THERE CAN BE MULTIPLE ROOT NODES IN EACH FILE!  Check to see if the parentnodeid ~0 and be sure to add a node for it.
                 var positionNodes = new List<Grendgine_Collada_Node>();        // For SC files, these are the nodes in the .cga/.cgf files.
-                foreach (var root in CryData.Models[0].NodeMap.Values.Where(a => a.ParentNodeID == ~0).ToList())
+                foreach (var root in CryFile.Models[0].NodeMap.Values.Where(a => a.ParentNodeID == ~0).ToList())
                     positionNodes.Add(CreateNode(root));
                 nodes.AddRange(positionNodes.ToArray());
             }
-            else nodes.Add(CreateNode(CryData.RootNode));
+            else nodes.Add(CreateNode(CryFile.RootNode));
 
             // Set up the library
             daeObject.Library_Visual_Scene = new Grendgine_Collada_Library_Visual_Scenes
@@ -948,25 +948,25 @@ namespace Gamer.Format.Collada
             var nodes = new List<Grendgine_Collada_Node>();
 
             // Check to see if there is a CompiledBones chunk.  If so, add a Node.  
-            if (CryData.Chunks.Any(a => a.ChunkType == ChunkTypeEnum.CompiledBones || a.ChunkType == ChunkTypeEnum.CompiledBonesSC))
-                nodes.Add(CreateJointNode(CryData.Bones.RootBone));
+            if (CryFile.Chunks.Any(a => a.ChunkType == ChunkTypeEnum.CompiledBones || a.ChunkType == ChunkTypeEnum.CompiledBonesSC))
+                nodes.Add(CreateJointNode(CryFile.Bones.RootBone));
 
             // This gets complicated.  We need to make one instance_material for each material used in this node chunk.  The mat IDs used in this
             // node chunk are stored in meshsubsets, so for each subset we need to grab the mat, get the target (id), and make an instance_material for it.
             var instanceMaterials = new List<Grendgine_Collada_Instance_Material_Geometry>();
-            for (var i = 0; i < CryData.Materials.Length; i++)
+            for (var i = 0; i < CryFile.Materials.Length; i++)
                 // For each mesh subset, we want to create an instance material and add it to instanceMaterials list.
                 instanceMaterials.Add(new Grendgine_Collada_Instance_Material_Geometry
                 {
-                    Target = "#" + CryData.Materials[i].Name + "-material",
-                    Symbol = CryData.Materials[i].Name + "-material"
+                    Target = "#" + CryFile.Materials[i].Name + "-material",
+                    Symbol = CryFile.Materials[i].Name + "-material"
                 });
 
             // Geometry visual Scene.
             nodes.Add(new Grendgine_Collada_Node
             {
-                ID = CryData.Models[0].FileName,
-                Name = CryData.Models[0].FileName,
+                ID = CryFile.Models[0].FileName,
+                Name = CryFile.Models[0].FileName,
                 Type = Grendgine_Collada_Node_Type.NODE,
                 Matrix = new[] { new Grendgine_Collada_Matrix
                 {
@@ -995,16 +995,16 @@ namespace Gamer.Format.Collada
             // This will be used recursively to create a node object and return it to WriteLibrary_VisualScenes
             Grendgine_Collada_Node tmpNode;
             // Check to see if there is a second model file, and if the mesh chunk is actually there.
-            if (CryData.Models.Count > 1)
+            if (CryFile.Models.Count > 1)
             {
                 // Star Citizen pair.  Get the Node and Mesh chunks from the geometry file, unless it's a Proxy node.
                 var nodeName = nodeChunk.Name;
                 var nodeID = nodeChunk.ID;
                 // make sure there is a geometry node in the geometry file
-                if (CryData.Models[1].NodeMap.ContainsKey(nodeID))
+                if (CryFile.Models[1].NodeMap.ContainsKey(nodeID))
                 {
-                    var geometryNode = CryData.Models[1].NodeMap.Values.Where(a => a.Name == nodeChunk.Name).First();
-                    var geometryMesh = (ChunkMesh)CryData.Models[1].ChunkMap[geometryNode.ObjectNodeID];
+                    var geometryNode = CryFile.Models[1].NodeMap.Values.Where(a => a.Name == nodeChunk.Name).First();
+                    var geometryMesh = (ChunkMesh)CryFile.Models[1].ChunkMap[geometryNode.ObjectNodeID];
                     tmpNode = CreateGeometryNode(geometryNode, geometryMesh);
                 }
                 else tmpNode = CreateSimpleNode(nodeChunk);
@@ -1109,7 +1109,7 @@ namespace Gamer.Format.Collada
             {
                 var idx = 0;
                 var childNodes = new Grendgine_Collada_Node[bone.numChildren];
-                foreach (var childBone in CryData.Bones.GetAllChildBones(bone))
+                foreach (var childBone in CryFile.Bones.GetAllChildBones(bone))
                     childNodes[idx++] = CreateJointNode(childBone);
                 tmpNode.node = childNodes;
             }
@@ -1134,11 +1134,11 @@ namespace Gamer.Format.Collada
             var tmpMeshSubsets = (ChunkMeshSubsets)nodeChunk._model.ChunkMap[tmpMeshChunk.MeshSubsets];  // Listed as Object ID for the Node
             for (var i = 0; i < tmpMeshSubsets.NumMeshSubset; i++)
                 // For each mesh subset, we want to create an instance material and add it to instanceMaterials list.
-                if (CryData.Materials.Count() > 0)
+                if (CryFile.Materials.Count() > 0)
                     instanceMaterials.Add(new Grendgine_Collada_Instance_Material_Geometry
                     {
-                        Target = "#" + CryData.Materials[tmpMeshSubsets.MeshSubsets[i].MatID].Name + "-material",
-                        Symbol = CryData.Materials[tmpMeshSubsets.MeshSubsets[i].MatID].Name + "-material"
+                        Target = "#" + CryFile.Materials[tmpMeshSubsets.MeshSubsets[i].MatID].Name + "-material",
+                        Symbol = CryFile.Materials[tmpMeshSubsets.MeshSubsets[i].MatID].Name + "-material"
                     });
 
             // we can have multiple matrices, but only need one since there is only one per Node chunk anyway
