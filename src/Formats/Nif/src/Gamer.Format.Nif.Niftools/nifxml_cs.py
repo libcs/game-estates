@@ -1715,11 +1715,13 @@ class Block(Compound):
 #
 # import elements into our code generating classes
 #
-
 # import via "import nifxml" from .
-if os.path.exists("nif.xml"):
+if os.path.exists("../../../../../lib/Niftools/nifxml/nif.xml"):
+    doc = parse("../../../../../lib/Niftools/nifxml/nif.xml")
+# import via "import nifxml" from .
+elif os.path.exists("nif.xml"):
     doc = parse("nif.xml")
-# import via "import docsys" from ..
+# import via "import docsys" from .
 elif os.path.exists("docsys/nif.xml"):
     doc = parse("docsys/nif.xml")
 # new submodule system
