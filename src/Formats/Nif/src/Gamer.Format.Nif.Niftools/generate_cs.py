@@ -66,7 +66,7 @@ import itertools
 #
 # global data
 #
-ROOT_DIR = "../Gamer.Format.Nif/"
+ROOT_DIR = "../Gamer.Format.Nif2/"
 BOOTSTRAP = True
 GENIMPL = True
 GENACCESSORS = False
@@ -114,24 +114,19 @@ for n in compound_names:
     customCtx = ExtractCustomCode(file_name)
 
     cs = CSFile(io.open(file_name, 'wb'))
-    cs.code('/* Copyright (c) 2006, NIF File Format Library and Tools')
-    cs.code('All rights reserved.  Please see niflib.h for license. */')
-    cs.code()
-    cs.code('//---THIS FILE WAS AUTOMATICALLY GENERATED.  DO NOT EDIT---//')
-    cs.code()
-    cs.code('//To change this file, alter the /niflib/gen_niflib_cs Python script.')
+    cs.code('/* Copyright (c) 2006, NIF File Format Library and Tools */')
+    cs.code('// THIS FILE WAS AUTOMATICALLY GENERATED.  DO NOT EDIT! //')
+    cs.code('// To change this file, alter the generate_cs.py Python script.')
     cs.code()
     #if n in ["Header", "Footer"]:
     #    cs.code('using mylib2')
     cs.code(x.code_using())
-    cs.write("namespace Niflib {\n")
     cs.code()
+    cs.code('namespace Niflib'); cs.code('{')
     # header
-    cs.comment(x.description)
-    if x.template:
-        cs.code('public class %s<T> {' % x.cname)
-    else:
-        cs.code('public class %s {' % x.cname)
+    cs.comment(x.description or x.cname)
+    if x.template: cs.code('public class %s<T>' % x.cname); cs.code('{')
+    else: cs.code('public class %s' % x.cname); cs.code('{')
     
     #constructor/destructor/assignment
     #if not x.template:
@@ -150,13 +145,15 @@ for n in compound_names:
 
     if not x.template:
 
-        cs.code('//Constructor')
-        
+        cs.code()
         # constructor
         x_code_construct = x.code_construct()
         if x_code_construct:
-            cs.code("public %s() { unchecked {\n%s\n} }" % (x.cname,x_code_construct))
-            cs.code()
+            cs.code('public %s()' % x.cname); cs.code('{')
+            cs.code('unchecked'); cs.code('{')
+            cs.code('%s' % x_code_construct)
+            cs.code('}')
+            cs.code('}')
 
         #cs.code('//Copy Constructor')
         #cs.code( '%s(%s src) {'%(x.cname,x.cname) )
@@ -175,16 +172,18 @@ for n in compound_names:
 
         # header and footer functions
         if n == "Header":
-            cs.code('public NifInfo Read(IStream s) {')
-            cs.code('//Declare NifInfo structure')
-            cs.code('var info = new NifInfo();')
             cs.code()
+            cs.code('public NifInfo Read(IStream s)'); cs.code('{')
+            cs.code('// Declare NifInfo structure')
+            cs.code('var info = new NifInfo();')
             cs.stream(x, ACTION_READ)
             cs.code()
-            cs.code('//Copy info.version to local version var.')
+
+            cs.code('// Copy info.version to local version var.')
             cs.code('version = info.version;')
             cs.code()
-            cs.code('//Fill out and return NifInfo structure.')
+
+            cs.code('// Fill out and return NifInfo structure.')
             cs.code('info.userVersion = userVersion;')
             cs.code('info.userVersion2 = userVersion2;')
             cs.code('info.endian = (EndianType)endianType;')
@@ -194,72 +193,73 @@ for n in compound_names:
             cs.code('return info;')
             cs.code('}')
             cs.code()
-            cs.code('public void Write(OStream s, NifInfo info) {')
+
+            cs.code('public void Write(OStream s, NifInfo info)'); cs.code('{')
             cs.stream(x, ACTION_WRITE)
             cs.code('}')
             cs.code()
-            cs.code('public string AsString(bool verbose = false) {')
+
+            cs.code('public string AsString(bool verbose = false)'); cs.code('{')
             cs.stream(x, ACTION_OUT)
             cs.code('}')
-        
         if n == "Footer":
             cs.code()
-            cs.code('public void Read(IStream s, List<uint> link_stack, NifInfo info) {')
+            cs.code('public void Read(IStream s, List<uint> link_stack, NifInfo info)'); cs.code('{')
             cs.stream(x, ACTION_READ)
             cs.code('}')
             cs.code()
-            cs.code('public void Write(OStream s, Dictionary<NiObject, uint> link_map, List<NiObject> missing_link_stack, NifInfo info) {')
+            cs.code('public void Write(OStream s, Dictionary<NiObject, uint> link_map, List<NiObject> missing_link_stack, NifInfo info)'); cs.code('{')
             cs.stream(x, ACTION_WRITE)
             cs.code('}')
             cs.code()
-            cs.code('public string AsString(bool verbose = false) {')
+            cs.code('public string AsString(bool verbose = false)'); cs.code('{')
             cs.stream(x, ACTION_OUT)
             cs.code('}')
 
-    #Preserve Custom code from before
+    # preserve custom code from before
     WriteCustomCode(customCtx, cs, 'MISC')
 
     # done
     cs.code("}")
-    cs.code()
-    cs.write("}\n")
+    cs.code("}")
     cs.close()
 
 
     # Write out Public Enumeration header Enumerations
 if GENALLFILES:
     cs = CSFile(io.open(ROOT_DIR + '/Gen/Enums.cs', 'wb'))
-    cs.code('/* Copyright (c) 2006, NIF File Format Library and Tools')
-    cs.code('All rights reserved.  Please see niflib.h for license. */')
-    cs.code()
-    cs.code('//---THIS FILE WAS AUTOMATICALLY GENERATED.  DO NOT EDIT---//')
-    cs.code()
-    cs.code('//To change this file, alter the /niflib/gen_niflib_cs.py Python script.')
+    cs.code('/* Copyright (c) 2006, NIF File Format Library and Tools */')
+    cs.code('// THIS FILE WAS AUTOMATICALLY GENERATED.  DO NOT EDIT! //')
+    cs.code('// To change this file, alter the generate_cs.py Python script.')
     cs.code()
     cs.code('using System;')
     cs.code()
-    cs.write('namespace Niflib {\n')
-    cs.code()
+    cs.code('namespace Niflib'); cs.code('{')
     for n, x in itertools.chain(enum_types.items(), flag_types.items()):
-      if x.options:
-        if x.description:
-          cs.comment(x.description)
-        cs.code('public enum %s : uint {' % (x.cname))
-        for o in x.options:
-          cs.code('%s = %s, /*!< %s */' % (o.cname, o.value, o.description))
-        cs.code('}')
-        #: cs
-        cs.code('static partial class Nif { //--' + x.cname + '--//')
-        cs.code('public static void NifStream(out %s val, IStream s, NifInfo info) { %s temp; NifStream(out temp, s, info); val = (%s)temp; }' % (x.cname, x.storage, x.cname))
-        cs.code('public static void NifStream(%s val, OStream s, NifInfo info) => NifStream((%s)val, s, info);' % (x.cname,x.storage))
-        cs.code('public static string AsString(%s val) { switch (val) {' % (x.cname))
-        for o in x.options:
-          cs.code('case %s.%s: return "%s";' % (x.cname, o.cname, o.name))
-        cs.code('default: return $"Invalid Value! - {val}";')
-        cs.code('}}}')
-        cs.code()
+        if x.options:
+            if x.description:
+                cs.comment(x.description)
+            cs.code('public enum %s : uint' % x.cname); cs.code('{')
+            for o in x.options:
+                cs.code('%s = %s, /*!< %s */' % (o.cname, o.value, o.description))
+            cs.code('}')
+            #: cs
+            cs.code('static partial class Nif'); cs.code('{')
+            cs.comment(x.cname)
+            cs.code('public static void NifStream(out %s val, IStream s, NifInfo info) { NifStream(out %s temp, s, info); val = (%s)temp; }' % (x.cname, x.storage, x.cname))
+            cs.code('public static void NifStream(%s val, OStream s, NifInfo info) => NifStream((%s)val, s, info);' % (x.cname, x.storage))
+            cs.code('public static string AsString(%s val)' % x.cname); cs.code('{')
+            cs.code('switch (val)'); cs.code('{')
+            for o in x.options:
+                cs.code('case %s.%s: return "%s";' % (x.cname, o.cname, o.name))
+            cs.code('default: return $"Invalid Value! - {val}";')
+            cs.code('}');
+            cs.code('}');
+            cs.code('}')
+            cs.code()
 
-    cs.write('}\n')
+    # done
+    cs.code('}')
     cs.close()
 
 
@@ -267,25 +267,20 @@ if GENALLFILES:
     # NiObject Registration Function
     #
     cs = CSFile(io.open(ROOT_DIR + '/Gen/Register.cs', 'wb'))
-    cs.code('/* Copyright (c) 2006, NIF File Format Library and Tools')
-    cs.code('All rights reserved.  Please see niflib.h for license. */')
+    cs.code('/* Copyright (c) 2006, NIF File Format Library and Tools */')
+    cs.code('// THIS FILE WAS AUTOMATICALLY GENERATED.  DO NOT EDIT! //')
+    cs.code('// To change this file, alter the generate_cs.py Python script.')
     cs.code()
-    cs.code('//---THIS FILE WAS AUTOMATICALLY GENERATED.  DO NOT EDIT---//')
-    cs.code()
-    cs.code('//To change this file, alter the /niflib/generate_cs.py Python script.')
-    cs.code()
-    cs.code('namespace Niflib {')
-    cs.code('public partial class ObjectRegistry {')
-    cs.code()
-    cs.code('public static void RegisterObjects() {')
-    cs.code()
+    cs.code('namespace Niflib'); cs.code('{')
+    cs.code('public partial class ObjectRegistry'); cs.code('{')
+    cs.code('public static void RegisterObjects()'); cs.code('{')
     for n in block_names:
         x = block_types[n]
-        cs.code('RegisterObject("' + x.name + '", ' + x.cname + '.Create);')
-    cs.code()
+        cs.code('RegisterObject("%s", %s.Create);' % (x.name, x.cname))
     cs.code('}')
-    cs.code()
     cs.code('}')
+
+    # done
     cs.code('}')
     cs.close()
 
@@ -310,32 +305,30 @@ for n in block_names:
 
     #output new file
     cs = CSFile(io.open(file_name, 'wb'))
-    cs.code('/* Copyright (c) 2006, NIF File Format Library and Tools')
-    cs.code('All rights reserved.  Please see niflib.h for license. */')
-    cs.code()
+    cs.code('/* Copyright (c) 2006, NIF File Format Library and Tools */')
+    cs.code('// THIS FILE WAS AUTOMATICALLY GENERATED.  DO NOT EDIT! //')
+    cs.code('// To change this file, alter the generate_cs.py Python script.')
     cs.code('//-----------------------------------NOTICE----------------------------------//')
-    cs.code('// Some of this file is automatically filled in by a Python script.  Only    //')
-    cs.code('// add custom code in the designated areas or it will be overwritten during  //')
-    cs.code('// the next update.                                                          //')
+    cs.code('// Only add custom code in the designated areas to preserve between builds   //')
     cs.code('//-----------------------------------NOTICE----------------------------------//')
     cs.code()
     cs.code(x.code_using())
-    cs.code()
-    #Preserve Custom code from before
+    # preserve custom code from before
     WriteCustomCode(customCtx, cs, 'FILE HEAD')
     cs.code()
-    cs.write("namespace Niflib {\n")
-    cs.code()
-    cs.comment(x.description)
+
+    cs.code('namespace Niflib'); cs.code('{')
+    cs.comment(x.description or x.cname)
     if x.inherit:
-        cs.code('public class %s : %s {' % (x.cname, x.inherit.cname))
+        cs.code('public class %s : %s' % (x.cname, x.inherit.cname)); cs.code('{')
     else:
-        cs.code('public class %s : RefObject {' % x.cname)
-    cs.code('//Definition of TYPE constant')
+        cs.code('public class %s : RefObject' % x.cname); cs.code('{')
+    cs.code('// Definition of TYPE constant')
     if x.inherit:
         cs.code('public static readonly Type_ TYPE = new Type_("%s", %s.TYPE);' % (x.name, x.inherit.cname))
     else:
         cs.code('public static readonly Type_ TYPE = new Type_("%s", RefObject.TYPE);' % x.name)
+    cs.code()
 
     #
     # Show example naive implementation if requested
@@ -367,61 +360,44 @@ for n in block_names:
     #        implementation generated--//')
     #    cs.code()
     
-    #Preserve Custom code from before
+    # preserve custom code from before
     WriteCustomCode(customCtx, cs, 'MISC')
-
     cs.declare(x)
 
-    cs.code()
+    # constructor
+    cs.code('public %s()' % x.cname); cs.code('{')
     x_code_construct = x.code_construct()
     if x_code_construct:
-        cs.code('public %s() {\n%s' % (x.cname,x_code_construct))
-    else:
-        cs.code('public %s() {' % x.cname)
-    
-    #Preserve Custom code from before
-    WriteCustomCode(customCtx, cs, 'CONSTRUCTOR')
+        cs.code(x_code_construct)
+    WriteCustomCode(customCtx, cs, 'CONSTRUCTOR') # preserve custom code from before
     cs.code('}')
     cs.code()
 
-    cs.code('/*!')
-    cs.code(' * Used to determine the type of a particular instance of this object.')
-    cs.code(' * \\return The type constant for the actual type of the object.')
-    cs.code(' */')
+    cs.comment('Used to determine the type of a particular instance of this object. \\return The type constant for the actual type of the object.')
     cs.code('public override Type_ GetType() => TYPE;')
     cs.code()
+
     cs.code('/*!')
     cs.code(' * A factory function used during file reading to create an instance of this type of object.')
     cs.code(' * \\return A pointer to a newly allocated instance of this type of object.')
     cs.code(' */')
-    cs.code('public static NiObject Create() => new ' + x.cname + '();')
+    cs.code('public static NiObject Create() => new %s();' % x.cname)
     cs.code()
 
-    cs.code('/*! NIFLIB_HIDDEN function.  For internal use only. */')
-    cs.code("internal override void Read(IStream s, List<uint> link_stack, NifInfo info) {")
-
-    #Preserve Custom code from before
-    WriteCustomCode(customCtx, cs, 'PRE-READ')
-    cs.code()
+    cs.comment('NIFLIB_HIDDEN function.  For internal use only.')
+    cs.code('internal override void Read(IStream s, List<uint> link_stack, NifInfo info)'); cs.code('{')
+    WriteCustomCode(customCtx, cs, 'PRE-READ') # preserve custom code from before
     cs.stream(x, ACTION_READ)
-    cs.code()
-
-    #Preserve Custom code from before
-    WriteCustomCode(customCtx, cs, 'POST-READ')
-    cs.code("}")
+    WriteCustomCode(customCtx, cs, 'POST-READ') # preserve custom code from before
+    cs.code('}')
     cs.code()
       
-    cs.code('/*! NIFLIB_HIDDEN function.  For internal use only. */')
-    cs.code("internal override void Write(OStream s, Dictionary<NiObject, uint> link_map, List<NiObject> missing_link_stack, NifInfo info) {")
-
-    #Preserve Custom code from before
-    WriteCustomCode(customCtx, cs, 'PRE-WRITE')
-    cs.code()
+    cs.comment('NIFLIB_HIDDEN function.  For internal use only.')
+    cs.code('internal override void Write(OStream s, Dictionary<NiObject, uint> link_map, List<NiObject> missing_link_stack, NifInfo info)'); cs.code('{')
+    WriteCustomCode(customCtx, cs, 'PRE-WRITE') # preserve custom code from before
     cs.stream(x, ACTION_WRITE)
-    cs.code()
-    #Preserve Custom code from before
-    WriteCustomCode(customCtx, cs, 'POST-WRITE')
-    cs.code("}")
+    WriteCustomCode(customCtx, cs, 'POST-WRITE') # preserve custom code from before
+    cs.code('}')
     cs.code()
       
     cs.code('/*!')
@@ -429,44 +405,32 @@ for n in block_names:
     cs.code(' * \\param[in] verbose Determines whether or not detailed information about large areas of data will be printed cs.')
     cs.code(' * \\return A string containing a summary of the information within the object in English.  This is the function that Niflyze calls to generate its analysis, so the output is the same.')
     cs.code(' */')
-    cs.code("public override string AsString(bool verbose = false) {")
-
-    #Preserve Custom code from before
-    WriteCustomCode(customCtx, cs, 'PRE-STRING')
-    cs.code()
+    cs.code('public override string AsString(bool verbose = false)'); cs.code('{')
+    WriteCustomCode(customCtx, cs, 'PRE-STRING') # preserve custom code from before
     cs.stream(x, ACTION_OUT)
+    WriteCustomCode(customCtx, cs, 'POST-STRING') # preserve custom code from before
+    cs.code('}')
     cs.code()
 
-    #Preserve Custom code from before
-    WriteCustomCode(customCtx, cs, 'POST-STRING')
-    cs.code("}")
-    cs.code()
-
-    cs.code('/*! NIFLIB_HIDDEN function.  For internal use only. */')
-    cs.code("internal override void FixLinks(Dictionary<uint, NiObject> objects, List<uint> link_stack, List<NiObject> missing_link_stack, NifInfo info) {")
-
-    #Preserve Custom code from before
-    WriteCustomCode(customCtx, cs, 'PRE-FIXLINKS')
-    cs.code()
+    cs.comment('NIFLIB_HIDDEN function.  For internal use only.')
+    cs.code('internal override void FixLinks(Dictionary<uint, NiObject> objects, List<uint> link_stack, List<NiObject> missing_link_stack, NifInfo info)'); cs.code('{')
+    WriteCustomCode(customCtx, cs, 'PRE-FIXLINKS') # preserve custom code from before
     cs.stream(x, ACTION_FIXLINKS)
+    WriteCustomCode(customCtx, cs, 'POST-FIXLINKS') # preserve custom code from before
+    cs.code('}')
     cs.code()
 
-    #Preserve Custom code from before
-    WriteCustomCode(customCtx, cs, 'POST-FIXLINKS')
-    cs.code("}")
-    cs.code()
-
-    cs.code('/*! NIFLIB_HIDDEN function.  For internal use only. */')
-    cs.code("internal override List<NiObject> GetRefs() {")
+    cs.comment('NIFLIB_HIDDEN function.  For internal use only.')
+    cs.code('internal override List<NiObject> GetRefs()'); cs.code('{')
     cs.stream(x, ACTION_GETREFS)
     cs.code("}")
     cs.code()
 
-    cs.code('/*! NIFLIB_HIDDEN function.  For internal use only. */')
-    cs.code("internal override List<NiObject> GetPtrs() {")
+    cs.comment('NIFLIB_HIDDEN function.  For internal use only.')
+    cs.code('internal override List<NiObject> GetPtrs()'); cs.code('{')
     cs.stream(x, ACTION_GETPTRS)
-    cs.code("}")
-    cs.code()
+    cs.code('}')
+    #cs.code()
 
     # Output example implementation of public getter/setter Mmthods if
     # requested
@@ -481,30 +445,25 @@ for n in block_names:
     #        cs.code('/***Begin Example Naive Implementation****')
     #        cs.code()
     #        for y in func_members:
-    #            cs.code(y.getter_declare(x.name + "::", " {"))
-    #            cs.code("return %s;" % y.cname)
-    #            cs.code("}")
+    #            cs.code(y.getter_declare(x.name + '::', ' {'))
+    #            cs.code('return %s;' % y.cname)
+    #            cs.code('}')
     #            cs.code()
                 
-    #            cs.code(y.setter_declare(x.name + "::", " {"))
-    #            cs.code("%s = value;" % y.cname)
-    #            cs.code("}")
+    #            cs.code(y.setter_declare(x.name + '::', ' {'))
+    #            cs.code('%s = value;' % y.cname)
+    #            cs.code('}')
     #            cs.code()
     #        cs.code('****End Example Naive Implementation***/')
     #    else:
-    #        cs.code('//--This object has no eligable attributes.  No example
-    #        implementation generated--//')
+    #        cs.code('//--This object has no eligable attributes.  No example implementation generated--//')
     #    cs.code()
 
-    #Preserve Custom code from before
-    WriteCustomCode(customCtx, cs, 'FILE FOOT')
-    cs.code()
-
+    # done
+    WriteCustomCode(customCtx, cs, 'FILE FOOT') # preserve custom code from before
     cs.code('}')
-    cs.code()
-
-    cs.write("}")
+    cs.code("}")
     cs.close()
 
-    ##Check if the temp file is identical to the target file
+    ## Check if the temp file is identical to the target file
     #OverwriteIfChanged(file_name, 'temp')

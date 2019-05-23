@@ -98,8 +98,7 @@ import io
 import re
 import types
 
-LISTARRAYS = [
-    'bhkConstraint::entities',
+LISTARRAYS = ['bhkConstraint::entities',
     'NiAVObjects::properties',
     'NodeSet::nodes',
     'NiBoneLODController::nodeGroups',
@@ -110,8 +109,7 @@ LISTARRAYS = [
     'NiNode::children',
     'NiNode::effects',
     'NiObjectNet::extraDataList',
-    'NiPSysMeshEmitter::emitterMeshes'
-]
+    'NiPSysMeshEmitter::emitterMeshes']
 
 #
 # global data
@@ -183,7 +181,6 @@ ACTION_OUT = 2
 ACTION_FIXLINKS = 3
 ACTION_GETREFS = 4
 ACTION_GETPTRS = 5
-
         
 #
 # C# code formatting functions
@@ -218,28 +215,28 @@ class CSFile(io.TextIOWrapper):
         # this will also break the backslash, which is kind of handy
         # call code("\n") if you want a backslashed newline in backslash mode
         if txt == None:
-            self.write("\n")
+            self.write('\n')
             return
     
         # block end
-        if txt[:1] == "}": self.indent -= 1
+        if txt[:1] == '}': self.indent -= 1
         # special, private:, public:, and protected:
-        if txt[-1:] == ":": self.indent -= 1
+        if txt[-1:] == ':': self.indent -= 1
         # endline string
         if self.backslash_mode:
-            endl = " \\\n"
+            endl = ' \\\n'
         else:
-            endl = "\n"
+            endl = '\n'
         # indent string
-        prefix = "\t" * self.indent
+        prefix = '\t' * self.indent
         # strip trailing whitespace, including newlines
         txt = txt.rstrip()
         # indent, and add newline
-        result = prefix + txt.replace("\n", endl + prefix) + endl
+        result = prefix + txt.replace('\n', endl + prefix) + endl
         # block start
-        if txt[-1:] == "{": self.indent += 1
+        if txt[-1:] == '{': self.indent += 1
         # special, private:, public:, and protected:
-        if txt[-1:] == ":": self.indent += 1
+        if txt[-1:] == ':': self.indent += 1
         
         self.write(result.encode('utf-8').decode('utf-8', 'strict'))
     
@@ -252,31 +249,24 @@ class CSFile(io.TextIOWrapper):
         @param txt: The text to enclose in a Doxygen comment
         @type txt: string
         """
-
         # skip comments when we are in backslash mode
         if self.backslash_mode: return
-        
         lines = txt.split('\n')
-
-        txt = ""
+        txt = ''
         for l in lines:
-            txt = txt + fill(l, 80) + "\n"
-
+            txt = txt + fill(l, 160) + '\n'
         txt = txt.strip()
-        
         num_line_ends = txt.count('\n')
-        
-
         if doxygen:
             if num_line_ends > 0:
-                txt = txt.replace("\n", "\n * ")
-                self.code("/*!\n * " + txt + "\n */")  
+                txt = txt.replace('\n', '\n * ')
+                self.code('/*!\n * ' + txt + '\n */')
             else:
-                self.code("/*! " + txt + " */")
+                self.code('/*! ' + txt + ' */')
         else:
             lines = txt.split('\n')
             for l in lines:
-                self.code("// " + l)
+                self.code('// ' + l)
     
     def declare(self, block):
         """
@@ -298,13 +288,13 @@ class CSFile(io.TextIOWrapper):
                     elif not y.is_public and not prot_mode:
                         keyword = 'protected'
                         prot_mode = True
-                self.comment(y.description)
+                self.comment(y.description or y.cname)
                 self.code(y.code_declare())
                 if y.func:
-                  self.comment(y.description)
-                  self.code("%s %s %s();" % (keyword,y.ctype,y.func))
+                    self.comment(y.description or y.func)
+                    self.code('%s %s %s();' % (keyword, y.ctype, y.func))
 
-    def stream(self, block, action, localprefix="", prefix="", arg_prefix="", arg_member=None):
+    def stream(self, block, action, localprefix='', prefix='', arg_prefix='', arg_member=None):
         """
         Generates the function code for various functions in Niflib and outputs it to the file.
         @param block: The class or struct to generate the function for.
@@ -333,81 +323,68 @@ class CSFile(io.TextIOWrapper):
         lastcond = None
         lastvercond = None
         # stream name
-        if action == ACTION_READ:
-            stream = "s"
-        else:
-            stream = "s"
+        stream = 's' if action == ACTION_READ else 's'
 
         # preperation
-        if isinstance(block, Block) or block.name in ["Footer", "Header"]:
+        if isinstance(block, Block) or block.name in ['Footer', 'Header']:
             if action == ACTION_READ:
                 if block.has_links or block.has_crossrefs:
-                    self.code("uint block_num;")
+                    self.code('uint block_num;')
             if action == ACTION_OUT:
-                self.code("var s = new System.Text.StringBuilder();")
+                self.code('var s = new System.Text.StringBuilder();')
                 # declare array_output_count, only if it will actually be used
                 if block.has_arr():
-                    self.code("uint array_output_count = 0;")
+                    self.code('var array_output_count = 0U;')
             #if action == ACTION_GETREFS:
-            #    self.code("List<NiObject> refs;")
+            #    self.code('List<NiObject> refs;')
             #if action == ACTION_GETPTRS:
-            #    self.code("List<NiObject> ptrs;")
+            #    self.code('List<NiObject> ptrs;')
 
         # stream the ancestor
         if isinstance(block, Block):
             if block.inherit:
                 if action == ACTION_READ:
-                    self.code("base.Read(%s, link_stack, info);" % (stream))
+                    self.code('base.Read(%s, link_stack, info);' % stream)
                 elif action == ACTION_WRITE:
-                    self.code("base.Write(%s, link_map, missing_link_stack, info);" % (stream))
+                    self.code('base.Write(%s, link_map, missing_link_stack, info);' % stream)
                 elif action == ACTION_OUT:
-                    self.code("%s.Append(base.AsString());" % (stream))
+                    self.code('%s.Append(base.AsString());' % stream)
                 elif action == ACTION_FIXLINKS:
-                    self.code("base.FixLinks(objects, link_stack, missing_link_stack, info);")
+                    self.code('base.FixLinks(objects, link_stack, missing_link_stack, info);')
                 elif action == ACTION_GETREFS:
-                    self.code("var refs = base.GetRefs();")
+                    self.code('var refs = base.GetRefs();')
                 elif action == ACTION_GETPTRS:
-                    self.code("var ptrs = base.GetPtrs();")
+                    self.code('var ptrs = base.GetPtrs();')
 
-        # declare and calculate local variables (TODO: GET RID OF THIS;
-        # PREFERABLY NO LOCAL VARIABLES AT ALL)
+        # declare and calculate local variables (TODO: GET RID OF THIS; PREFERABLY NO LOCAL VARIABLES AT ALL)
         if action in [ACTION_READ, ACTION_WRITE, ACTION_OUT]:
             block.members.reverse() # calculated data depends on data further down the structure
             for y in block.members:
                 if not y.is_duplicate and not y.is_manual_update and action in [ACTION_WRITE, ACTION_OUT]:
-                  if y.func:
-                      self.code('%s%s = %s%s();' % (prefix, y.cname, prefix, y.func))
-                  elif y.is_calculated:
-                      if action in [ACTION_READ, ACTION_WRITE]:
-                          self.code('%s%s = %s%sCalc(info);' % (prefix, y.cname, prefix, y.cname))
-                      # ACTION_OUT is in AsString(), which doesn't take version
-                      # info
-                      # so let's simply not print the field in this case
-                  elif y.arr1_ref:
-                    if not y.arr1 or not y.arr1.lhs: # Simple Scalar
-                      cref = block.find_member(y.arr1_ref[0], True) 
-                      # if not cref.is_duplicate and not cref.next_dup and (not
-                      # cref.cond.lhs or cref.cond.lhs == y.name):
-                        # self.code('assert(%s%s ==
-                        # (%s)(%s%s.size()));'%(prefix, y.cname, y.ctype,
-                        # prefix, cref.cname))
-                      self.code('%s%s = (%s)%s%s.Count;' % (prefix, y.cname, y.ctype, prefix, cref.cname))
-                  elif y.arr2_ref: # 1-dimensional dynamic array
-                    cref = block.find_member(y.arr2_ref[0], True) 
-                    if not y.arr1 or not y.arr1.lhs: # Second dimension
-                      # if not cref.is_duplicate and not cref.next_dup (not
-                                                                          # cref.cond.lhs or cref.cond.lhs == y.name):
-                       # self.code('assert(%s%s == (%s)((%s%s.size() > 0) ?
-                                                                           # %s%s[0].size() : 0));'%(prefix, y.cname, y.ctype,
-                                                                           # prefix, cref.cname, prefix, cref.cname))
-                      self.code('%s%s = (%s)((%s%s.Count > 0) ? %s%s[0].Count : 0);' % (prefix, y.cname, y.ctype, prefix, cref.cname, prefix, cref.cname))
-                    else:
-                        # index of dynamically sized array
-                        self.code('for (var i%i = 0; i%i < %s%s.Count; i%i++)' % (self.indent, self.indent, prefix, cref.cname, self.indent))
-                        self.code('\t%s%s[i%i] = (%s)%s%s[i%i].Count;' % (prefix, y.cname, self.indent, y.ctype, prefix, cref.cname, self.indent))
-                  # else: #has duplicates needs to be selective based on
-                  # version
-                    # self.code('assert(!"%s");'%(y.name))
+                    if y.func:
+                        self.code('%s%s = %s%s();' % (prefix, y.cname, prefix, y.func))
+                    elif y.is_calculated:
+                        if action in [ACTION_READ, ACTION_WRITE]:
+                            self.code('%s%s = %s%sCalc(info);' % (prefix, y.cname, prefix, y.cname))
+                        # ACTION_OUT is in AsString(), which doesn't take version info so let's simply not print the field in this case
+                    elif y.arr1_ref:
+                        if not y.arr1 or not y.arr1.lhs: # Simple Scalar
+                            cref = block.find_member(y.arr1_ref[0], True) 
+                            #if not cref.is_duplicate and not cref.next_dup and (not cref.cond.lhs or cref.cond.lhs == y.name):
+                            #    self.code('assert(%s%s == (%s)(%s%s.size()));'%(prefix, y.cname, y.ctype, prefix, cref.cname))
+                            self.code('%s%s = (%s)%s%s.Count;' % (prefix, y.cname, y.ctype, prefix, cref.cname))
+                    elif y.arr2_ref: # 1-dimensional dynamic array
+                        cref = block.find_member(y.arr2_ref[0], True) 
+                        if not y.arr1 or not y.arr1.lhs: # Second dimension
+                            #if not cref.is_duplicate and not cref.next_dup (not cref.cond.lhs or cref.cond.lhs == y.name):
+                            #    self.code('assert(%s%s == (%s)((%s%s.size() > 0) ? %s%s[0].size() : 0));' % (prefix, y.cname, y.ctype, prefix, cref.cname, prefix, cref.cname))
+                            self.code('%s%s = (%s)(%s%s.Count > 0 ? %s%s[0].Count : 0);' % (prefix, y.cname, y.ctype, prefix, cref.cname, prefix, cref.cname))
+                        else:
+                            # index of dynamically sized array
+                            self.code('for (var i%i = 0; i%i < %s%s.Count; i%i++)' % (self.indent, self.indent, prefix, cref.cname, self.indent))
+                            self.code('\t%s%s[i%i] = (%s)%s%s[i%i].Count;' % (prefix, y.cname, self.indent, y.ctype, prefix, cref.cname, self.indent))
+                    #else: #has duplicates needs to be selective based on version
+                    #    self.code('assert(!"%s");' % (y.name))
             block.members.reverse() # undo reverse
 
 
@@ -435,10 +412,10 @@ class CSFile(io.TextIOWrapper):
             y_arr2_lmember = None
             y_cond_lmember = None
             y_arg = None
-            y_arr1_prefix = ""
-            y_arr2_prefix = ""
-            y_cond_prefix = ""
-            y_arg_prefix = ""
+            y_arr1_prefix = ''
+            y_arr2_prefix = ''
+            y_cond_prefix = ''
+            y_arg_prefix = ''
             if y.arr1.lhs or y.arr2.lhs or y.cond.lhs or y.arg:
                 for z in block.members:
                     if not y_arr1_lmember and y.arr1.lhs == z.name:
@@ -446,12 +423,12 @@ class CSFile(io.TextIOWrapper):
                     if not y_arr2_lmember and y.arr2.lhs == z.name:
                         y_arr2_lmember = z
                     if not y_cond_lmember:
-                       if y.cond.lhs == z.name:
-                          y_cond_lmember = z
-                       elif y.cond.op == '&&' and y.cond.lhs == z.name:
-                          y_cond_lmember = z
-                       elif y.cond.op == '||' and y.cond.lhs == z.name:
-                          y_cond_lmember = z
+                        if y.cond.lhs == z.name:
+                            y_cond_lmember = z
+                        elif y.cond.op == '&&' and y.cond.lhs == z.name:
+                            y_cond_lmember = z
+                        elif y.cond.op == '||' and y.cond.lhs == z.name:
+                            y_cond_lmember = z
                     if not y_arg and y.arg == z.name:
                         y_arg = z
                 if y_arr1_lmember:
@@ -484,171 +461,152 @@ class CSFile(io.TextIOWrapper):
                 if lastver1 != y.ver1 or lastver2 != y.ver2 or lastuserver != y.userver or lastuserver2 != y.userver2 or lastvercond != y_vercond:
                     # we must switch to a new version block
                     # close old version block
-                    if lastver1 or lastver2 or lastuserver or lastuserver2 or lastvercond: self.code("}")
+                    if lastver1 or lastver2 or lastuserver or lastuserver2 or lastvercond: self.code('}')
                     # close old condition block as well
                     if lastcond:
-                        self.code("}")
-                        lastcond = None
+                        self.code('}'); lastcond = None
                     # start new version block
                     
                     concat = ''
                     verexpr = ''
                     if y.ver1:
-                        verexpr = "(info.version >= 0x%08X)" % y.ver1
-                        concat = " && "
+                        verexpr = 'info.version >= 0x%08X' % y.ver1; concat = ' && '
                     if y.ver2:
-                        verexpr = "%s%s(info.version <= 0x%08X)" % (verexpr, concat, y.ver2)
-                        concat = " && "
+                        verexpr = '%s%sinfo.version <= 0x%08X' % (verexpr, concat, y.ver2); concat = ' && '
                     if y.userver != None:
-                        verexpr = "%s%s(info.userVersion == %s)" % (verexpr, concat, y.userver)
-                        concat = " && "
+                        verexpr = '%s%sinfo.userVersion == %s' % (verexpr, concat, y.userver); concat = ' && '
                     if y.userver2 != None:
-                        verexpr = "%s%s(info.userVersion2 == %s)" % (verexpr, concat, y.userver2)
-                        concat = " && "
+                        verexpr = '%s%sinfo.userVersion2 == %s' % (verexpr, concat, y.userver2); concat = ' && '
                     if y_vercond:
-                        verexpr = "%s%s(%s)" % (verexpr, concat, y_vercond)
+                        verexpr = '%s%s(%s)' % (verexpr, concat, y_vercond)
                     if verexpr:
                         # remove outer redundant parenthesis
                         bleft, bright = scanBrackets(verexpr)
                         if bleft == 0 and bright == (len(verexpr) - 1):
-                            self.code("if %s {" % verexpr)
+                            self.code('if %s' % verexpr); self.code('{')
                         else:
-                            self.code("if (%s) {" % verexpr)
+                            self.code('if (%s)' % verexpr); self.code('{')
                     
                     # start new condition block
                     if lastcond != y_cond and y_cond:
-                        self.code("if (%s) {" % y_cond)
+                        self.code('if (%s)' % y_cond); self.code('{')
                 else:
                     # we remain in the same version block
                     # check condition block
                     if lastcond != y_cond:
                         if lastcond:
-                            self.code("}")
+                            self.code('}')
                         if y_cond:
-                            self.code("if (%s) {" % y_cond)
+                            self.code('if (%s)' % y_cond); self.code('{')
             elif action == ACTION_OUT:
                 # check condition block
                 if lastcond != y_cond:
                     if lastcond:
-                        self.code("}")
+                        self.code('}')
                     if y_cond:
-                        self.code("if (%s) {" % y_cond)
+                        self.code('if (%s)' % y_cond); self.code('{')
     
             # loop over arrays
             # and resolve variable name
             if not y.arr1.lhs:
-                z = "%s%s" % (y_prefix, y.cname)
+                z = '%s%s' % (y_prefix, y.cname)
             else:
                 if action == ACTION_OUT:
-                    self.code("array_output_count = 0;")
+                    self.code('array_output_count = 0;')
                 if y.arr1.lhs.isdigit() == False:
                     if action == ACTION_READ:
-                      # default to local variable, check if variable is in
-                      # current scope if not then try to use
-                      #   definition from resized child
-                      memcode = "%s%s = new %s[%s];" % (y_prefix, y.cname, y.ctype, y.arr1.code(y_arr1_prefix))
+                      # default to local variable, check if variable is in current scope if not then try to use definition from resized child
+                      memcode = '%s%s = new %s[%s];' % (y_prefix, y.cname, y.ctype, y.arr1.code(y_arr1_prefix))
                       mem = block.find_member(y.arr1.lhs, True) # find member in self or parents
                       self.code(memcode)
                       
-                    self.code(\
-                        "for (var i%i = 0; i%i < %s%s.Count; i%i++) {" % (self.indent, self.indent, y_prefix, y.cname, self.indent))
+                    self.code('for (var i%i = 0; i%i < %s%s.Count; i%i++)' % (self.indent, self.indent, y_prefix, y.cname, self.indent)); self.code('{')
                 else:
-                    self.code(\
-                        "for (var i%i = 0; i%i < %s; i%i++) {" % (self.indent, self.indent, y.arr1.code(y_arr1_prefix), self.indent))
+                    self.code('for (var i%i = 0; i%i < %s; i%i++)' % (self.indent, self.indent, y.arr1.code(y_arr1_prefix), self.indent)); self.code('{')
                 if action == ACTION_OUT:
-                        self.code('if (!verbose && (array_output_count > Nif.MAXARRAYDUMP)) {')
+                        self.code('if (!verbose && (array_output_count > Nif.MAXARRAYDUMP))'); self.code('{')
                         self.code('%s.AppendLine("<Data Truncated. Use verbose mode to see complete listing.>");' % stream)
                         self.code('break;')
                         self.code('}')
                         
                 if not y.arr2.lhs:
-                    z = "%s%s[i%i]" % (y_prefix, y.cname, self.indent - 1)
+                    z = '%s%s[i%i]' % (y_prefix, y.cname, self.indent - 1)
                 else:
                     if not y.arr2_dynamic:
                         if y.arr2.lhs.isdigit() == False:
                             if action == ACTION_READ:
-                                self.code("%s%s[i%i].Resize(%s);" % (y_prefix, y.cname, self.indent - 1, y.arr2.code(y_arr2_prefix)))
-                            self.code(\
-                                "for (var i%i = 0; i%i < %s%s[i%i].Count; i%i++) {" % (self.indent, self.indent, y_prefix, y.cname, self.indent - 1, self.indent))
+                                self.code('%s%s[i%i].Resize(%s);' % (y_prefix, y.cname, self.indent - 1, y.arr2.code(y_arr2_prefix)))
+                            self.code('for (var i%i = 0; i%i < %s%s[i%i].Count; i%i++)' % (self.indent, self.indent, y_prefix, y.cname, self.indent - 1, self.indent)); self.code('{')
                         else:
-                            self.code(\
-                                "for (var i%i = 0; i%i < %s; i%i++) {" % (self.indent, self.indent, y.arr2.code(y_arr2_prefix), self.indent))
+                            self.code('for (var i%i = 0; i%i < %s; i%i++)' % (self.indent, self.indent, y.arr2.code(y_arr2_prefix), self.indent)); self.code('{')
                     else:
                         if action == ACTION_READ:
-                            self.code("%s%s[i%i].Resize(%s[i%i]);" % (y_prefix, y.cname, self.indent - 1, y.arr2.code(y_arr2_prefix), self.indent - 1))
-                        self.code(\
-                            "for (var i%i = 0; i%i < %s[i%i]; i%i++) {" % (self.indent, self.indent, y.arr2.code(y_arr2_prefix), self.indent - 1, self.indent))
-                    z = "%s%s[i%i][i%i]" % (y_prefix, y.cname, self.indent - 2, self.indent - 1)
+                            self.code('%s%s[i%i].Resize(%s[i%i]);' % (y_prefix, y.cname, self.indent - 1, y.arr2.code(y_arr2_prefix), self.indent - 1))
+                        self.code('for (var i%i = 0; i%i < %s[i%i]; i%i++)' % (self.indent, self.indent, y.arr2.code(y_arr2_prefix), self.indent - 1, self.indent)); self.code('{')
+                    z = '%s%s[i%i][i%i]' % (y_prefix, y.cname, self.indent - 2, self.indent - 1)
     
             if y.type in native_types:
                 # these actions distinguish between refs and non-refs
                 if action in [ACTION_READ, ACTION_WRITE, ACTION_FIXLINKS, ACTION_GETREFS, ACTION_GETPTRS]:
                     if (not subblock.is_link) and (not subblock.is_crossref):
                         # not a ref
-                        outprefix = ""
+                        outprefix = ''
                         if action in [ACTION_READ, ACTION_WRITE] and y.is_abstract is False:
                             if action == ACTION_READ:
-                                outprefix = "out "                                
+                                outprefix = 'out '
                             # hack required for vector<bool>
-                            if y.type == "bool" and y.arr1.lhs:
-                                self.code("{")
+                            if y.type == 'bool' and y.arr1.lhs:
+                                self.code('{')
                                 if action == ACTION_READ:
-                                    self.code("bool tmp;")
-                                    self.code("Nif.NifStream(out tmp, %s, info);" % (stream))
-                                    self.code("%s = tmp;" % z)
+                                    self.code('Nif.NifStream(out bool tmp, %s, info); %s = tmp;' % (stream, z))
                                 else: # ACTION_WRITE
-                                    self.code("bool tmp = %s;" % z)
-                                    self.code("Nif.NifStream(tmp, %s, info);" % (stream))
-                                self.code("}")
+                                    self.code('bool tmp = %s; Nif.NifStream(tmp, %s, info);' % (z, stream))
+                                self.code('}')
                             # the usual thing
                             elif not y.arg:
-                                cast = ""
-                                if (y.is_duplicate):
-                                    cast = "(%s)" % y.ctype
-                                self.code("Nif.NifStream(%s%s%s, %s, info);" % (outprefix, cast, z, stream))
+                                cast = '(%s)' % y.ctype if (y.is_duplicate) else ''
+                                self.code('Nif.NifStream(%s%s%s, %s, info);' % (outprefix, cast, z, stream))
                             else:
-                                self.code("Nif.NifStream(%s%s, %s, info, %s%s);" % (outprefix, z, stream, y_prefix, y.carg))
+                                self.code('Nif.NifStream(%s%s, %s, info, %s%s);' % (outprefix, z, stream, y_prefix, y.carg))
                     else:
                         # a ref
                         if action == ACTION_READ:
-                            self.code("Nif.NifStream(out block_num, %s, info);" % stream)
-                            self.code("link_stack.Add(block_num);")
+                            self.code('Nif.NifStream(out block_num, %s, info);' % stream)
+                            self.code('link_stack.Add(block_num);')
                         elif action == ACTION_WRITE:
-                            self.code("WriteRef((NiObject)%s, %s, info, link_map, missing_link_stack);" % (z, stream))
+                            self.code('WriteRef((NiObject)%s, %s, info, link_map, missing_link_stack);' % (z, stream))
                         elif action == ACTION_FIXLINKS:
-                            self.code("%s = FixLink<%s>(objects, link_stack, missing_link_stack, info);" % (z,y.ctemplate))
+                            self.code('%s = FixLink<%s>(objects, link_stack, missing_link_stack, info);' % (z, y.ctemplate))
                                 
                         elif action == ACTION_GETREFS and subblock.is_link:
                             if not y.is_duplicate:
-                                self.code('if (%s != null)\n\trefs.Add((NiObject)%s);' % (z,z))
+                                self.code('if (%s != null)\n\trefs.Add((NiObject)%s);' % (z, z))
                         elif action == ACTION_GETPTRS and subblock.is_crossref:
                             if not y.is_duplicate:
-                                self.code('if (%s != null)\n\tptrs.Add((NiObject)%s);' % (z,z))
-                # the following actions don't distinguish between refs and
-                # non-refs
+                                self.code('if (%s != null)\n\tptrs.Add((NiObject)%s);' % (z, z))
+                # the following actions don't distinguish between refs and non-refs
                 elif action == ACTION_OUT:
                     if not y.arr1.lhs:
-                        self.code('%s.AppendLine($"%*s%s:  {%s}");' % (stream, 2 * self.indent, "", y.name, z))
+                        self.code('%s.AppendLine($"%*s%s:  {%s}");' % (stream, 2 * self.indent, '', y.name, z))
                     else:
-                        self.code('if (!verbose && (array_output_count > Nif.MAXARRAYDUMP)) {')
-                        self.code('break;')
-                        self.code('}')
-                        self.code('%s.AppendLine($"%*s%s[{i%i}]:  {%s}");' % (stream, 2 * self.indent, "", y.name, self.indent - 1, z))
+                        self.code('if (!verbose && (array_output_count > Nif.MAXARRAYDUMP))');
+                        self.code('\tbreak;')
+                        self.code('%s.AppendLine($"%*s%s[{i%i}]:  {%s}");' % (stream, 2 * self.indent, '', y.name, self.indent - 1, z))
                         self.code('array_output_count++;')
             else:
                 subblock = compound_types[y.type]
                 if not y.arr1.lhs:
-                    self.stream(subblock, action, "%s%s_" % (localprefix, y.cname), "%s." % z, y_arg_prefix,  y_arg)
+                    self.stream(subblock, action, '%s%s_' % (localprefix, y.cname), '%s.' % z, y_arg_prefix,  y_arg)
                 elif not y.arr2.lhs:
-                    self.stream(subblock, action, "%s%s_" % (localprefix, y.cname), "%s." % z, y_arg_prefix, y_arg)
+                    self.stream(subblock, action, '%s%s_' % (localprefix, y.cname), '%s.' % z, y_arg_prefix, y_arg)
                 else:
-                    self.stream(subblock, action, "%s%s_" % (localprefix, y.cname), "%s." % z, y_arg_prefix, y_arg)
+                    self.stream(subblock, action, '%s%s_' % (localprefix, y.cname), '%s.' % z, y_arg_prefix, y_arg)
 
             # close array loops
             if y.arr1.lhs:
-                self.code("}")
+                self.code('}')
                 if y.arr2.lhs:
-                    self.code("}")
+                    self.code('}')
 
             lastver1 = y.ver1
             lastver2 = y.ver2
@@ -659,29 +617,29 @@ class CSFile(io.TextIOWrapper):
 
         if action in [ACTION_READ, ACTION_WRITE, ACTION_FIXLINKS]:
             if lastver1 or lastver2 or not(lastuserver is None) or not(lastuserver2 is None) or lastvercond:
-                self.code("}")
+                self.code('}')
         if action in [ACTION_READ, ACTION_WRITE, ACTION_FIXLINKS, ACTION_OUT]:
             if lastcond:
-                self.code("}")
+                self.code('}')
 
         # the end
-        if isinstance(block, Block) or block.name in ["Header", "Footer"]:
+        if isinstance(block, Block) or block.name in ['Header', 'Footer']:
             if action == ACTION_OUT: 
-                self.code("return s.ToString();")
+                self.code('return s.ToString();')
             if action == ACTION_GETREFS:
-                self.code("return refs;")
+                self.code('return refs;')
             if action == ACTION_GETPTRS:
-                self.code("return ptrs;")
+                self.code('return ptrs;')
 
     # declaration
-    # print "$t Get$n() const; \nvoid Set$n($t value);\n\n";
-    def getset_declare(self, block, prefix=""): # prefix is used to tag local variables only
-      for y in block.members:
-        if not y.func:
-          if y.cname.lower().find("unk") == -1:
-            self.code(y.getter_declare("", ";"))
-            self.code(y.setter_declare("", ";"))
-            self.code()
+    # print '$t Get$n() const; \nvoid Set$n($t value);\n\n';
+    def getset_declare(self, block, prefix=''): # prefix is used to tag local variables only
+        for y in block.members:
+            if not y.func:
+                if y.cname.lower().find('unk') == -1:
+                    self.code(y.getter_declare('', ';'))
+                    self.code(y.setter_declare('', ';'))
+                    self.code()
 
 
 def class_name(n):
@@ -696,7 +654,7 @@ def class_name(n):
     try:
         return native_types[n]
     except KeyError:
-        return n.replace(' ', '_').replace(":", "_")
+        return n.replace(' ', '_').replace(':', '_')
 
     if n == None: return None
     try:
@@ -830,18 +788,18 @@ def scanBrackets(expr_str, fromIndex=0):
     scandepth = 0
     for scanpos in range(fromIndex, len(expr_str)):
         scanchar = expr_str[scanpos]
-        if scanchar == "(":
+        if scanchar == '(':
             if startpos == -1:
                 startpos = scanpos
             scandepth += 1
-        elif scanchar == ")":
+        elif scanchar == ')':
             scandepth -= 1
             if scandepth == 0:
                 endpos = scanpos
                 break
     else:
         if startpos != -1 or endpos != -1:
-            raise ValueError("expression syntax error (non-matching brackets?)")
+            raise ValueError('expression syntax error (non-matching brackets?)')
     return (startpos, endpos)
     
 class Expression(object):
@@ -888,7 +846,7 @@ class Expression(object):
         if isinstance(self._left, Expression):
             left = self._left.eval(data)
         elif isinstance(self._left, basestring):
-            left = getattr(data, self._left) if self._left != '""' else ""
+            left = getattr(data, self._left) if self._left != '""' else ''
         else:
             assert(isinstance(self._left, int)) # debug
             left = self._left
@@ -899,7 +857,7 @@ class Expression(object):
         if isinstance(self._right, Expression):
             right = self._right.eval(data)
         elif isinstance(self._right, basestring):
-            right = getattr(data, self._right) if self._right != '""' else ""
+            right = getattr(data, self._right) if self._right != '""' else ''
         else:
             assert(isinstance(self._right, int)) # debug
             right = self._right
@@ -953,18 +911,18 @@ class Expression(object):
         """Returns an Expression, string, or int, depending on the
         contents of <expr_str>."""
         # brackets or operators => expression
-        if ("(" in expr_str) or (")" in expr_str):
+        if ('(' in expr_str) or (')' in expr_str):
             return Expression(expr_str, name_filter)
         for op in cls.operators:
             if expr_str.find(op) != -1:
                 return Expression(expr_str, name_filter)
                 
-        mver = re.compile("[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+")
-        iver = re.compile("[0-9]+")
+        mver = re.compile('[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+')
+        iver = re.compile('[0-9]+')
         # try to convert it to an integer
         try:
             if mver.match(expr_str):
-                return "0x%08X" % (version2number(expr_str))
+                return '0x%08X' % (version2number(expr_str))
             elif iver.match(expr_str):
                 return str(int(expr_str))
         except ValueError:
@@ -1008,7 +966,7 @@ class Expression(object):
             # the next token should be the operator
             # find the position where the operator should start
             op_startpos = left_endpos + 1
-            while op_startpos < lenstr and expr_str[op_startpos] == " ":
+            while op_startpos < lenstr and expr_str[op_startpos] == ' ':
                 op_startpos += 1
             if op_startpos < lenstr:
                 # to avoid confusion between && and &, and || and |,
@@ -1068,18 +1026,18 @@ class Expression(object):
         scandepth = 0
         for scanpos in range(fromIndex, len(expr_str)):
             scanchar = expr_str[scanpos]
-            if scanchar == "(":
+            if scanchar == '(':
                 if startpos == -1:
                     startpos = scanpos
                 scandepth += 1
-            elif scanchar == ")":
+            elif scanchar == ')':
                 scandepth -= 1
                 if scandepth == 0:
                     endpos = scanpos
                     break
         else:
             if startpos != -1 or endpos != -1:
-                raise ValueError("expression syntax error (non-matching brackets?)")
+                raise ValueError('expression syntax error (non-matching brackets?)')
         return (startpos, endpos)
         
     def code(self, prefix='', brackets=True, name_filter=None):
@@ -1091,8 +1049,8 @@ class Expression(object):
         @return The expression formatted into a string.
         @rtype: string
         """
-        lbracket = "(" if brackets else ""
-        rbracket = ")" if brackets else ""
+        lbracket = '(' if brackets else ''
+        rbracket = ')' if brackets else ''
         if not self._op:
             if not self.lhs: return ''
             if isinstance(self.lhs, int):
@@ -1206,7 +1164,7 @@ class Option:
             self.description = element.firstChild.nodeValue.strip()
         else:
             self.description = self.name
-        self.cname = self.name.upper().replace(" ", "_").replace("-", "_").replace("/", "_").replace("=", "_").replace(":", "_")
+        self.cname = self.name.upper().replace(' ', '_').replace('-', '_').replace('/', '_').replace('=', '_').replace(':', '_')
 
 class Member:
     """
@@ -1321,31 +1279,31 @@ class Member:
         if element.firstChild:
             assert element.firstChild.nodeType == Node.TEXT_NODE
             self.description = element.firstChild.nodeValue.strip()
-        elif self.name.lower().find("unk") == 0:
-            self.description = "Unknown."
+        elif self.name.lower().find('unk') == 0:
+            self.description = 'Unknown.'
         else:
-            self.description = ""
+            self.description = ''
         
         # Format default value so that it can be used in a C# initializer list
         if not self.default and (not self.arr1.lhs and not self.arr2.lhs):
-            if self.type in ["uint", "ushort", "byte", "int", "short", "char"]:
-                self.default = "0"
-            elif self.type == "bool":
-                self.default = "false"
-            elif self.type in ["Ref", "Ptr"]:
-                self.default = "null"
-            elif self.type in "float":
-                self.default = "0.0"
-            elif self.type == "HeaderString":
+            if self.type in ['uint', 'ushort', 'byte', 'int', 'short', 'char']:
+                self.default = '0'
+            elif self.type == 'bool':
+                self.default = 'false'
+            elif self.type in ['Ref', 'Ptr']:
+                self.default = 'null'
+            elif self.type in 'float':
+                self.default = '0.0'
+            elif self.type == 'HeaderString':
                 pass
-            elif self.type == "Char8String":
+            elif self.type == 'Char8String':
                 pass
-            elif self.type == "StringOffset":
-                self.default = "-1"
+            elif self.type == 'StringOffset':
+                self.default = '-1'
             elif self.type in basic_names:
-                self.default = "0"
+                self.default = '0'
             elif self.type in flag_names or self.type in enum_names:
-                self.default = "0"
+                self.default = '0'
         if self.default:
             if self.default[0] == '(' and self.default[-1] == ')':
                 self.default = self.default[1:-1]
@@ -1353,18 +1311,18 @@ class Member:
                 if self.arr1.lhs.isdigit():
                     sep = (',(%s)' % class_name(self.type))
                     self.default = self.arr1.lhs + sep + sep.join(self.default.split(' ', int(self.arr1.lhs)))
-            elif self.type == "string" or self.type == "IndexString":
-                self.default = "\"" + self.default + "\""
-            elif self.type == "float":
-                self.default += "f"
-            elif self.type in ["Ref", "Ptr", "bool", "Vector3"]:
+            elif self.type == 'string' or self.type == 'IndexString':
+                self.default = '"%s"' % self.default
+            elif self.type == 'float':
+                self.default += 'f'
+            elif self.type in ['Ref', 'Ptr', 'bool', 'Vector3']:
                 pass
             elif self.default.find(',') != -1:
-                pass 
+                self.default = '(%s)' % self.default
             elif not self.default.isdigit() and self.type in enum_names:
-                self.default = "%s.%s" % (class_name(self.type), self.default)
+                self.default = '%s.%s' % (class_name(self.type), self.default)
             else:
-                self.default = "(%s)%s" % (class_name(self.type), self.default)
+                self.default = '(%s)%s' % (class_name(self.type), self.default)
         
         # calculate other stuff
         self.uses_argument = (self.cond.lhs == '(ARG)' or self.arr1.lhs == '(ARG)' or self.arr2.lhs == '(ARG)')
@@ -1419,89 +1377,88 @@ class Member:
     # don't construct if it has no default
     def code_construct(self):
         if self.default and not self.is_duplicate:
-            return "%s = %s" % (self.cname, self.default)
+            return '%s = %s' % (self.cname, self.default)
 
     # declaration
-    def code_declare(self, prefix=""): # prefix is used to tag local variables only
+    def code_declare(self, prefix=''): # prefix is used to tag local variables only
         result = self.ctype
-        suffix1 = ""
-        suffix2 = ""
-        keyword = "internal "
+        suffix1 = ''
+        suffix2 = ''
+        keyword = 'internal '
         if self.ctemplate:
-            if result != "*" and result != "Ref":
-                result += "<%s>" % self.ctemplate
+            if result != '*' and result != 'Ref':
+                result += '<%s>' % self.ctemplate
             else:
-                result = "%s" % self.ctemplate
+                result = '%s' % self.ctemplate
         if self.arr1.lhs:
             if self.arr1.lhs.isdigit():
                 if self.arr2.lhs and self.arr2.lhs.isdigit():
-                      result = "Array%s<Array%s<%s>>" % (self.arr1.lhs, self.arr2.lhs, result)
+                      result = 'Array%s<Array%s<%s>>' % (self.arr1.lhs, self.arr2.lhs, result)
                 else:
-                      result = "Array%s<%s>" % (self.arr1.lhs, result) 
+                      result = 'Array%s<%s>' % (self.arr1.lhs, result) 
             else:
                 if self.arr2.lhs and self.arr2.lhs.isdigit():
-                    result = "IList<Array%s<%s>>" % (self.arr2.lhs, result)
+                    result = 'IList<Array%s<%s>>' % (self.arr2.lhs, result)
                 else:
                     if self.arr2.lhs:
-                        result = "IList<%s[]>" % result
+                        result = 'IList<%s[]>' % result
                     else:
-                        result = "IList<%s>" % result
-        result = keyword + result + " " + prefix + self.cname + suffix1 + suffix2 + ";"
+                        result = 'IList<%s>' % result
+        result = keyword + result + ' ' + prefix + self.cname + suffix1 + suffix2 + ';'
         return result
 
-    #def getter_declare(self, scope="", suffix=""):
+    #def getter_declare(self, scope='', suffix=''):
     #  ltype = self.ctype
     #  if self.ctemplate:
-    #      if ltype != "*":
-    #          ltype += "<%s>" % self.ctemplate
+    #      if ltype != '*':
+    #          ltype += '<%s>' % self.ctemplate
     #      else:
-    #          ltype = "%s" % self.ctemplate
+    #          ltype = '%s' % self.ctemplate
     #  if self.arr1.lhs:
     #      if self.arr1.lhs.isdigit():
-    #          ltype = "Array%s<%s>" % (self.arr1.lhs, ltype)
-    #          # ltype = ltype
+    #          ltype = 'Array%s<%s>' % (self.arr1.lhs, ltype)
+    #          #ltype = ltype
     #      else:
     #          if self.arr2.lhs and self.arr2.lhs.isdigit():
-    #              ltype = "Array%s<%s>[]" % (self.arr2.lhs, ltype)
+    #              ltype = 'Array%s<%s>[]' % (self.arr2.lhs, ltype)
     #          else:
-    #              ltype = "%s[]" % ltype
+    #              ltype = '%s[]' % ltype
     #      if self.arr2.lhs:
     #          if self.arr2.lhs.isdigit():
     #              if self.arr1.lhs.isdigit():
-    #                ltype = "Array%s<%s>" % (self.arr2.lhs,ltype)
-    #                # ltype = ltype
+    #                ltype = 'Array%s<%s>' % (self.arr2.lhs,ltype)
+    #                #ltype = ltype
     #          else:
-    #              ltype = "%s[]" % ltype
-    #  result = ltype + " " + scope + "Get" + self.cname[0:1].upper() + self.cname[1:] + "()" + suffix
+    #              ltype = '%s[]' % ltype
+    #  result = ltype + ' ' + scope + 'Get' + self.cname[0:1].upper() + self.cname[1:] + '()' + suffix
     #  return result
 
-    #def setter_declare(self, scope="", suffix=""):
+    #def setter_declare(self, scope='', suffix=''):
     #  ltype = self.ctype
     #  if self.ctemplate:
-    #      if ltype != "*":
-    #          ltype += "<%s>" % self.ctemplate
+    #      if ltype != '*':
+    #          ltype += '<%s>' % self.ctemplate
     #      else:
-    #          ltype = "%s" % self.ctemplate
+    #          ltype = '%s' % self.ctemplate
     #  if self.arr1.lhs:
     #      if self.arr1.lhs.isdigit():
-    #        # ltype = "const %s&"%ltype
+    #        # ltype = 'const %s&' % ltype
     #        if self.arr2.lhs and self.arr2.lhs.isdigit():
-    #              ltype = "Array%s<Array%s<%s>>" % (self.arr1.lhs,self.arr2.lhs, ltype)
+    #              ltype = 'Array%s<Array%s<%s>>' % (self.arr1.lhs, self.arr2.lhs, ltype)
     #        else:
-    #              ltype = "Array%s<%s>" % (self.arr1.lhs,ltype)
+    #              ltype = 'Array%s<%s>' % (self.arr1.lhs, ltype)
             
     #      else:
     #          if self.arr2.lhs and self.arr2.lhs.isdigit():
-    #              ltype = "Array%s<%s>[]" % (self.arr2.lhs, ltype)
+    #              ltype = 'Array%s<%s>[]' % (self.arr2.lhs, ltype)
     #          else:
-    #              ltype = "%s[]" % ltype
+    #              ltype = '%s[]' % ltype
     #  else:
     #      if not self.type in basic_names:
-    #        ltype = "%s" % ltype
+    #        ltype = '%s' % ltype
              
-    #  result = "void " + scope + "Set" + self.cname[0:1].upper() + self.cname[1:] + "( " + ltype + " value )" + suffix
+    #  result = 'void ' + scope + 'Set' + self.cname[0:1].upper() + self.cname[1:] + '( ' + ltype + ' value )' + suffix
     #  return result
-
 class Version:
     def __init__(self, element):
         self.num = element.getAttribute('num')
@@ -1517,10 +1474,10 @@ class Basic:
         self.niflibtype = NATIVETYPES.get(self.name)
         if element.firstChild and element.firstChild.nodeType == Node.TEXT_NODE:
             self.description = element.firstChild.nodeValue.strip()
-        elif self.name.lower().find("unk") == 0:
-            self.description = "Unknown."
+        elif self.name.lower().find('unk') == 0:
+            self.description = 'Unknown.'
         else:
-            self.description = ""
+            self.description = ''
 
         self.count = element.getAttribute('count')
 
@@ -1531,14 +1488,14 @@ class Basic:
 
         if self.niflibtype:
             native_types[self.name] = self.niflibtype
-            if self.niflibtype == "Ref":
+            if self.niflibtype == 'Ref':
                 self.is_link = True
                 self.has_links = True
-            if self.niflibtype == "*":
+            if self.niflibtype == '*':
                 self.is_crossref = True
                 self.has_crossrefs = True
 
-        self.template = (element.getAttribute('istemplate') == "1")
+        self.template = (element.getAttribute('istemplate') == '1')
         self.options = []
 
 class Enum(Basic):
@@ -1557,7 +1514,7 @@ class Enum(Basic):
       # Locate all special enumeration options
       for option in element.getElementsByTagName('option'):
           if self.prefix and option.hasAttribute('name'):
-              option.setAttribute('name', self.prefix + "_" + option.getAttribute('name'))
+              option.setAttribute('name', self.prefix + '_' + option.getAttribute('name'))
           x = Option(option)
           self.options.append(x)
 
@@ -1574,11 +1531,11 @@ class Compound(Basic):
         Basic.__init__(self, element)
 
         #the relative path to files in the gen folder
-        self.gen_file_prefix = ""
+        self.gen_file_prefix = ''
         #the relative path to files in the obj folder
-        self.obj_file_prefix = "../Objs/"
+        self.obj_file_prefix = '../Objs/'
         #the relative path to files in the root folder
-        self.root_file_prefix = "../"
+        self.root_file_prefix = '../'
 
         self.members = []     # list of all members (list of Member)
         self.argument = False # does it use an argument?
@@ -1589,11 +1546,9 @@ class Compound(Basic):
             #***********************
             #** NIFLIB HACK BEGIN **
             #***********************
-            if self.name == "BoundingVolume" and x.name == "Union":
-                # ignore this one because niflib cannot handle
-                # recursively defined structures...  so we remove
-                # this one to avoid the problem
-                # as a result a minority of nifs won't load
+            if self.name == 'BoundingVolume' and x.name == 'Union':
+                # ignore this one because niflib cannot handle recursively defined structures...  so we remove
+                # this one to avoid the problem as a result a minority of nifs won't load
                 continue 
             #*********************
             #** NIFLIB HACK END **
@@ -1651,10 +1606,10 @@ class Compound(Basic):
         return result
 
     def code_using(self):
-        if self.niflibtype: return ""
-        result = "using System;\n"
-        result += "using System.IO;\n"
-        result += "using System.Collections.Generic;\n"
+        if self.niflibtype: return ''
+        result = 'using System;\n'
+        result += 'using System.IO;\n'
+        result += 'using System.Collections.Generic;\n'
         return result
 
     # find member by name
@@ -1684,11 +1639,11 @@ class Block(Compound):
     def __init__(self, element):
         Compound.__init__(self, element)
         #the relative path to files in the gen folder
-        self.gen_file_prefix = "../Gen/"
+        self.gen_file_prefix = '../Gen/'
         #the relative path to files in the obj folder
-        self.obj_file_prefix = ""
+        self.obj_file_prefix = ''
         
-        self.is_ancestor = (element.getAttribute('abstract') == "1")
+        self.is_ancestor = (element.getAttribute('abstract') == '1')
         inherit = element.getAttribute('inherit')
         if inherit:
             self.inherit = block_types[inherit]
@@ -1716,57 +1671,57 @@ class Block(Compound):
 # import elements into our code generating classes
 #
 # import via "import nifxml" from .
-if os.path.exists("../../../../../lib/Niftools/nifxml/nif.xml"):
-    doc = parse("../../../../../lib/Niftools/nifxml/nif.xml")
+if os.path.exists('../../../../../lib/Niftools/nifxml/nif.xml'):
+    doc = parse('../../../../../lib/Niftools/nifxml/nif.xml')
 # import via "import nifxml" from .
-elif os.path.exists("nif.xml"):
-    doc = parse("nif.xml")
+elif os.path.exists('nif.xml'):
+    doc = parse('nif.xml')
 # import via "import docsys" from .
-elif os.path.exists("docsys/nif.xml"):
-    doc = parse("docsys/nif.xml")
+elif os.path.exists('docsys/nif.xml'):
+    doc = parse('docsys/nif.xml')
 # new submodule system
-elif os.path.exists("nifxml/nif.xml"):
-    doc = parse("nifxml/nif.xml")
+elif os.path.exists('nifxml/nif.xml'):
+    doc = parse('nifxml/nif.xml')
 else:
-    raise ImportError("nif.xml not found")
+    raise ImportError('nif.xml not found')
 
 for element in doc.getElementsByTagName('version'):
     x = Version(element)
-    #print("version_types:%s" % x.num)
+    #print('version_types:%s' % x.num)
     version_types[x.num] = x
     version_names.append(x.num)
 
 for element in doc.getElementsByTagName('basic'):
     x = Basic(element)
     assert not x.name in basic_types
-    #print("basic_types:%s" % x.name)
+    #print('basic_types:%s' % x.name)
     basic_types[x.name] = x
     basic_names.append(x.name)
 
 for element in doc.getElementsByTagName('enum'):
     x = Enum(element)
     assert not x.name in enum_types
-    #print("enum_types:%s" % x.name)
+    #print('enum_types:%s' % x.name)
     enum_types[x.name] = x
     enum_names.append(x.name)
 
 for element in doc.getElementsByTagName('bitflags'):
     x = Flag(element)
     assert not x.name in flag_types
-    #print("flag_types:%s" % x.name)
+    #print('flag_types:%s' % x.name)
     flag_types[x.name] = x
     flag_names.append(x.name)
     
-for element in doc.getElementsByTagName("compound"):
+for element in doc.getElementsByTagName('compound'):
     x = Compound(element)
     assert not x.name in compound_types
-    #print("compound:%s" % x.name)
+    #print('compound:%s' % x.name)
     compound_types[x.name] = x
     compound_names.append(x.name)
 
-for element in doc.getElementsByTagName("niobject"):
+for element in doc.getElementsByTagName('niobject'):
     x = Block(element)
     assert not x.name in block_types
-    #print("niobject:%s" % x.name)
+    #print('niobject:%s' % x.name)
     block_types[x.name] = x
     block_names.append(x.name)

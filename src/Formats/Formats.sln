@@ -31,7 +31,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gamer.Format.Cry.Unity", "C
 EndProject
 Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "Gamer.Format.Nif.Niftools", "Nif\src\Gamer.Format.Nif.Niftools\Gamer.Format.Nif.Niftools.pyproj", "{7C73E29B-9EE3-4148-99AD-CD1667C57F6D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gamer.Format.Nif.Last", "Nif\src\Gamer.Format.Nif.Last\Gamer.Format.Nif.Last.csproj", "{2C08B30C-52D5-447D-922F-E0570E88B160}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gamer.Format.Nif2", "Nif\src\Gamer.Format.Nif2\Gamer.Format.Nif2.csproj", "{2C08B30C-52D5-447D-922F-E0570E88B160}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
