@@ -14,8 +14,8 @@ namespace Gamer.Estate.Ultima.Resources
         public ArtMulResource(object graphics)
         {
             _fileIndex = ClientVersion.InstallationIsUopFormat ?
-                FileManager.CreateFileIndex("artLegacyMUL.uop", 0x10000, false, ".tga") :
-                FileManager.CreateFileIndex("artidx.mul", "art.mul", 0x10000, -1); // !!! must find patch file reference for artdata.
+                UltimaFileManager.CreateFileIndex("artLegacyMUL.uop", 0x10000, false, ".tga") :
+                UltimaFileManager.CreateFileIndex("artidx.mul", "art.mul", 0x10000, -1); // !!! must find patch file reference for artdata.
             _staticPicking = new PixelPicking();
             _landTileTextureCache = new Texture2DInfo[0x10000];
             _staticTileTextureCache = new Texture2DInfo[0x10000];
@@ -23,7 +23,7 @@ namespace Gamer.Estate.Ultima.Resources
 
         public Texture2DInfo GetLandTexture(int index)
         {
-            index &= FileManager.ItemIdMask;
+            index &= UltimaFileManager.ItemIdMask;
             if (_landTileTextureCache[index] == null)
                 _landTileTextureCache[index] = ReadLandTexture(index);
             return _landTileTextureCache[index];
@@ -31,7 +31,7 @@ namespace Gamer.Estate.Ultima.Resources
 
         public Texture2DInfo GetStaticTexture(int index)
         {
-            index &= FileManager.ItemIdMask;
+            index &= UltimaFileManager.ItemIdMask;
             if (_staticTileTextureCache[index] == null)
             {
                 ReadStaticTexture(index + 0x4000, out Texture2DInfo texture);
@@ -42,7 +42,7 @@ namespace Gamer.Estate.Ultima.Resources
 
         public void GetStaticDimensions(int index, out int width, out int height)
         {
-            index &= FileManager.ItemIdMask;
+            index &= UltimaFileManager.ItemIdMask;
             if (_staticTileTextureCache[index] == null)
                 GetStaticTexture(index);
             _staticPicking.GetDimensions(index + 0x4000, out width, out height);

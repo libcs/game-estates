@@ -12,15 +12,17 @@ namespace Gamer.Estate.Rsi.Tests
         public FilePackTests(ITestOutputHelper helper) => LogFunc = x => helper.WriteLine(x.ToString());
 
         [Theory]
-        [InlineData("game://StarCitizen/")]
+        [InlineData("game:/#StarCitizen")]
         public async Task LoadAssetPack(string path)
         {
-            var assetPack = await new Uri(path).GetRsiAssetPackAsync() as RsiAssetPack;
-            //#if LONGTEST
-            //            assetPack.TestLoadFileData(int.MaxValue);
-            //#else
-            //            assetPack.TestLoadFileData(100);
-            //#endif
+            using (var assetPack = await new Uri(path).GetRsiAssetPackAsync() as RsiAssetPack)
+            {
+                //#if LONGTEST
+                //            assetPack.TestLoadFileData(int.MaxValue);
+                //#else
+                //            assetPack.TestLoadFileData(100);
+                //#endif
+            }
         }
     }
 }

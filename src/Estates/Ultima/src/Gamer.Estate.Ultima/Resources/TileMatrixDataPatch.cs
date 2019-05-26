@@ -87,10 +87,10 @@ namespace Gamer.Estate.Ultima.Resources
             _landPatchPtrs = new Dictionary<uint, LandPatchData>();
             if (ClientVersion.InstallationIsUopFormat)
                 return 0;
-            _landPatchStream = FileManager.GetFile(landPath);
+            _landPatchStream = UltimaFileManager.GetFile(landPath);
             if (_landPatchStream == null)
                 return 0;
-            using (var fsIndex = FileManager.GetFile(indexPath))
+            using (var fsIndex = UltimaFileManager.GetFile(indexPath))
             {
                 var indexReader = new BinaryReader(fsIndex);
                 var count = (int)(indexReader.BaseStream.Length / 4);
@@ -153,11 +153,11 @@ namespace Gamer.Estate.Ultima.Resources
         unsafe int LoadStaticPatches(TileMatrixData tileMatrix, string dataPath, string indexPath, string lookupPath)
         {
             _staticPatchPtrs = new Dictionary<uint, StaticPatchData>();
-            _staticPatchStream = FileManager.GetFile(dataPath);
+            _staticPatchStream = UltimaFileManager.GetFile(dataPath);
             if (_staticPatchStream == null)
                 return 0;
-            using (var fsIndex = FileManager.GetFile(indexPath))
-            using (var fsLookup = FileManager.GetFile(lookupPath))
+            using (var fsIndex = UltimaFileManager.GetFile(indexPath))
+            using (var fsLookup = UltimaFileManager.GetFile(lookupPath))
             {
                 var indexReader = new BinaryReader(fsIndex);
                 var lookupReader = new BinaryReader(fsLookup);

@@ -23,7 +23,7 @@ namespace Gamer.Estate.Ultima
             {
                 if (_clientExeVersion == null)
                 {
-                    var path = FileManager.GetPath("client.exe");
+                    var path = UltimaFileManager.GetPath("client.exe");
                     if (File.Exists(path))
                     {
                         var exe = FileVersionInfo.GetVersionInfo(path);

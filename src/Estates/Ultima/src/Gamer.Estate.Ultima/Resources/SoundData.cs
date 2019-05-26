@@ -56,8 +56,8 @@ namespace Gamer.Estate.Ultima.Resources
             try
             {
                 _index = ClientVersion.InstallationIsUopFormat ?
-                    FileManager.CreateFileIndex("soundLegacyMUL.uop", 0xFFF, false, ".dat") :
-                    FileManager.CreateFileIndex("soundidx.mul", "sound.mul", 0x1000, -1); // new BinaryReader(new FileStream(FileManager.GetFilePath("soundidx.mul"), FileMode.Open));
+                    UltimaFileManager.CreateFileIndex("soundLegacyMUL.uop", 0xFFF, false, ".dat") :
+                    UltimaFileManager.CreateFileIndex("soundidx.mul", "sound.mul", 0x1000, -1); // new BinaryReader(new FileStream(FileManager.GetFilePath("soundidx.mul"), FileMode.Open));
                 _filesPrepared = true;
             }
             catch
@@ -68,7 +68,7 @@ namespace Gamer.Estate.Ultima.Resources
             var reg = new Regex(@"(\d{1,3}) \x7B(\d{1,3})\x7D (\d{1,3})", RegexOptions.Compiled);
             _translations = new Dictionary<int, int>();
             string line;
-            using (var r = new StreamReader(FileManager.GetFilePath("Sound.def")))
+            using (var r = new StreamReader(UltimaFileManager.GetFilePath("Sound.def")))
                 while ((line = r.ReadLine()) != null)
                     if (((line = line.Trim()).Length != 0) && !line.StartsWith("#"))
                     {

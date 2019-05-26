@@ -10,7 +10,7 @@ namespace Gamer.Estate.Ultima.Resources
     public class SkillsData
     {
         public static int DefaultLength = 55;
-        public static AFileIndex FileIndex { get; } = FileManager.CreateFileIndex("Skills.idx", "Skills.mul", DefaultLength, -1);
+        public static AFileIndex FileIndex { get; } = UltimaFileManager.CreateFileIndex("Skills.idx", "Skills.mul", DefaultLength, -1);
         public static Skill[] List { get; } = new Skill[DefaultLength];
         static string[] _listNames;
         public static string[] ListNames
@@ -159,7 +159,7 @@ namespace Gamer.Estate.Ultima.Resources
         static unsafe SkillCategory[] LoadCategories()
         {
             var list = new SkillCategory[0];
-            var grpPath = FileManager.GetFilePath("skillgrp.mul");
+            var grpPath = UltimaFileManager.GetFilePath("skillgrp.mul");
             if (grpPath == null) return new SkillCategory[0];
             else
             {

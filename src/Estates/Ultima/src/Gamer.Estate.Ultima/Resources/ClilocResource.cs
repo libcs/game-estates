@@ -44,7 +44,7 @@ namespace Gamer.Estate.Ultima.Resources
 
         void LoadCliloc(string path)
         {
-            path = FileManager.GetFilePath(path);
+            path = UltimaFileManager.GetFilePath(path);
             if (path == null)
                 return;
             byte[] buffer;

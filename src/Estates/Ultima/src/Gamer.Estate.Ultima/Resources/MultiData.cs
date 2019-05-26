@@ -8,12 +8,12 @@ namespace Gamer.Estate.Ultima.Resources
     public class MultiData
     {
         public static MultiComponentList[] Cache { get; } = new MultiComponentList[0x4000];
-        public static AFileIndex FileIndex { get; } = FileManager.CreateFileIndex("Multi.idx", "Multi.mul", 0x4000, 14);
+        public static AFileIndex FileIndex { get; } = UltimaFileManager.CreateFileIndex("Multi.idx", "Multi.mul", 0x4000, 14);
 
         public static MultiComponentList GetComponents(int index)
         {
             MultiComponentList mcl;
-            index &= FileManager.ItemIdMask;
+            index &= UltimaFileManager.ItemIdMask;
             if (index >= 0 && index < Cache.Length)
             {
                 mcl = Cache[index];

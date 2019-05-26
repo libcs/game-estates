@@ -41,7 +41,7 @@ namespace Gamer.Estate.Ultima.Resources
 
         static TileData()
         {
-            using (var s = FileManager.GetFile("tiledata.mul"))
+            using (var s = UltimaFileManager.GetFile("tiledata.mul"))
             {
                 var r = new BinaryReader(s);
                 LandData landData; ItemData itemData;

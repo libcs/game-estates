@@ -3,11 +3,9 @@ using Gamer.Estate.Tes.Records;
 using Gamer.Proxy;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
-using static Gamer.Core.Debug;
 
 namespace Gamer.Estate.Tes.FilePack
 {
@@ -15,24 +13,15 @@ namespace Gamer.Estate.Tes.FilePack
     {
         const int recordHeaderSizeInBytes = 16;
         public override string ToString() => Path.GetFileName(FilePath);
+        readonly ProxySink _proxySink;
         BinaryFileReader _r;
         public string FilePath;
         public GameFormat Format;
         public Dictionary<string, RecordGroup> Groups;
 
-        public EsmFile(ProxySink client, string filePath, TesGame game)
+        public EsmFile(ProxySink proxySink, string filePath, TesGame game)
         {
-            if (filePath == null)
-                return;
-            FilePath = filePath;
-            Format = GetFormat();
-            _r = new BinaryFileReader(File.Open(filePath, FileMode.Open, FileAccess.Read));
-            //var watch = new Stopwatch(); watch.Start();
-            Read(1);
-            //Log($"Loading: {watch.ElapsedMilliseconds}");
-            Process();
-            //watch.Stop();
-            GameFormat GetFormat()
+            GameFormat getFormat()
             {
                 switch (game)
                 {
@@ -50,6 +39,20 @@ namespace Gamer.Estate.Tes.FilePack
                     default: throw new InvalidOperationException();
                 }
             }
+
+            if (filePath == null)
+                return;
+            FilePath = filePath;
+            Format = getFormat();
+            _proxySink = proxySink;
+            if (proxySink is ProxySinkClient)
+                return;
+            _r = new BinaryFileReader(File.Open(filePath, FileMode.Open, FileAccess.Read));
+            //var watch = new Stopwatch(); watch.Start();
+            Read(1);
+            //Log($"Loading: {watch.ElapsedMilliseconds}");
+            Process();
+            //watch.Stop();
         }
 
         public void Dispose()

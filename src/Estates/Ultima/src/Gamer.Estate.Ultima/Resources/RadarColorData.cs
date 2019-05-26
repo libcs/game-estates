@@ -11,7 +11,7 @@ namespace Gamer.Estate.Ultima.Resources
 
         static RadarColorData()
         {
-            using (var index = new FileStream(FileManager.GetFilePath("Radarcol.mul"), FileMode.Open, FileAccess.Read, FileShare.Read))
+            using (var index = new FileStream(UltimaFileManager.GetFilePath("Radarcol.mul"), FileMode.Open, FileAccess.Read, FileShare.Read))
             {
                 var r = new BinaryReader(index);
                 // Prior to 7.0.7.1, all clients have 0x10000 colors. Newer clients have fewer colors.

@@ -10,7 +10,7 @@ namespace Gamer.Estate.Ultima.Resources
 
         static MobtypeData()
         {
-            var path = FileManager.GetFilePath("mobtypes.txt");
+            var path = UltimaFileManager.GetFilePath("mobtypes.txt");
             {
                 var r = new StreamReader(path);
                 while (!r.EndOfStream)

@@ -25,16 +25,18 @@ namespace Gamer.Estate.Cry.Tests
         public ProxyIntegrationTests(TestsFixture fixture, ITestOutputHelper helper) { _fixture = fixture; Core.Debug.LogFunc = x => helper.WriteLine(x.ToString()); }
 
         [Theory]
-        [InlineData("http://localhost:{0}/Abc", "xxx")]
+        [InlineData("game://localhost:{0}/#Abc", "xxx")]
         public async Task LoadAssetPack(string path, string modelPath)
         {
             // given
             var uri = new Uri(string.Format(path, _fixture.Target.Port));
-            var assetPack = await uri.GetCryAssetPackAsync();
-            // when
-            var exists = assetPack.ContainsFile(modelPath);
-            // then
-            Assert.True(exists);
+            using (var assetPack = await uri.GetCryAssetPackAsync())
+            {
+                // when
+                var exists = assetPack.ContainsFile(modelPath);
+                // then
+                Assert.True(exists);
+            }
         }
     }
 }

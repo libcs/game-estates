@@ -57,13 +57,13 @@ namespace Gamer.Estate.Ultima.Resources
         {
             mapDataStream = null;
             uopIndex = null;
-            var path = FileManager.GetFilePath($"map{index}.mul");
+            var path = UltimaFileManager.GetFilePath($"map{index}.mul");
             if (File.Exists(path))
             {
                 mapDataStream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
                 return true;
             }
-            path = FileManager.GetFilePath($"map{index}LegacyMUL.uop");
+            path = UltimaFileManager.GetFilePath($"map{index}LegacyMUL.uop");
             if (File.Exists(path))
             {
                 mapDataStream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
@@ -77,8 +77,8 @@ namespace Gamer.Estate.Ultima.Resources
         {
             dataStream = null;
             indexReader = null;
-            var pathData = FileManager.GetFilePath($"statics{index}.mul");
-            var pathIndex = FileManager.GetFilePath($"staidx{index}.mul");
+            var pathData = UltimaFileManager.GetFilePath($"statics{index}.mul");
+            var pathIndex = UltimaFileManager.GetFilePath($"staidx{index}.mul");
             if (File.Exists(pathData) && File.Exists(pathIndex))
             {
                 dataStream = new FileStream(pathData, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);

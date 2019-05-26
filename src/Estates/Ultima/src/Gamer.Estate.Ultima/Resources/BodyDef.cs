@@ -12,7 +12,7 @@ namespace Gamer.Estate.Ultima.Resources
         static BodyDef()
         {
             _entries = new Dictionary<int, BodyTableEntry>();
-            var filePath = FileManager.GetFilePath("body.def");
+            var filePath = UltimaFileManager.GetFilePath("body.def");
             if (filePath == null)
                 return;
             var def = new StreamReader(filePath);

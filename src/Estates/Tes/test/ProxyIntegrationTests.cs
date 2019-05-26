@@ -25,19 +25,21 @@ namespace Gamer.Estate.Tes.Tests
         public ProxyIntegrationTests(TestsFixture fixture, ITestOutputHelper helper) { _fixture = fixture; Core.Debug.LogFunc = x => helper.WriteLine(x.ToString()); }
 
         [Theory]
-        //[InlineData("http://localhost:{0}/Morrowind.bsa#Morrowind", "meshes/i/in_dae_room_l_floor_01.nif")]
-        [InlineData("http://localhost:{0}/Morrowind.bsa#Morrowind", "textures/Tx_BC_moss.dds")]
+        //[InlineData("game://localhost:{0}/Morrowind.bsa#Morrowind", "meshes/i/in_dae_room_l_floor_01.nif")]
+        [InlineData("game://localhost:{0}/Morrowind.bsa#Morrowind", "textures/Tx_BC_moss.dds")]
         public async Task LoadAssetPack(string path, string modelPath)
         {
             // given
             var uri = new Uri(string.Format(path, _fixture.Target.Port));
-            var assetPack = await uri.GetTesAssetPackAsync();
-            // when
-            var exist0 = assetPack.ContainsFile(modelPath);
-            var data0 = await assetPack.LoadFileDataAsync(modelPath);
-            // then
-            Assert.True(exist0);
-            Assert.NotNull(data0);
+            using (var assetPack = await uri.GetTesAssetPackAsync())
+            {
+                // when
+                var exist0 = assetPack.ContainsFile(modelPath);
+                var data0 = await assetPack.LoadFileDataAsync(modelPath);
+                // then
+                Assert.True(exist0);
+                Assert.NotNull(data0);
+            }
         }
     }
 }

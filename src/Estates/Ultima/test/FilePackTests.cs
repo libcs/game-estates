@@ -1,4 +1,3 @@
-//#define LONGTEST
 using System;
 using System.Threading.Tasks;
 using Xunit;
@@ -12,24 +11,28 @@ namespace Gamer.Estate.Ultima.Tests
         public FilePackTests(ITestOutputHelper helper) => LogFunc = x => helper.WriteLine(x.ToString());
 
         [Theory]
-        [InlineData("game://UltimaOnline/*")]
+        [InlineData("game:/#Zero")]
         public async Task LoadAssetPack(string path)
         {
-            var assetPack = await new Uri(path).GetUltimaAssetPackAsync() as UltimaAssetPack;
-            //foreach (var pack in assetPack.Packs)
-            //{
-            //    pack.TestContainsFile();
-            //    pack.TestLoadFileData();
-            //}
+            using (var assetPack = await new Uri(path).GetUltimaAssetPackAsync() as UltimaAssetPack)
+            {
+                //foreach (var pack in assetPack.Packs)
+                //{
+                //    pack.TestContainsFile();
+                //    pack.TestLoadFileData();
+                //}
+            }
         }
 
         [Theory]
-        [InlineData("game://UltimaOnline/*")]
+        [InlineData("game:/#Zero")]
         public async Task LoadDataPack(string path)
         {
-            var dataPack = await new Uri(path).GetUltimaDataPackAsync() as UltimaDataPack;
-            //TestLoadCell(dataPack, new Vector3(0, 0, 0));
-            //TestAllCells(dataPack);
+            using (var dataPack = await new Uri(path).GetUltimaDataPackAsync() as UltimaDataPack)
+            {
+                //TestLoadCell(dataPack, new Vector3(0, 0, 0));
+                //TestAllCells(dataPack);
+            }
         }
 
         //public static Vector3Int GetCellId(Vector3 point, int world) => new Vector3Int(Mathf.FloorToInt(point.x / ConvertUtils.ExteriorCellSideLengthInMeters), Mathf.FloorToInt(point.z / ConvertUtils.ExteriorCellSideLengthInMeters), world);

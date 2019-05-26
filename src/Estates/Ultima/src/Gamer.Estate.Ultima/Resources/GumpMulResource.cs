@@ -12,8 +12,8 @@ namespace Gamer.Estate.Ultima.Resources
         Texture2DInfo[] _textureCache = new Texture2DInfo[0x10000];
 
         public AFileIndex FileIndex { get; } = ClientVersion.InstallationIsUopFormat ?
-            FileManager.CreateFileIndex("gumpartLegacyMUL.uop", 0xFFFF, true, ".tga") :
-            FileManager.CreateFileIndex("Gumpidx.mul", "Gumpart.mul", 0x10000, 12);
+            UltimaFileManager.CreateFileIndex("gumpartLegacyMUL.uop", 0xFFFF, true, ".tga") :
+            UltimaFileManager.CreateFileIndex("Gumpidx.mul", "Gumpart.mul", 0x10000, 12);
 
         public GumpMulResource(object graphics) => _graphicsDevice = graphics;
 

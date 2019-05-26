@@ -1,8 +1,8 @@
-﻿using Microsoft.Extensions.Caching.Memory;
+﻿using Gamer.Core;
+using Microsoft.Extensions.Caching.Memory;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
 namespace Gamer.Proxy
@@ -11,14 +11,20 @@ namespace Gamer.Proxy
     {
         readonly MemoryCache _cache = new MemoryCache(new MemoryCacheOptions());
         readonly HttpClient _hc = new HttpClient();
+        readonly bool _schemeGame;
 
         public ProxySinkClient(Uri address, string estate)
         {
-            _hc.BaseAddress = address;
-            _hc.DefaultRequestHeaders.Accept.Clear();
-            _hc.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            _hc.DefaultRequestHeaders.Add("Estate", estate);
-            _hc.DefaultRequestHeaders.Add("Pack", new UriBuilder(address) { Scheme = "serv", Host = address.Fragment.Substring(1), Port = -1, Fragment = null }.ToString());
+            _schemeGame = address.Scheme == UriSchemeGame || address.Scheme == UriSchemeGames;
+            _hc.BaseAddress = _schemeGame
+                ? new UriBuilder(address) { Scheme = address.Scheme == UriSchemeGame ? Uri.UriSchemeHttp : Uri.UriSchemeHttps }.Uri
+                : new UriBuilder(address) { Path = address.LocalPath.EnsureEndsWith("/"), Fragment = null }.Uri;
+            _hc.DefaultRequestHeaders.Accept.Clear(); //_hc.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            if (_schemeGame)
+            {
+                _hc.DefaultRequestHeaders.Add("Estate", estate);
+                _hc.DefaultRequestHeaders.Add("Pack", new UriBuilder(address) { Host = "serv", Port = -1 }.ToString());
+            }
         }
 
         public async Task<T> CallAsync<T>(string method)
@@ -27,13 +33,16 @@ namespace Gamer.Proxy
             if (!r.IsSuccessStatusCode)
                 throw new InvalidOperationException(r.ReasonPhrase);
             var data = await r.Content.ReadAsByteArrayAsync();
-            return FromBytes<T>(data);
+            return FromBytes<T>(_schemeGame, data);
         }
 
+        public override HashSet<string> GetContainsSet(Func<HashSet<string>> action) => throw new NotSupportedException();
+
         public override bool ContainsFile(string filePath, Func<bool> action) =>
-            _cache.GetOrCreateAsync("/asset/.set", async x => await CallAsync<HashSet<string>>("/asset/.set")).Result.Contains(filePath.Replace('\\', '/'));
+            _cache.GetOrCreateAsync(".set", async x => await CallAsync<HashSet<string>>((string)x.Key))
+                .GetAwaiter().GetResult().Contains(filePath.Replace('\\', '/'));
 
         public override async Task<byte[]> LoadFileDataAsync(string filePath, Func<Task<byte[]>> action) =>
-            await _cache.GetOrCreateAsync($"/asset/{filePath.Replace('\\', '/')}", async x => await CallAsync<byte[]>($"/asset/{filePath.Replace('\\', '/')}"));
+            await _cache.GetOrCreateAsync(filePath.Replace('\\', '/'), async x => await CallAsync<byte[]>((string)x.Key));
     }
 }

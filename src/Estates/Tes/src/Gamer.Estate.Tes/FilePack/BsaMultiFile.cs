@@ -14,7 +14,7 @@ namespace Gamer.Estate.Tes.FilePack
     public partial class BsaMultiFile : IDisposable
     {
         readonly ProxySink _proxySink;
-        public readonly List<BsaFile> Packs;
+        public readonly List<BsaFile> Packs = new List<BsaFile>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="BsaMultiFile" /> class.
@@ -28,8 +28,8 @@ namespace Gamer.Estate.Tes.FilePack
             _proxySink = proxySink;
             if (proxySink is ProxySinkClient)
                 return;
-            var files = (filePaths ?? throw new ArgumentNullException(nameof(filePaths))).Where(x => Path.GetExtension(x) == ".bsa" || Path.GetExtension(x) == ".ba2");
-            Packs = new List<BsaFile>();
+            var files = (filePaths ?? throw new ArgumentNullException(nameof(filePaths)))
+                .Where(x => Path.GetExtension(x) == ".bsa" || Path.GetExtension(x) == ".ba2");
             Packs.AddRange(files.Select(x => new BsaFile(x)));
         }
 

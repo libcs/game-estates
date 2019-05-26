@@ -23,6 +23,14 @@ namespace Gamer.Core
 #endif
 
         /// <summary>
+        /// Ensures the ends with.
+        /// </summary>
+        /// <param name="source">The source.</param>
+        /// <param name="value">The value.</param>
+        /// <returns></returns>
+        public static string EnsureEndsWith(this string source, string value) => source.EndsWith(value) ? source : source + value;
+
+        /// <summary>
         /// Quickly checks if an ASCII encoded string is equal to a C# string.
         /// </summary>
         public static bool EqualsASCIIBytes(this string source, byte[] ASCIIBytes)

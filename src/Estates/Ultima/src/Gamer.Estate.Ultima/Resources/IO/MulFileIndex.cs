@@ -18,7 +18,7 @@ namespace Gamer.Estate.Ultima.Resources.IO
         /// <param name="patch_file">Index to patch data in Versioning.</param>
         public MulFileIndex(string idxFile, string mulFile, int length, int patch_file) : base(mulFile)
         {
-            IndexPath = FileManager.GetFilePath(idxFile);
+            IndexPath = UltimaFileManager.GetFilePath(idxFile);
             Length = length;
             patchFile = patch_file;
             Open();

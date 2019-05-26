@@ -26,7 +26,7 @@ namespace Gamer.Estate.Ultima.Resources
             // byte     Frame Interval
             // byte     Start Interval
             _animData = new EffectData[Count][];
-            using (var s = FileManager.GetFile("animdata.mul"))
+            using (var s = UltimaFileManager.GetFile("animdata.mul"))
             {
                 var r = new BinaryReader(s);
                 for (var i = 0; i < Count; i++)
@@ -42,7 +42,7 @@ namespace Gamer.Estate.Ultima.Resources
 
         public EffectData GetResource(int itemId)
         {
-            itemId &= FileManager.ItemIdMask;
+            itemId &= UltimaFileManager.ItemIdMask;
             return _animData[itemId >> 3][itemId & 0x07];
         }
     }

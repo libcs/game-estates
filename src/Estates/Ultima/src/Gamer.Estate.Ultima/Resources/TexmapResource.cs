@@ -8,7 +8,7 @@ namespace Gamer.Estate.Ultima.Resources
     public class TexmapResource
     {
         Texture2DInfo[] _cache = new Texture2DInfo[0x4000];
-        readonly AFileIndex _index = FileManager.CreateFileIndex("texidx.mul", "texmaps.mul", 0x4000, -1); // !!! must find patch file reference for texmap.
+        readonly AFileIndex _index = UltimaFileManager.CreateFileIndex("texidx.mul", "texmaps.mul", 0x4000, -1); // !!! must find patch file reference for texmap.
 
         const int DEFAULT_TEXTURE = 0x007F; // index 127 is the first 'unused' texture.
 

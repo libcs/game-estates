@@ -13,7 +13,7 @@ namespace Gamer.Estate.Ultima.Resources
         {
             _translations = new Dictionary<int, Tuple<int, int>>();
             StreamReader gumpDefFile = null;
-            try { gumpDefFile = new StreamReader(FileManager.GetFile("gump.def")); }
+            try { gumpDefFile = new StreamReader(UltimaFileManager.GetFile("gump.def")); }
             catch { Log("GumpDefTranslator: unable to open gump.def file. No item/itemgumpling translations are available."); return; }
             try
             {

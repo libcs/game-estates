@@ -85,7 +85,7 @@ namespace Gamer.Estate.Ultima.Resources
 
         static BodyConverter()
         {
-            var path = FileManager.GetFilePath("bodyconv.def");
+            var path = UltimaFileManager.GetFilePath("bodyconv.def");
             if (path == null)
                 return;
             ArrayList list1 = new ArrayList(), list2 = new ArrayList(), list3 = new ArrayList(), list4 = new ArrayList();

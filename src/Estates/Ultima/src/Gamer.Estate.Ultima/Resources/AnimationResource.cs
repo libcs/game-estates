@@ -16,11 +16,11 @@ namespace Gamer.Estate.Ultima.Resources
         AAnimationFrame[][][][] _cache;
         object _graphics;
 
-        public AFileIndex FileIndex { get; } = FileManager.CreateFileIndex("Anim.idx", "Anim.mul", 0x40000, 6);
-        public AFileIndex FileIndex2 { get; } = FileManager.CreateFileIndex("Anim2.idx", "Anim2.mul", 0x10000, -1);
-        public AFileIndex FileIndex3 { get; } = FileManager.CreateFileIndex("Anim3.idx", "Anim3.mul", 0x20000, -1);
-        public AFileIndex FileIndex4 { get; } = FileManager.CreateFileIndex("Anim4.idx", "Anim4.mul", 0x20000, -1);
-        public AFileIndex FileIndex5 { get; } = FileManager.CreateFileIndex("Anim5.idx", "Anim5.mul", 0x20000, -1);
+        public AFileIndex FileIndex { get; } = UltimaFileManager.CreateFileIndex("Anim.idx", "Anim.mul", 0x40000, 6);
+        public AFileIndex FileIndex2 { get; } = UltimaFileManager.CreateFileIndex("Anim2.idx", "Anim2.mul", 0x10000, -1);
+        public AFileIndex FileIndex3 { get; } = UltimaFileManager.CreateFileIndex("Anim3.idx", "Anim3.mul", 0x20000, -1);
+        public AFileIndex FileIndex4 { get; } = UltimaFileManager.CreateFileIndex("Anim4.idx", "Anim4.mul", 0x20000, -1);
+        public AFileIndex FileIndex5 { get; } = UltimaFileManager.CreateFileIndex("Anim5.idx", "Anim5.mul", 0x20000, -1);
 
         public AnimationResource(object graphics)
         {

@@ -9,8 +9,8 @@ namespace Gamer.Estate.Rsi
     {
         public static Task<IAssetUnityPack> GetRsiAssetPackAsync(this Uri uri, Func<object> func = null)
         {
-            uri.ToRsiGame(func, out var proxySink, out var filePath);
-            var pakFile = new PakFile(filePath);
+            uri.ToRsiGame(func, out var proxySink, out var filePaths);
+            var pakFile = new PakFile(filePaths[0]);
             return Task.FromResult((IAssetUnityPack)new RsiAssetPack(proxySink, pakFile));
         }
     }

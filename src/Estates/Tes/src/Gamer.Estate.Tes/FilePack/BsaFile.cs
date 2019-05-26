@@ -1,5 +1,6 @@
 ﻿using Gamer.Core;
 using Gamer.Core.Format;
+using Gamer.Proxy;
 using ICSharpCode.SharpZipLib.Lzw;
 using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
 using System;

@@ -9,7 +9,7 @@ namespace Gamer.Estate.Ultima.Resources.IO
 
         static VerData()
         {
-            var path = FileManager.GetFilePath("verdata.mul");
+            var path = UltimaFileManager.GetFilePath("verdata.mul");
             if (!File.Exists(path))
             {
                 Patches = new FileIndexEntry5D[0];

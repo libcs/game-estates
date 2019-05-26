@@ -14,11 +14,11 @@ namespace Gamer.Estate.Ultima.Resources
         static MusicData()
         {
             // open UO's music Config.txt
-            if (!FileManager.Exists(_configFilePath))
+            if (!UltimaFileManager.Exists(_configFilePath))
                 return;
             // attempt to read out all the values from the file.
             string line;
-            using (var r = new StreamReader(FileManager.GetFile(_configFilePath)))
+            using (var r = new StreamReader(UltimaFileManager.GetFile(_configFilePath)))
                 while ((line = r.ReadLine()) != null)
                     if (TryParseConfigLine(line, out Tuple<int, string, bool> songData))
                         _musicData.Add(songData.Item1, new Tuple<string, bool>(songData.Item2, songData.Item3));

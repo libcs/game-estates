@@ -42,7 +42,7 @@ namespace Gamer.Estate.Ultima.Resources
         void LoadFonts()
         {
             // load Ascii fonts
-            using (var r = new BinaryReader(new FileStream(FileManager.GetFilePath("fonts.mul"), FileMode.Open, FileAccess.Read)))
+            using (var r = new BinaryReader(new FileStream(UltimaFileManager.GetFilePath("fonts.mul"), FileMode.Open, FileAccess.Read)))
                 for (var i = 0; i < AsciiFontCount; i++)
                 {
                     _asciiFonts[i] = new FontAscii();
@@ -53,7 +53,7 @@ namespace Gamer.Estate.Ultima.Resources
             var maxHeight = 0; // because all unifonts are designed to be used together, they must all share a single maxheight value.
             for (var i = 0; i < UniFontCount; i++)
             {
-                var path = FileManager.GetFilePath($"unifont{(i == 0 ? string.Empty : i.ToString())}.mul");
+                var path = UltimaFileManager.GetFilePath($"unifont{(i == 0 ? string.Empty : i.ToString())}.mul");
                 if (path != null)
                 {
                     _unicodeFonts[i] = new FontUnicode();

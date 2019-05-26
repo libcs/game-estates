@@ -48,7 +48,7 @@ namespace Gamer.Estate.Ultima.Resources
             var tables = new List<Dictionary<int, SpeechEntry>>();
             var lastIndex = -1;
             Dictionary<int, SpeechEntry> table = null;
-            var path = FileManager.GetFilePath("speech.mul");
+            var path = UltimaFileManager.GetFilePath("speech.mul");
             using (var r = new BinaryReader(new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read)))
             {
                 while (r.PeekChar() >= 0)

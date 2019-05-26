@@ -67,6 +67,7 @@ namespace Gamer.Proxy.Server
                 response.Headers.Add("Date", DateTime.UtcNow.ToString("r"));
                 response.Content = content;
                 ctx.ResponseChannel.Send(response, CancellationToken.None);
+                return null;
             });
     }
 }

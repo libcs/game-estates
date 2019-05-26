@@ -43,7 +43,7 @@ namespace Gamer.Estate.Ultima.Resources
 
         static uint[] getTextureData()
         {
-            var r = new BinaryReader(FileManager.GetFile("hues.mul"));
+            var r = new BinaryReader(UltimaFileManager.GetFile("hues.mul"));
             var currentHue = 0;
             var currentIndex = 0;
             var data = new uint[_hueTextureWidth * _hueTextureHeight * 2];
