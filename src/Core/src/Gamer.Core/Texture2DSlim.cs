@@ -38,6 +38,8 @@ namespace Gamer.Core
             this.hasMipmaps = hasMipmaps;
         }
 
+        public void LoadRawTextureData(byte[] rawData) => textureData = rawData;
+
         public void LoadImage(byte[] data, string resSFilePath = "")
         {
             using (var ms = new MemoryStream(data))
@@ -102,7 +104,5 @@ namespace Gamer.Core
                 }
             }
         }
-
-        public void LoadRawTextureData(byte[] rawData) => textureData = rawData;
     }
 }

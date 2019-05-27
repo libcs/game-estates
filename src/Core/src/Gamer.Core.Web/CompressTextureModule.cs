@@ -2,7 +2,7 @@
 using System.IO;
 using System.Web;
 
-namespace Core
+namespace Gamer.Core
 {
     /// <summary>
     /// CompressTextureModule

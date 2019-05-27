@@ -1,10 +1,9 @@
 ﻿using Gamer.Core.Format;
 using System.IO;
-using System.Text;
 using System.Web;
 using UnityEngine;
 
-namespace Core
+namespace Gamer.Core
 {
     public class CompressTextureStream : TransformStream
     {
@@ -14,11 +13,10 @@ namespace Core
         {
             var dds = DdsReader.LoadDDSTexture(stream);
             var tex = dds.ToTexture2DSlim();
+            tex.Compress(TextureFormat.ETC_RGB4);
+            File.WriteAllBytes(@"C:\T_\Sample.dds", tex.textureData);
             throw new HttpException(500, $"a:{tex}");
-            //tex.co
-            //EditorUtility.CompressTexture(tex, TextureFormat.ETC2_RGB, 50);
-            ////
-            //File.WriteAllBytes(Application.dataPath + "/../SavedRenderTexture.exr", bytes);
+            //
             //return new MemoryStream(tex.GetRawTextureData());
         }
     }

@@ -5,6 +5,21 @@ using static Gamer.Core.Debug;
 
 namespace Gamer.Core
 {
+    /// <summary>
+    /// Specifies an endianness
+    /// </summary>
+    public enum Endian
+    {
+        /// <summary>
+        /// Little endian (i.e. DDCCBBAA)
+        /// </summary>
+        LittleEndian = 0,
+        /// <summary>
+        /// Big endian (i.e. AABBCCDD)
+        /// </summary>
+        BigEndian = 1
+    }
+
     public class ByteArrayComparer : IEqualityComparer<byte[]>
     {
         public static ByteArrayComparer Default = new ByteArrayComparer();

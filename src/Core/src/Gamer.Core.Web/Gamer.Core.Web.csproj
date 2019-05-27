@@ -14,7 +14,7 @@
     <AssemblyName>Gamer.Core.Web</AssemblyName>
     <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
     <UseIISExpress>true</UseIISExpress>
-    <Use64BitIISExpress />
+    <Use64BitIISExpress>true</Use64BitIISExpress>
     <IISExpressSSLPort />
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
@@ -31,6 +31,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -61,6 +62,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Gamer.Conversion\Gamer.Conversion.csproj">
+      <Project>{664eed21-b144-4081-b9c4-880913b74686}</Project>
+      <Name>Gamer.Conversion</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Gamer.Core\Gamer.Core.csproj">
       <Project>{4b414633-2d46-4f28-b43b-afc788833986}</Project>
       <Name>Gamer.Core</Name>

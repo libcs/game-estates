@@ -454,9 +454,9 @@ namespace Gamer.Core.Format
             }
         }
 
-        static byte[] DecodeDXT1ToARGB(byte[] compressedData, uint width, uint height, DDSPixelFormat pixelFormat, uint mipmapCount) { return DecodeDXTToARGB(1, compressedData, width, height, pixelFormat, mipmapCount); }
-        static byte[] DecodeDXT3ToARGB(byte[] compressedData, uint width, uint height, DDSPixelFormat pixelFormat, uint mipmapCount) { return DecodeDXTToARGB(3, compressedData, width, height, pixelFormat, mipmapCount); }
-        static byte[] DecodeDXT5ToARGB(byte[] compressedData, uint width, uint height, DDSPixelFormat pixelFormat, uint mipmapCount) { return DecodeDXTToARGB(5, compressedData, width, height, pixelFormat, mipmapCount); }
+        static byte[] DecodeDXT1ToARGB(byte[] compressedData, uint width, uint height, DDSPixelFormat pixelFormat, uint mipmapCount) => DecodeDXTToARGB(1, compressedData, width, height, pixelFormat, mipmapCount);
+        static byte[] DecodeDXT3ToARGB(byte[] compressedData, uint width, uint height, DDSPixelFormat pixelFormat, uint mipmapCount) => DecodeDXTToARGB(3, compressedData, width, height, pixelFormat, mipmapCount);
+        static byte[] DecodeDXT5ToARGB(byte[] compressedData, uint width, uint height, DDSPixelFormat pixelFormat, uint mipmapCount) => DecodeDXTToARGB(5, compressedData, width, height, pixelFormat, mipmapCount);
 
         /// <summary>
         /// Extracts a DDS file's texture format and pixel data.

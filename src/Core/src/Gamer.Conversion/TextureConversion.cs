@@ -23,11 +23,11 @@ namespace Gamer.Core
                             for (var y = 0; y < height; y++)
                                 for (var x = 0; x < width; x++)
                                 {
-                                    var r = pData[pos];
-                                    var g = pData[pos + 1];
-                                    var b = pData[pos + 2];
-                                    var a = pData[pos + 3];
-                                    pOut[outPos++] = (byte)(((r + b + g) / 3) & 0XFF);
+                                    var fR = pData[pos];
+                                    var fG = pData[pos + 1];
+                                    var fB = pData[pos + 2];
+                                    var fA = pData[pos + 3];
+                                    pOut[outPos] = (byte)(((fR + fB + fG) / 3) & 0XFF);
                                     pos += 4;
                                     outPos += 1;
                                 }
@@ -36,51 +36,42 @@ namespace Gamer.Core
                     }
 
                 case TextureFormat.ARGB4444:
-                    {
-                        pos = 0; outPos = 0;
-                        using (var pvrTexture = PVRTexture.CreateTexture(tex.textureData, (uint)width, (uint)height, 1, PixelFormat.RGBA8888, true, VariableType.UnsignedByte, ColourSpace.sRGB))
-                        {
-                            var doDither = true;
-                            pvrTexture.Transcode(PixelFormat.RGBA4444, VariableType.UnsignedByte, ColourSpace.sRGB, CompressorQuality.PVRTCNormal, doDither);
-                            var texDataSize = pvrTexture.GetTextureDataSize(0);
-                            var texData = new byte[texDataSize];
-                            pvrTexture.GetTextureData(texData, texDataSize);
-                            var out_ = new byte[texDataSize];
-                            fixed (byte* pOut = out_, pData = data)
-                                for (var y = 0; y < height; y++)
-                                    for (var x = 0; x < width; x++)
-                                    {
-                                        var v0 = texData[pos];
-                                        var v1 = texData[pos + 1];
-                                        // 4bit little endian {A, B},{G, R}
-                                        var sA = v0 & 0xF0 >> 4;
-                                        var sB = (v0 & 0xF0) >> 4;
-                                        var sG = v1 & 0xF0 >> 4;
-                                        var sR = (v1 & 0xF0) >> 4;
-                                        // swap to little endian {B, G, R, A }
-                                        var fB = sB & 0xf;
-                                        var fG = sG & 0xf;
-                                        var fR = sR & 0xf;
-                                        var fA = sA & 0xf;
-                                        pOut[outPos] = (byte)((fG << 4) + fB);
-                                        pOut[outPos + 1] = (byte)((fA << 4) + fR);
-                                        pos += 2;
-                                        outPos += 2;
-                                    }
-                            tex.textureData = out_;
-                            return true;
-                        }
-                    }
-
                 case TextureFormat.RGB565:
                     {
-                        using (var pvrTexture = PVRTexture.CreateTexture(tex.textureData, (uint)width, (uint)height, 1, PixelFormat.RGBA8888, true, VariableType.UnsignedByte, ColourSpace.sRGB))
+                        pos = 0; outPos = 0;
+                        using (var pvrTexture = PVRTexture.CreateTexture(data, (uint)width, (uint)height, 1, PixelFormat.RGBA8888, true, VariableType.UnsignedByte, ColourSpace.sRGB))
                         {
                             var doDither = true;
-                            pvrTexture.Transcode(PixelFormat.RGB565, VariableType.UnsignedByte, ColourSpace.sRGB, CompressorQuality.ETCMedium, doDither);
+                            pvrTexture.Transcode(PixelFormat.RGBA4444, VariableType.UnsignedByte, ColourSpace.sRGB, format == TextureFormat.ARGB4444 ? CompressorQuality.PVRTCNormal : CompressorQuality.ETCMedium, doDither);
                             var texDataSize = pvrTexture.GetTextureDataSize(0);
                             var out_ = new byte[texDataSize];
                             pvrTexture.GetTextureData(out_, texDataSize);
+                            if (format == TextureFormat.RGB565)
+                            {
+                                var data2 = out_;
+                                out_ = new byte[texDataSize];
+                                fixed (byte* pOut = out_, pData = data2)
+                                    for (var y = 0; y < height; y++)
+                                        for (var x = 0; x < width; x++)
+                                        {
+                                            var v0 = pData[pos];
+                                            var v1 = pData[pos + 1];
+                                            // 4bit little endian {A, B},{G, R}
+                                            var sA = v0 & 0xF0 >> 4;
+                                            var sB = (v0 & 0xF0) >> 4;
+                                            var sG = v1 & 0xF0 >> 4;
+                                            var sR = (v1 & 0xF0) >> 4;
+                                            // swap to little endian {B, G, R, A }
+                                            var fB = sB & 0xf;
+                                            var fG = sG & 0xf;
+                                            var fR = sR & 0xf;
+                                            var fA = sA & 0xf;
+                                            pOut[outPos] = (byte)((fG << 4) + fB);
+                                            pOut[outPos + 1] = (byte)((fA << 4) + fR);
+                                            pos += 2;
+                                            outPos += 2;
+                                        }
+                            }
                             tex.textureData = out_;
                             return true;
                         }
@@ -95,13 +86,13 @@ namespace Gamer.Core
                                 for (var x = 0; x < width; x++)
                                 {
                                     // 4bit little endian {A, B},{G, R}
-                                    var r = pData[pos];
-                                    var g = pData[pos + 1];
-                                    var b = pData[pos + 2];
-                                    var a = pData[pos + 3];
-                                    pOut[outPos] = r;
-                                    pOut[outPos + 1] = g;
-                                    pOut[outPos + 2] = b;
+                                    var fR = pData[pos];
+                                    var fG = pData[pos + 1];
+                                    var fB = pData[pos + 2];
+                                    var fA = pData[pos + 3];
+                                    pOut[outPos] = fR;
+                                    pOut[outPos + 1] = fG;
+                                    pOut[outPos + 2] = fB;
                                     pos += 4;
                                     outPos += 3;
                                 }
@@ -120,14 +111,14 @@ namespace Gamer.Core
                             for (var y = 0; y < height; y++)
                                 for (var x = 0; x < width; x++)
                                 {
-                                    var a = pData[pos];
-                                    var r = pData[pos + 1];
-                                    var g = pData[pos + 2];
-                                    var b = pData[pos + 3];
-                                    out_[outPos] = r;
-                                    out_[outPos + 1] = g;
-                                    out_[outPos + 2] = b;
-                                    out_[outPos + 3] = a;
+                                    var fA = pData[pos];
+                                    var fR = pData[pos + 1];
+                                    var fG = pData[pos + 2];
+                                    var fB = pData[pos + 3];
+                                    out_[outPos] = fR;
+                                    out_[outPos + 1] = fG;
+                                    out_[outPos + 2] = fB;
+                                    out_[outPos + 3] = fA;
                                     pos += 4;
                                     outPos += 4;
                                 }
@@ -136,19 +127,19 @@ namespace Gamer.Core
                     }
 
                 //case TextureFormat.ATC_RGBA8:
-                //        tex.textureData = TextureConverterWrapper.Compress(data, width, height, TextureConverterWrapper.CompressionFormat.AtcRgbaExplicitAlpha);
-                //        return true;
-
                 //case TextureFormat.ATC_RGB4:
-                //        tex.textureData = TextureConverterWrapper.Compress(data, width, height, TextureConverterWrapper.CompressionFormat.AtcRgb);
-                //        return true;
-
                 case TextureFormat.ETC2_RGBA8:
-                    tex.textureData = TextureConverterWrapper.Compress(data, width, height, TextureConverterWrapper.CompressionFormat.Etc2Rgba);
-                    return true;
-
                 case TextureFormat.ETC_RGB4:
-                    tex.textureData = TextureConverterWrapper.Compress(data, width, height, TextureConverterWrapper.CompressionFormat.Etc1);
+                    TextureConverterWrapper.CompressionFormat format2;
+                    switch (format)
+                    {
+                        //case TextureFormat.ATC_RGBA8: format2 = TextureConverterWrapper.CompressionFormat.AtcRgbaExplicitAlpha; break;
+                        //case TextureFormat.ATC_RGB4: format2 = TextureConverterWrapper.CompressionFormat.AtcRgb; break;
+                        case TextureFormat.ETC2_RGBA8: format2 = TextureConverterWrapper.CompressionFormat.Etc2Rgba; break;
+                        case TextureFormat.ETC_RGB4: format2 = TextureConverterWrapper.CompressionFormat.Etc1; break;
+                        default: throw new ArgumentOutOfRangeException(nameof(format), format.ToString());
+                    }
+                    tex.textureData = TextureConverterWrapper.Compress(data, width, height, format2);
                     return true;
 
                 case TextureFormat.DXT1:
@@ -190,9 +181,6 @@ namespace Gamer.Core
                     }
 
                 case TextureFormat.ASTC_RGBA_4x4:
-                    AstcencWrapper.EncodeASTC(data, width, height, 4, 4, out tex.textureData);
-                    return true;
-
                 case TextureFormat.ASTC_RGB_4x4:
                     AstcencWrapper.EncodeASTC(data, width, height, 4, 4, out tex.textureData);
                     return true;
@@ -356,49 +344,22 @@ namespace Gamer.Core
                     }
 
                 case TextureFormat.RGB565:
-                    {
-                        using (var pvrTexture = PVRTexture.CreateTexture(data, (uint)width, (uint)height, 1, PixelFormat.RGB565, true, VariableType.UnsignedByte, ColourSpace.sRGB))
-                        {
-                            pvrTexture.Transcode(PixelFormat.RGBA8888, VariableType.UnsignedByte, ColourSpace.sRGB, CompressorQuality.PVRTCNormal, false);
-                            var texDataSize = pvrTexture.GetTextureDataSize(0);
-                            var out_ = new byte[texDataSize];
-                            pvrTexture.GetTextureData(out_, texDataSize);
-                            tex.textureData = out_;
-                            return true;
-                        }
-                    }
-
                 case TextureFormat.ETC2_RGBA8:
-                    {
-                        using (var pvrTexture = PVRTexture.CreateTexture(data, (uint)width, (uint)height, 1, PixelFormat.ETC2_RGBA, true, VariableType.UnsignedByte, ColourSpace.sRGB))
-                        {
-                            pvrTexture.Transcode(PVRTexLibNET.PixelFormat.RGBA8888, VariableType.UnsignedByte, ColourSpace.sRGB, CompressorQuality.PVRTCNormal, false);
-                            var texDataSize = pvrTexture.GetTextureDataSize(0);
-                            var out_ = new byte[texDataSize];
-                            pvrTexture.GetTextureData(out_, texDataSize);
-                            tex.textureData = out_;
-                            return true;
-                        }
-                    }
-
                 case TextureFormat.ETC2_RGBA1:
-                    {
-                        using (var pvrTexture = PVRTexture.CreateTexture(data, (uint)width, (uint)height, 1, PixelFormat.ETC2_RGB_A1, true, VariableType.UnsignedByte, ColourSpace.sRGB))
-                        {
-                            pvrTexture.Transcode(PixelFormat.RGBA8888, VariableType.UnsignedByte, ColourSpace.sRGB, CompressorQuality.PVRTCNormal, false);
-                            var texDataSize = pvrTexture.GetTextureDataSize(0);
-                            var out_ = new byte[texDataSize];
-                            pvrTexture.GetTextureData(out_, texDataSize);
-                            tex.textureData = out_;
-                            return true;
-                        }
-                    }
-
                 case TextureFormat.ETC_RGB4:
                     {
-                        using (var pvrTexture = PVRTexLibNET.PVRTexture.CreateTexture(data, (uint)width, (uint)height, 1, PVRTexLibNET.PixelFormat.ETC1, true, VariableType.UnsignedByte, ColourSpace.sRGB))
+                        PixelFormat format2;
+                        switch (format)
                         {
-                            pvrTexture.Transcode(PVRTexLibNET.PixelFormat.RGBA8888, VariableType.UnsignedByte, ColourSpace.sRGB, CompressorQuality.PVRTCNormal, false);
+                            case TextureFormat.RGB565: format2 = PixelFormat.RGB565; break;
+                            case TextureFormat.ETC2_RGBA8: format2 = PixelFormat.ETC2_RGBA; break;
+                            case TextureFormat.ETC2_RGBA1: format2 = PixelFormat.ETC2_RGB_A1; break;
+                            case TextureFormat.ETC_RGB4: format2 = PixelFormat.ETC1; break;
+                            default: throw new ArgumentOutOfRangeException(nameof(format), format.ToString());
+                        }
+                        using (var pvrTexture = PVRTexture.CreateTexture(data, (uint)width, (uint)height, 1, format2, true, VariableType.UnsignedByte, ColourSpace.sRGB))
+                        {
+                            pvrTexture.Transcode(PixelFormat.RGBA8888, VariableType.UnsignedByte, ColourSpace.sRGB, CompressorQuality.PVRTCNormal, false);
                             var texDataSize = pvrTexture.GetTextureDataSize(0);
                             var out_ = new byte[texDataSize];
                             pvrTexture.GetTextureData(out_, texDataSize);
@@ -422,9 +383,6 @@ namespace Gamer.Core
                     }
 
                 case TextureFormat.ASTC_RGB_4x4:
-                    AstcencWrapper.DecodeASTC(data, width, height, 4, 4, out tex.textureData);
-                    return true;
-
                 case TextureFormat.ASTC_RGBA_4x4:
                     AstcencWrapper.DecodeASTC(data, width, height, 4, 4, out tex.textureData);
                     return true;

@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace Core
+namespace Gamer.Core
 {
     public abstract class TransformStream : Stream
     {

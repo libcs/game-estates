@@ -7,7 +7,7 @@ namespace Gamer.Core
     /// <summary>
     /// Read data from stream with data of specified endianness
     /// </summary>
-    public class EndianBinaryReader : BinaryReader
+    public class EndianBinaryWriter : BinaryWriter
     {
         public static readonly Endian NativeEndianness = BitConverter.IsLittleEndian ? Endian.LittleEndian : Endian.BigEndian;
 
@@ -21,36 +21,36 @@ namespace Gamer.Core
         /// </summary>
         public bool IsNativeEndianness => NativeEndianness == Endianness;
 
-        public EndianBinaryReader(Stream input) : this(input, Endian.LittleEndian) { }
-        public EndianBinaryReader(Stream input, Encoding encoding) : this(input, encoding, Endian.LittleEndian) { }
-        public EndianBinaryReader(Stream input, Endian endianness) : this(input, Encoding.UTF8, endianness) { }
-        public EndianBinaryReader(Stream input, Encoding encoding, Endian endianness) : base(input, encoding) => Endianness = endianness;
+        public EndianBinaryWriter(Stream input) : this(input, Endian.LittleEndian) { }
+        public EndianBinaryWriter(Stream input, Encoding encoding) : this(input, encoding, Endian.LittleEndian) { }
+        public EndianBinaryWriter(Stream input, Endian endianness) : this(input, Encoding.UTF8, endianness) { }
+        public EndianBinaryWriter(Stream input, Encoding encoding, Endian endianness) : base(input, encoding) => Endianness = endianness;
 
-        public string ReadString(int count) => Encoding.Default.GetString(base.ReadBytes(count));
+        public void Write(string value, int count) => base.Write(Encoding.Default.GetBytes(value), 0, count);
 
-        public override float ReadSingle() => ReadSingle(Endianness);
-        public float ReadSingle(Endian endianness) => endianness == NativeEndianness ? base.ReadSingle() : BitConverter.ToSingle(BitConverter.GetBytes(Reverse(base.ReadUInt32())), 0);
+        public override void Write(float value) => Write(value, Endianness);
+        public void Write(float value, Endian endianness) { if (endianness == NativeEndianness) base.Write(value); else base.Write(Reverse(BitConverter.ToUInt32(BitConverter.GetBytes(value), 0))); }
 
-        public override double ReadDouble() => ReadDouble(Endianness);
-        public double ReadDouble(Endian endianness) => endianness == NativeEndianness ? base.ReadDouble() : BitConverter.ToDouble(BitConverter.GetBytes(Reverse(base.ReadUInt64())), 0);
+        public override void Write(double value) => Write(value, Endianness);
+        public void Write(double value, Endian endianness) { if (endianness == NativeEndianness) base.Write(value); else base.Write(Reverse(BitConverter.ToUInt64(BitConverter.GetBytes(value), 0))); }
 
-        public override short ReadInt16() => ReadInt16(Endianness);
-        public short ReadInt16(Endian endianness) => endianness == NativeEndianness ? base.ReadInt16() : Reverse(base.ReadInt16());
+        public override void Write(short value) => Write(value, Endianness);
+        public void Write(short value, Endian endianness) { if (endianness == NativeEndianness) base.Write(value); else base.Write(Reverse(value)); }
 
-        public override ushort ReadUInt16() => ReadUInt16(Endianness);
-        public ushort ReadUInt16(Endian endianness) => endianness == NativeEndianness ? base.ReadUInt16() : Reverse(base.ReadUInt16());
+        public override void Write(ushort value) => Write(value, Endianness);
+        public void Write(ushort value, Endian endianness) { if (endianness == NativeEndianness) base.Write(value); else base.Write(Reverse(value)); }
 
-        public override int ReadInt32() => ReadInt32(Endianness);
-        public int ReadInt32(Endian endianness) => endianness == NativeEndianness ? base.ReadInt32() : Reverse(base.ReadInt32());
+        public override void Write(int value) => Write(value, Endianness);
+        public void Write(int value, Endian endianness) { if (endianness == NativeEndianness) base.Write(value); else base.Write(Reverse(value)); }
 
-        public override uint ReadUInt32() => ReadUInt32(Endianness);
-        public uint ReadUInt32(Endian endianness) => endianness == NativeEndianness ? base.ReadUInt32() : Reverse(base.ReadUInt32());
+        public override void Write(uint value) => Write(value, Endianness);
+        public void Write(uint value, Endian endianness) { if (endianness == NativeEndianness) base.Write(value); else base.Write(Reverse(value)); }
 
-        public override long ReadInt64() => ReadInt64(Endianness);
-        public long ReadInt64(Endian endianness) => endianness == NativeEndianness ? base.ReadInt64() : Reverse(base.ReadInt64());
+        public override void Write(long value) => Write(value, Endianness);
+        public void Write(long value, Endian endianness) { if (endianness == NativeEndianness) base.Write(value); else base.Write(Reverse(value)); }
 
-        public override ulong ReadUInt64() => ReadUInt64(Endianness);
-        public ulong ReadUInt64(Endian endianness) => endianness == NativeEndianness ? base.ReadUInt64() : Reverse(base.ReadUInt64());
+        public override void Write(ulong value) => Write(value, Endianness);
+        public void Write(ulong value, Endian endianness) { if (endianness == NativeEndianness) base.Write(value); else base.Write(Reverse(value)); }
 
         short Reverse(short value) => (short)(
                 ((value & 0xFF00) >> 8) << 0 |
