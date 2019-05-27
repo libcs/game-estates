@@ -11,7 +11,7 @@ namespace Gamer.Core
 {
     public static class CoreExtensions
     {
-        public static TResult Result<TResult>(this Task<TResult> task, bool continueOnCapturedContext = false) => continueOnCapturedContext ? task.GetAwaiter().GetResult() : task.ConfigureAwait(false).GetAwaiter().GetResult();
+        public static TResult Result<TResult>(this Task<TResult> task) => task.GetAwaiter().GetResult();
 
 #if WINDOWS
         [DllImport("Kernel32")]

@@ -19,34 +19,26 @@ namespace Gamer.Estate.Cry.FilePack
             }
         }
 
-        public async Task<Texture2DInfo> LoadTextureInfoAsync(string texturePath)
+        public Task<Texture2DInfo> LoadTextureInfoAsync(string texturePath)
         {
             var filePath = FindTexture(texturePath);
-            if (filePath != null)
+            return filePath != null ? Task.Run(async () =>
             {
                 var fileData = await LoadFileDataAsync(filePath);
-                return await Task.Run(() =>
-                {
-                    var fileExtension = Path.GetExtension(filePath);
-                    if (fileExtension.ToLowerInvariant() == ".dds") return DdsReader.LoadDDSTexture(new MemoryStream(fileData));
-                    else throw new NotSupportedException($"Unsupported texture type: {fileExtension}");
-                });
-            }
-            Log($"Could not find file \"{texturePath}\" in a BSA file.");
-            return null;
+                var fileExtension = Path.GetExtension(filePath);
+                if (fileExtension.ToLowerInvariant() == ".dds") return DdsReader.LoadDDSTexture(new MemoryStream(fileData));
+                else throw new NotSupportedException($"Unsupported texture type: {fileExtension}");
+            }) : null;
         }
 
-        public async Task<object> LoadObjectInfoAsync(string filePath)
+        public Task<object> LoadObjectInfoAsync(string filePath) => Task.Run(async () =>
         {
             var fileData = await LoadFileDataAsync(filePath);
-            return await Task.Run(() =>
-            {
-                return Task.FromResult<object>(null);
-                //var file = new NiFile(Path.GetFileNameWithoutExtension(filePath));
-                //file.Deserialize(new BinaryFileReader(new MemoryStream(fileData)));
-                //return (object)file;
-            });
-        }
+            return (object)null;
+            //var file = new NiFile(Path.GetFileNameWithoutExtension(filePath));
+            //file.Deserialize(new BinaryFileReader(new MemoryStream(fileData)));
+            //return (object)file;
+        });
 
         /// <summary>
         /// Finds the actual path of a texture.
@@ -58,6 +50,7 @@ namespace Gamer.Estate.Cry.FilePack
             var filePath = $"{textureNameInTexturesDir}.dds";
             if (ContainsFile(filePath))
                 return filePath;
+            Log($"Could not find file \"{texturePath}\" in a BSA file.");
             return null;
         }
     }
