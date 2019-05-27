@@ -4,7 +4,7 @@ using static Microsoft.Win32.Registry;
 
 namespace Gamer.Estate.Cry
 {
-    internal class CryFileManager
+    public class CryFileManager
     {
         public static bool IsDataPresent => _fileDirectory != null;
         static string _fileDirectory;

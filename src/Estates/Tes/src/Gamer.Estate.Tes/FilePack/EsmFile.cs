@@ -21,7 +21,7 @@ namespace Gamer.Estate.Tes.FilePack
 
         public EsmFile(ProxySink proxySink, string filePath, TesGame game)
         {
-            GameFormat getFormat()
+            GameFormat format()
             {
                 switch (game)
                 {
@@ -43,7 +43,7 @@ namespace Gamer.Estate.Tes.FilePack
             if (filePath == null)
                 return;
             FilePath = filePath;
-            Format = getFormat();
+            Format = format();
             _proxySink = proxySink;
             if (proxySink is ProxySinkClient)
                 return;

@@ -1,6 +1,6 @@
-﻿using OA.Tes.FilePacks.Records;
+﻿using Gamer.Estate.Tes.Records;
 
-namespace OA.Tes.FilePacks.Components
+namespace Gamer.Estate.Tes.Components
 {
     public class APPAComponent : BASEComponent
     {

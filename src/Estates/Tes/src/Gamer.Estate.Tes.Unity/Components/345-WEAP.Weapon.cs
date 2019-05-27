@@ -1,9 +1,9 @@
-﻿using OA.Core;
-using OA.Tes.FilePacks.Records;
+﻿using Gamer.Core;
+using Gamer.Estate.Tes.Records;
 using System.Collections;
 using UnityEngine;
 
-namespace OA.Tes.FilePacks.Components
+namespace Gamer.Estate.Tes.Components
 {
     public class WEAPComponent : BASEComponent
     {
@@ -68,7 +68,7 @@ namespace OA.Tes.FilePacks.Components
                 StartCoroutine(PlayAttackAnimationCoroutine());
         }
 
-        private IEnumerator PlayAttackAnimationCoroutine()
+        IEnumerator PlayAttackAnimationCoroutine()
         {
             _animating = true;
             var originalRotation = _hand.localRotation;

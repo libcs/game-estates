@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace OA.Tes.FilePacks.Components
+namespace Gamer.Estate.Tes.Components
 {
     public class CREAComponent : BASEComponent
     {

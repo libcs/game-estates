@@ -15,7 +15,7 @@ namespace Gamer.Estate.Tes.Tests
             Port = HttpServer.FindFreeTcpPort(),
         };
 
-        public TestsFixture() => Target.Initialize(new TesEstateHandler());
+        public TestsFixture() => Target.Initialize(TesEstateHandler.Handler);
         public void Dispose() => Target.Dispose();
     }
 

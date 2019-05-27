@@ -1,4 +1,6 @@
-﻿namespace Gamer.Estate.Tes.Components
+﻿using Gamer.Estate.Tes.Records;
+
+namespace Gamer.Estate.Tes.Components
 {
     public class ALCHComponent : BASEComponent
     {

@@ -16,7 +16,7 @@ namespace Gamer.Estate.Ultima.Loader
             var assetUri = new Uri("game://Zero/");
             var dataUri = new Uri("game://Zero/");
 
-            Engine = new SimpleEngine(new UltimaEstateHandler(), assetUri, dataUri);
+            Engine = new SimpleEngine(UltimaEstateHandler.Handler, assetUri, dataUri);
 
             // engine
             var scale = ConvertUtils.ExteriorCellSideLengthInMeters;

@@ -28,7 +28,7 @@ namespace Gamer.Estate.Tes.Loader
 
             //var dataUri = new Uri("game://Fallout4VR/Fallout4.esm");
 
-            DataPack = dataUri.GetTesDataPackAsync().Result;
+            DataPack = dataUri.GetTesDataPackAsync().Result();
 
             //TestLoadCell(new Vector3(((-2 << 5) + 1) * ConvertUtils.ExteriorCellSideLengthInMeters, 0, ((-1 << 5) + 1) * ConvertUtils.ExteriorCellSideLengthInMeters));
             //TestLoadCell(new Vector3((-1 << 3) * ConvertUtils.ExteriorCellSideLengthInMeters, 0, (-1 << 3) * ConvertUtils.ExteriorCellSideLengthInMeters));

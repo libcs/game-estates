@@ -23,11 +23,11 @@ namespace Gamer.Estate.Cry
 
         public Texture2D LoadTexture(string texturePath, int method = 0) => _textureManager.LoadTexture(texturePath, method);
 
-        public void PreloadTextureAsync(string texturePath) => _textureManager.PreloadTextureFileAsync(texturePath);
+        public void PreloadTextureTask(string texturePath) => _textureManager.PreloadTextureTask(texturePath);
 
         public GameObject CreateObject(string filePath) => throw new NotImplementedException(); //_nifManager.InstantiateNif(filePath);
 
-        public void PreloadObjectAsync(string filePath) => throw new NotImplementedException(); //_nifManager.PreloadNifFileAsync(filePath);
+        public void PreloadObjectTask(string filePath) => throw new NotImplementedException(); //_nifManager.PreloadNifFileAsync(filePath);
 
         public Task<HashSet<string>> GetContainsSetAsync() => throw new NotImplementedException();
     }

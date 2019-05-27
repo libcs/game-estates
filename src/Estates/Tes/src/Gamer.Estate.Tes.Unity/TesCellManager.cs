@@ -133,7 +133,7 @@ namespace Gamer.Estate.Tes
 
         void DestroyCell(Vector3Int cellId)
         {
-            if (_cellObjects.TryGetValue(cellId, out InRangeCellInfo cellInfo))
+            if (_cellObjects.TryGetValue(cellId, out var cellInfo))
             {
                 _loadBalancer.CancelTask(cellInfo.ObjectsCreationCoroutine);
                 Object.Destroy(cellInfo.GameObject);
@@ -163,7 +163,7 @@ namespace Gamer.Estate.Tes
                 var landTextureFilePaths = GetLANDTextureFilePaths(land);
                 if (landTextureFilePaths != null)
                     foreach (var landTextureFilePath in landTextureFilePaths)
-                        _assetPack.PreloadTextureAsync(landTextureFilePath);
+                        _assetPack.PreloadTextureTask(landTextureFilePath);
                 yield return null;
             }
             // Extract information about referenced objects.
@@ -172,7 +172,7 @@ namespace Gamer.Estate.Tes
             // Start pre-loading all required files for referenced objects. The NIF manager will load the textures as well.
             foreach (var refCellObjInfo in refCellObjInfos)
                 if (refCellObjInfo.ModelFilePath != null)
-                    _assetPack.PreloadObjectAsync(refCellObjInfo.ModelFilePath);
+                    _assetPack.PreloadObjectTask(refCellObjInfo.ModelFilePath);
             yield return null;
             // Instantiate terrain.
             if (land != null)

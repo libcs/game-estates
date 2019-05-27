@@ -21,10 +21,10 @@ namespace Gamer.Estate.Rsi
 
         public Texture2D LoadTexture(string texturePath, int method = 0) => _textureManager.LoadTexture(texturePath, method);
 
-        public void PreloadTextureAsync(string texturePath) => _textureManager.PreloadTextureFileAsync(texturePath);
+        public void PreloadTextureTask(string texturePath) => _textureManager.PreloadTextureTask(texturePath);
 
         public GameObject CreateObject(string filePath) => _cryManager.InstantiateObj(filePath);
 
-        public void PreloadObjectAsync(string filePath) => _cryManager.PreloadObjFileAsync(filePath);
+        public void PreloadObjectTask(string filePath) => _cryManager.PreloadObjectTask(filePath);
     }
 }

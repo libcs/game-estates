@@ -1,4 +1,4 @@
-﻿using OA.Tes.FilePacks.Records;
+﻿using Gamer.Estate.Tes.Records;
 using UnityEngine;
 
 namespace Gamer.Estate.Tes.Components
@@ -32,14 +32,9 @@ namespace Gamer.Estate.Tes.Components
         public bool usable = false;
         public bool pickable = true;
 
-        protected virtual void Awake()
-        {
-            _transform = GetComponent<Transform>();
-        }
+        protected virtual void Awake() => _transform = GetComponent<Transform>();
 
-        public virtual void Interact()
-        {
-        }
+        public virtual void Interact() { }
 
         public static BASEComponent Create(GameObject gameObject, Record record, string tag)
         {

@@ -12,7 +12,6 @@ namespace Gamer.Estate.Tes
         MaterialManager _materialManager;
         NifManager _nifManager;
 
-        public TesAssetPack(ProxySink proxySink, string filePath) : this(proxySink, new[] { filePath }) { }
         public TesAssetPack(ProxySink proxySink, string[] filePaths) : base(proxySink, filePaths)
         {
             _textureManager = new TextureManager(this);
@@ -21,11 +20,8 @@ namespace Gamer.Estate.Tes
         }
 
         public Texture2D LoadTexture(string texturePath, int method = 0) => _textureManager.LoadTexture(texturePath, method);
-
-        public void PreloadTextureAsync(string texturePath) => _textureManager.PreloadTextureFileAsync(texturePath);
-
-        public GameObject CreateObject(string filePath) => _nifManager.InstantiateObj(filePath);
-
-        public void PreloadObjectAsync(string filePath) => _nifManager.PreloadObjFileAsync(filePath);
+        public void PreloadTextureTask(string texturePath) => _textureManager.PreloadTextureTask(texturePath);
+        public GameObject CreateObject(string filePath) => _nifManager.CreateObject(filePath);
+        public void PreloadObjectTask(string filePath) => _nifManager.PreloadObjectTask(filePath);
     }
 }

@@ -9,29 +9,10 @@
   </Target>
 
   <ItemGroup>
+    <Compile Remove="Components\**" />
+    <EmbeddedResource Remove="Components\**" />
     <None Remove="**\*.swift" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Remove="Components\000-BASE.cs" />
-    <Compile Remove="Components\300-PROB.Probe.cs" />
-    <Compile Remove="Components\300-REPA.Repair Item.cs" />
-    <Compile Remove="Components\345-ACTI.Activator.cs" />
-    <Compile Remove="Components\345-ALCH.Potion.cs" />
-    <Compile Remove="Components\345-APPA.Alchem Apparatus.cs" />
-    <Compile Remove="Components\345-ARMO.Armor.cs" />
-    <Compile Remove="Components\345-BOOK.Book.cs" />
-    <Compile Remove="Components\345-CLOT.Clothing.cs" />
-    <Compile Remove="Components\345-CONT.Container.cs" />
-    <Compile Remove="Components\345-CREA.Creature.cs" />
-    <Compile Remove="Components\345-DOOR.Door.cs" />
-    <Compile Remove="Components\345-INGR.Ingredient.cs" />
-    <Compile Remove="Components\345-LIGH.Light.cs" />
-    <Compile Remove="Components\345-LOCK.Lock.cs" />
-    <Compile Remove="Components\345-MISC.Misc Item.cs" />
-    <Compile Remove="Components\345-NPC_.Non-Player Character.cs" />
-    <Compile Remove="Components\345-WEAP.Weapon.cs" />
-    <Compile Remove="Components\PlayerInventory.cs" />
+    <None Remove="Components\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -46,10 +27,6 @@
     <Reference Include="UnityEngine">
       <HintPath>..\..\..\..\..\lib\Unity\UnityEngine.dll</HintPath>
     </Reference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Components\" />
   </ItemGroup>
 
 </Project>

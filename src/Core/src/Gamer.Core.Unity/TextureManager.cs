@@ -15,7 +15,7 @@ namespace Gamer.Core
 
         public Texture2D LoadTexture(string texturePath, int method = 0)
         {
-            if (!_cachedTextures.TryGetValue(texturePath, out Texture2D texture))
+            if (!_cachedTextures.TryGetValue(texturePath, out var texture))
             {
                 // Load & cache the texture.
                 var textureInfo = LoadTextureInfo(texturePath);
@@ -27,12 +27,13 @@ namespace Gamer.Core
             return texture;
         }
 
-        public void PreloadTextureFileAsync(string texturePath)
+        public void PreloadTextureTask(string texturePath)
         {
             // If the texture has already been created we don't have to load the file again.
-            if (_cachedTextures.ContainsKey(texturePath)) return;
+            if (_cachedTextures.ContainsKey(texturePath))
+                return;
             // Start loading the texture file asynchronously if we haven't already started.
-            if (!_textureFilePreloadTasks.TryGetValue(texturePath, out Task<Texture2DInfo> textureFileLoadingTask))
+            if (!_textureFilePreloadTasks.TryGetValue(texturePath, out var textureFileLoadingTask))
             {
                 textureFileLoadingTask = _asset.LoadTextureInfoAsync(texturePath);
                 _textureFilePreloadTasks[texturePath] = textureFileLoadingTask;
@@ -42,8 +43,8 @@ namespace Gamer.Core
         Texture2DInfo LoadTextureInfo(string texturePath)
         {
             Assert(!_cachedTextures.ContainsKey(texturePath));
-            PreloadTextureFileAsync(texturePath);
-            var textureInfo = _textureFilePreloadTasks[texturePath].Result;
+            PreloadTextureTask(texturePath);
+            var textureInfo = _textureFilePreloadTasks[texturePath].Result();
             _textureFilePreloadTasks.Remove(texturePath);
             return textureInfo;
         }

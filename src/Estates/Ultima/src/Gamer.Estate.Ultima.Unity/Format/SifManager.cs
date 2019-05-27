@@ -12,8 +12,8 @@ namespace Gamer.Estate.Ultima.Format
         readonly ResFile _asset;
         readonly MaterialManager _materialManager;
         GameObject _prefabContainerObj;
-        readonly Dictionary<string, Task<object>> _staPreloadTasks = new Dictionary<string, Task<object>>();
-        readonly Dictionary<string, GameObject> _staPrefabs = new Dictionary<string, GameObject>();
+        readonly Dictionary<string, Task<object>> _preloadTasks = new Dictionary<string, Task<object>>();
+        readonly Dictionary<string, GameObject> _prefabs = new Dictionary<string, GameObject>();
 
         public SifManager(ResFile asset, MaterialManager materialManager)
         {
@@ -21,30 +21,24 @@ namespace Gamer.Estate.Ultima.Format
             _materialManager = materialManager;
         }
 
-        public GameObject InstantiateSta(string filePath)
+        public GameObject CreateObject(string filePath)
         {
             EnsurePrefabContainerObjectExists();
-            // Get the prefab.
-            if (!_staPrefabs.TryGetValue(filePath, out var prefab))
-            {
-                // Load & cache the STA prefab.
-                prefab = LoadStaPrefabDontAddToPrefabCache(filePath);
-                _staPrefabs[filePath] = prefab;
-            }
+            // Load & cache the STA prefab.
+            if (!_prefabs.TryGetValue(filePath, out var prefab))
+                prefab = _prefabs[filePath] = LoadPrefabDontAddToPrefabCache(filePath);
             // Instantiate the prefab.
             return Object.Instantiate(prefab);
         }
 
-        public void PreloadStaFileAsync(string filePath)
+        public void PreloadObjectTask(string filePath)
         {
             // If the STA prefab has already been created we don't have to load the file again.
-            if (_staPrefabs.ContainsKey(filePath)) return;
+            if (_prefabs.ContainsKey(filePath))
+                return;
             // Start loading the STA asynchronously if we haven't already started.
-            if (!_staPreloadTasks.TryGetValue(filePath, out Task<object> staLoadingTask))
-            {
-                staLoadingTask = _asset.LoadObjectInfoAsync(filePath);
-                _staPreloadTasks[filePath] = staLoadingTask;
-            }
+            if (!_preloadTasks.TryGetValue(filePath, out var preloadTask))
+                preloadTask = _preloadTasks[filePath] = _asset.LoadObjectInfoAsync(filePath);
         }
 
         void EnsurePrefabContainerObjectExists()
@@ -56,17 +50,17 @@ namespace Gamer.Estate.Ultima.Format
             }
         }
 
-        GameObject LoadStaPrefabDontAddToPrefabCache(string filePath)
+        GameObject LoadPrefabDontAddToPrefabCache(string filePath)
         {
-            Assert(!_staPrefabs.ContainsKey(filePath));
-            PreloadStaFileAsync(filePath);
-            var file = (SiFile)_staPreloadTasks[filePath].Result;
-            _staPreloadTasks.Remove(filePath);
+            Assert(!_prefabs.ContainsKey(filePath));
+            PreloadObjectTask(filePath);
+            var file = (SiFile)_preloadTasks[filePath].Result();
+            _preloadTasks.Remove(filePath);
             // Start pre-loading all the STA's textures.
             foreach (var saObject in file.Blocks)
                 if (saObject is SiSourceTexture stSourceTexture)
                     if (!string.IsNullOrEmpty(stSourceTexture.FilePath))
-                        _materialManager.TextureManager.PreloadTextureFileAsync(stSourceTexture.FilePath);
+                        _materialManager.TextureManager.PreloadTextureTask(stSourceTexture.FilePath);
             var objBuilder = new SifObjectBuilder(file, _materialManager, 0);
             var prefab = objBuilder.BuildObject();
             prefab.transform.parent = _prefabContainerObj.transform;

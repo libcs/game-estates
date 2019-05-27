@@ -19,7 +19,7 @@ namespace Gamer.Proxy
             _hc.BaseAddress = _schemeGame
                 ? new UriBuilder(address) { Scheme = address.Scheme == UriSchemeGame ? Uri.UriSchemeHttp : Uri.UriSchemeHttps }.Uri
                 : new UriBuilder(address) { Path = address.LocalPath.EnsureEndsWith("/"), Fragment = null }.Uri;
-            _hc.DefaultRequestHeaders.Accept.Clear(); //_hc.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            _hc.DefaultRequestHeaders.Accept.Clear();
             if (_schemeGame)
             {
                 _hc.DefaultRequestHeaders.Add("Estate", estate);
@@ -33,14 +33,14 @@ namespace Gamer.Proxy
             if (!r.IsSuccessStatusCode)
                 throw new InvalidOperationException(r.ReasonPhrase);
             var data = await r.Content.ReadAsByteArrayAsync();
-            return FromBytes<T>(_schemeGame, data);
+            return ProxyUtils.FromBytes<T>(_schemeGame, data);
         }
 
         public override HashSet<string> GetContainsSet(Func<HashSet<string>> action) => throw new NotSupportedException();
 
         public override bool ContainsFile(string filePath, Func<bool> action) =>
             _cache.GetOrCreateAsync(".set", async x => await CallAsync<HashSet<string>>((string)x.Key))
-                .GetAwaiter().GetResult().Contains(filePath.Replace('\\', '/'));
+                .Result().Contains(filePath.Replace('\\', '/'));
 
         public override async Task<byte[]> LoadFileDataAsync(string filePath, Func<Task<byte[]>> action) =>
             await _cache.GetOrCreateAsync(filePath.Replace('\\', '/'), async x => await CallAsync<byte[]>((string)x.Key));

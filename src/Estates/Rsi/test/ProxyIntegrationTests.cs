@@ -15,7 +15,7 @@ namespace Gamer.Estate.Rsi.Tests
             Port = HttpServer.FindFreeTcpPort(),
         };
 
-        public TestsFixture() => Target.Initialize(new RsiEstateHandler());
+        public TestsFixture() => Target.Initialize(RsiEstateHandler.Handler);
         public void Dispose() => Target.Dispose();
     }
 

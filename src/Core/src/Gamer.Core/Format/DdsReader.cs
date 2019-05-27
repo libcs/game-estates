@@ -251,7 +251,7 @@ namespace Gamer.Core.Format
             {
                 var rowBaseColorIndexIndex = 4 * rowIndex;
                 var rowBaseBitOffset = 8 * rowIndex;
-                for (uint columnIndex = 0; columnIndex < 4; columnIndex++)
+                for (var columnIndex = 0U; columnIndex < 4; columnIndex++)
                 {
                     // Color indices are arranged from right to left.
                     var bitOffset = rowBaseBitOffset + (bitsPerColorIndex * (3 - columnIndex));

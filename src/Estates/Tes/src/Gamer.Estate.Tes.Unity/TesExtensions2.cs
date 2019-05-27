@@ -6,8 +6,6 @@ namespace Gamer.Estate.Tes
 {
     public static class TesExtensions2
     {
-        public static readonly IEstateHandler Handler = new TesEstateHandler();
-
         public static Task<IAssetUnityPack> GetTesAssetPackAsync(this Uri uri, Func<object> func = null)
         {
             uri.ToTesGame(func, out var proxySink, out var filePaths);

@@ -16,8 +16,10 @@ namespace Gamer.Estate.Tes.Tests
 
         [Theory]
         [InlineData("game:/Morrowind.bsa#Morrowind", "textures/Tx_BC_moss.dds")]
+        //[InlineData("file:///C:/Program%20Files%20(x86)/Steam/steamapps/common/Morrowind/Data%20Files/Morrowind.*#Morrowind", "textures/Tx_BC_moss.dds")]
         [InlineData("file:///C:/Program%20Files%20(x86)/Steam/steamapps/common/Morrowind/Data%20Files/Morrowind.bsa#Morrowind", "textures/Tx_BC_moss.dds")]
         [InlineData("http://192.168.1.3/ASSETS/Morrowind/Morrowind.bsa#Morrowind", "textures/Tx_BC_moss.dds")]
+        //[InlineData("file://192.168.1.3/User/_ASSETS/Fallout4/Textures1";
         public async Task LoadAssetPack(string path, string modelPath)
         {
             // given
@@ -73,9 +75,9 @@ namespace Gamer.Estate.Tes.Tests
         [InlineData("file:///C:/Program%20Files%20(x86)/Steam/steamapps/common/Morrowind/Data%20Files/Morrowind.esm#Morrowind")]
         //[InlineData("http://192.168.1.3/ASSETS/Morrowind/Morrowind.esm#Morrowind")]
 #endif
-        public void LoadDataPack(string path)
+        public async Task LoadDataPack(string path)
         {
-            using (var dataPack = (TesDataPack)new Uri(path).GetTesDataPackAsync().Result)
+            using (var dataPack = (TesDataPack)await new Uri(path).GetTesDataPackAsync())
             {
                 TestLoadCell(dataPack, new Vector3(0, 0, 0));
                 TestAllCells(dataPack);

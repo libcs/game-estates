@@ -4,12 +4,15 @@ using System;
 using System.Globalization;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Gamer.Core
 {
     public static class CoreExtensions
     {
+        public static TResult Result<TResult>(this Task<TResult> task, bool continueOnCapturedContext = false) => continueOnCapturedContext ? task.GetAwaiter().GetResult() : task.ConfigureAwait(false).GetAwaiter().GetResult();
+
 #if WINDOWS
         [DllImport("Kernel32")]
         unsafe static extern int _lread(SafeFileHandle hFile, void* lpBuffer, int wBytes);

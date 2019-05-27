@@ -6,6 +6,8 @@ namespace Gamer.Estate.Tes
 {
     public class TesEstateHandler : IEstateHandler
     {
+        TesEstateHandler() { }
+        public static readonly IEstateHandler Handler = new TesEstateHandler();
         public string Key => "Tes";
         public Func<Uri, Func<object>, Task<IAssetPack>> AssetPackFunc => async (a, b) => await TesExtensions2.GetTesAssetPackAsync(a, b);
         public Func<Uri, Func<object>, Task<IDataPack>> DataPackFunc => TesExtensions.GetTesDataPackAsync;

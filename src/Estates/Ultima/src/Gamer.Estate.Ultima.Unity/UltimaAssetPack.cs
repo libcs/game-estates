@@ -20,11 +20,8 @@ namespace Gamer.Estate.Ultima
         }
 
         public Texture2D LoadTexture(string texturePath, int method = 0) => _textureManager.LoadTexture(texturePath, method);
-
-        public void PreloadTextureAsync(string texturePath) => _textureManager.PreloadTextureFileAsync(texturePath);
-
-        public GameObject CreateObject(string filePath) => _staManager.InstantiateSta(filePath);
-
-        public void PreloadObjectAsync(string filePath) => _staManager.PreloadStaFileAsync(filePath);
+        public void PreloadTextureTask(string texturePath) => _textureManager.PreloadTextureTask(texturePath);
+        public GameObject CreateObject(string filePath) => _staManager.CreateObject(filePath);
+        public void PreloadObjectTask(string filePath) => _staManager.PreloadObjectTask(filePath);
     }
 }

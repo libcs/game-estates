@@ -1,8 +1,9 @@
-﻿using OA.Components;
+﻿using Gamer.Core.Components;
+using Gamer.Estate.Tes.Records;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace OA.Tes.FilePacks.Components
+namespace Gamer.Estate.Tes.Components
 {
     public class PlayerInventory : MonoBehaviour
     {
@@ -34,9 +35,6 @@ namespace OA.Tes.FilePacks.Components
             item.transform.parent = _disabledObjects.transform;
         }
 
-        public void Add(Record record)
-        {
-            _inventory.Add(record);
-        }
+        public void Add(Record record) => _inventory.Add(record);
     }
 }

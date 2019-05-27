@@ -15,7 +15,7 @@ namespace Gamer.Estate.Ultima.Tests
             Port = HttpServer.FindFreeTcpPort(),
         };
 
-        public TestsFixture() => Target.Initialize(new UltimaEstateHandler());
+        public TestsFixture() => Target.Initialize(UltimaEstateHandler.Handler);
         public void Dispose() => Target.Dispose();
     }
 

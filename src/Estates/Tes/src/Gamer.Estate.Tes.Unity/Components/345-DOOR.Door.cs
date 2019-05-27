@@ -1,9 +1,9 @@
-﻿using UnityEngine;
+﻿using Gamer.Estate.Tes.Records;
+using Gamer.Format.Nif;
 using System.Collections;
-using OA.Tes.FilePacks.Records;
-using OA.Tes.Formats;
+using UnityEngine;
 
-namespace OA.Tes.FilePacks.Components
+namespace Gamer.Estate.Tes.Components
 {
     public class DOORComponent : BASEComponent
     {
@@ -60,19 +60,19 @@ namespace OA.Tes.FilePacks.Components
             }
         }
 
-        private void Open()
+        void Open()
         {
             if (!doorData.moving)
                 StartCoroutine(c_Open());
         }
 
-        private void Close()
+        void Close()
         {
             if (!doorData.moving)
                 StartCoroutine(c_Close());
         }
 
-        private IEnumerator c_Open()
+        IEnumerator c_Open()
         {
             doorData.moving = true;
             while (Quaternion.Angle(transform.rotation, doorData.openRotation) > 1f)
@@ -84,7 +84,7 @@ namespace OA.Tes.FilePacks.Components
             doorData.moving = false;
         }
 
-        private IEnumerator c_Close()
+        IEnumerator c_Close()
         {
             doorData.moving = true;
             while (Quaternion.Angle(transform.rotation, doorData.closedRotation) > 1f)

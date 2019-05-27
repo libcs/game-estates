@@ -15,7 +15,7 @@ namespace Gamer.Estate.Cry.Tests
             Port = HttpServer.FindFreeTcpPort(),
         };
 
-        public TestsFixture() => Target.Initialize(new CryEstateHandler());
+        public TestsFixture() => Target.Initialize(CryEstateHandler.Handler);
         public void Dispose() => Target.Dispose();
     }
 

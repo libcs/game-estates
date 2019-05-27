@@ -19,13 +19,13 @@ namespace Gamer.Estate.Rsi.FilePack
             }
         }
 
-        public Task<Texture2DInfo> LoadTextureInfoAsync(string texturePath)
+        public async Task<Texture2DInfo> LoadTextureInfoAsync(string texturePath)
         {
             var filePath = FindTexture(texturePath);
             if (filePath != null)
             {
-                var fileData = LoadFileDataAsync(filePath).Result;
-                return Task.Run(() =>
+                var fileData = await LoadFileDataAsync(filePath);
+                return await Task.Run(() =>
                 {
                     var fileExtension = Path.GetExtension(filePath);
                     if (fileExtension.ToLowerInvariant() == ".dds") return DdsReader.LoadDDSTexture(new MemoryStream(fileData));
@@ -33,13 +33,13 @@ namespace Gamer.Estate.Rsi.FilePack
                 });
             }
             Log($"Could not find file \"{texturePath}\" in a BSA file.");
-            return Task.FromResult<Texture2DInfo>(null);
+            return null;
         }
 
-        public Task<object> LoadObjectInfoAsync(string filePath)
+        public async Task<object> LoadObjectInfoAsync(string filePath)
         {
-            var fileData = LoadFileDataAsync(filePath).Result;
-            return Task.Run(() =>
+            var fileData = await LoadFileDataAsync(filePath);
+            return await Task.Run(() =>
             {
                 return Task.FromResult<object>(null);
                 //var file = new NiFile(Path.GetFileNameWithoutExtension(filePath));

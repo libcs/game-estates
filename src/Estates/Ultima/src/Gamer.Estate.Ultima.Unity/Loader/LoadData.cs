@@ -1,5 +1,6 @@
 ﻿using Gamer.Core;
 using System;
+using System.Threading.Tasks;
 using UnityEngine;
 using static Gamer.Core.Debug;
 
@@ -15,7 +16,7 @@ namespace Gamer.Estate.Ultima.Loader
         {
             var dataUri = new Uri("game://Zero/");
 
-            DataPack = dataUri.GetUltimaDataPackAsync().Result;
+            DataPack = dataUri.GetUltimaDataPackAsync().Result();
 
             //TestLoadCell(new Vector3(((-2 << 5) + 1) * ConvertUtils.ExteriorCellSideLengthInMeters, 0, ((-1 << 5) + 1) * ConvertUtils.ExteriorCellSideLengthInMeters));
             //TestLoadCell(new Vector3((-1 << 3) * ConvertUtils.ExteriorCellSideLengthInMeters, 0, (-1 << 3) * ConvertUtils.ExteriorCellSideLengthInMeters));

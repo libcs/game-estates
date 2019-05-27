@@ -1,9 +1,7 @@
-﻿using OA.Components;
-using OA.Tes.FilePacks.Records;
-using OA.Tes.UI;
-using OA.UI;
+﻿using Gamer.Core.Components;
+using Gamer.Estate.Tes.Records;
 
-namespace OA.Tes.FilePacks.Components
+namespace Gamer.Estate.Tes.Components
 {
     public class BOOKComponent : BASEComponent
     {
@@ -65,26 +63,26 @@ namespace OA.Tes.FilePacks.Components
             Player.Pause(true);
         }
 
-        private void OnTakeScroll(BOOKRecord obj)
+        void OnTakeScroll(BOOKRecord obj)
         {
             var inventory = FindObjectOfType<PlayerInventory>();
             inventory.Add(this);
         }
 
-        private void OnCloseScroll(BOOKRecord obj)
+        void OnCloseScroll(BOOKRecord obj)
         {
             UIManager.Scroll.OnClosed -= OnCloseScroll;
             UIManager.Scroll.OnTake -= OnTakeScroll;
             Player.Pause(false);
         }
 
-        private void OnTakeBook(BOOKRecord obj)
+        void OnTakeBook(BOOKRecord obj)
         {
             var inventory = FindObjectOfType<PlayerInventory>();
             inventory.Add(this);
         }
 
-        private void OnCloseBook(BOOKRecord obj)
+        void OnCloseBook(BOOKRecord obj)
         {
             UIManager.Book.OnClosed -= OnCloseBook;
             UIManager.Book.OnTake -= OnTakeBook;

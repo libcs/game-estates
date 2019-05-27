@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gamer.Core.Unity", "src\Gam
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gamer.Proxy", "src\Gamer.Proxy\Gamer.Proxy.csproj", "{B5B7DAAA-1523-449A-A451-118C9DB2E18A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gamer.Proxy.Tests", "src\Gamer.Proxy.Tests\Gamer.Proxy.Tests.csproj", "{B7B18E38-30F2-4EC2-9391-C9D07F8FD322}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gamer.Proxy.Tests", "test\Gamer.Proxy.Tests\Gamer.Proxy.Tests.csproj", "{B7B18E38-30F2-4EC2-9391-C9D07F8FD322}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

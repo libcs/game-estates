@@ -14,8 +14,8 @@ namespace Gamer.Format.Nif
         readonly IAssetUnityPack _asset;
         readonly MaterialManager _materialManager;
         GameObject _prefabContainerObj;
-        readonly Dictionary<string, Task<object>> _objFilePreloadTasks = new Dictionary<string, Task<object>>();
-        readonly Dictionary<string, GameObject> _objPrefabs = new Dictionary<string, GameObject>();
+        readonly Dictionary<string, Task<object>> _preloadTasks = new Dictionary<string, Task<object>>();
+        readonly Dictionary<string, GameObject> _prefabs = new Dictionary<string, GameObject>();
         readonly int _markerLayer;
 
         public NifManager(IAssetUnityPack asset, MaterialManager materialManager, int markerLayer)
@@ -25,34 +25,24 @@ namespace Gamer.Format.Nif
             _markerLayer = markerLayer;
         }
 
-        /// <summary>
-        /// Instantiates a NIF file.
-        /// </summary>
-        public GameObject InstantiateObj(string filePath)
+        public GameObject CreateObject(string filePath)
         {
             EnsurePrefabContainerObjectExists();
-            // Get the prefab.
-            if (!_objPrefabs.TryGetValue(filePath, out var prefab))
-            {
-                // Load & cache the NIF prefab.
-                prefab = LoadObjPrefabDontAddToPrefabCache(filePath);
-                _objPrefabs[filePath] = prefab;
-            }
+            // Load & cache the NIF prefab.
+            if (!_prefabs.TryGetValue(filePath, out var prefab))
+                prefab = _prefabs[filePath] = LoadPrefabDontAddToPrefabCache(filePath);
             // Instantiate the prefab.
             return Object.Instantiate(prefab);
         }
 
-        public void PreloadObjFileAsync(string filePath)
+        public void PreloadObjectTask(string filePath)
         {
             // If the NIF prefab has already been created we don't have to load the file again.
-            if (_objPrefabs.ContainsKey(filePath))
+            if (_prefabs.ContainsKey(filePath))
                 return;
             // Start loading the NIF asynchronously if we haven't already started.
-            if (!_objFilePreloadTasks.TryGetValue(filePath, out var objFileLoadingTask))
-            {
-                objFileLoadingTask = _asset.LoadObjectInfoAsync(filePath);
-                _objFilePreloadTasks[filePath] = objFileLoadingTask;
-            }
+            if (!_preloadTasks.TryGetValue(filePath, out var preloadTask))
+                preloadTask = _preloadTasks[filePath] = _asset.LoadObjectInfoAsync(filePath);
         }
 
         void EnsurePrefabContainerObjectExists()
@@ -64,15 +54,15 @@ namespace Gamer.Format.Nif
             }
         }
 
-        GameObject LoadObjPrefabDontAddToPrefabCache(string filePath)
+        GameObject LoadPrefabDontAddToPrefabCache(string filePath)
         {
-            Assert(!_objPrefabs.ContainsKey(filePath));
-            PreloadObjFileAsync(filePath);
-            var file = (NiFile)_objFilePreloadTasks[filePath].Result;
-            _objFilePreloadTasks.Remove(filePath);
+            Assert(!_prefabs.ContainsKey(filePath));
+            PreloadObjectTask(filePath);
+            var file = (NiFile)_preloadTasks[filePath].Result();
+            _preloadTasks.Remove(filePath);
             // Start pre-loading all the NIF's textures.
             foreach (var texturePath in file.GetTexturePaths())
-                _materialManager.TextureManager.PreloadTextureFileAsync(texturePath);
+                _materialManager.TextureManager.PreloadTextureTask(texturePath);
             var objBuilder = new NifObjectBuilder(file, _materialManager, _markerLayer);
             var prefab = objBuilder.BuildObject();
             prefab.transform.parent = _prefabContainerObj.transform;

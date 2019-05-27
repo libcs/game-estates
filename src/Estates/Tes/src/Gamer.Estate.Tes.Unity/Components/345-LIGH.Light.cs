@@ -1,10 +1,9 @@
-﻿using UnityEngine;
+﻿using Gamer.Core;
+using Gamer.Estate.Tes.Records;
 using System.Collections;
-using OA.Tes.FilePacks.Records;
-using OA.Core;
-using OA.Effects;
+using UnityEngine;
 
-namespace OA.Tes.FilePacks.Components
+namespace Gamer.Estate.Tes.Components
 {
     public class LIGHComponent : BASEComponent
     {
@@ -81,7 +80,7 @@ namespace OA.Tes.FilePacks.Components
                     if (fire) lightAnim.mode = LightAnimMode.Fire;
                 }
             }
-            else Debug.Log("Light Record Object Created Without Light Component. Search Timed Out.");
+            else Log("Light Record Object Created Without Light Component. Search Timed Out.");
         }
     }
 }

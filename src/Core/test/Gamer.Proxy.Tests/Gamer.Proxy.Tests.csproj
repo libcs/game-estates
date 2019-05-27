@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Gamer.Proxy\Gamer.Proxy.csproj" />
+    <ProjectReference Include="..\..\src\Gamer.Proxy\Gamer.Proxy.csproj" />
   </ItemGroup>
 
 </Project>

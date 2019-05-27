@@ -1,5 +1,6 @@
 ﻿using Gamer.Core;
 using System;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Gamer.Estate.Ultima.Loader
@@ -14,7 +15,7 @@ namespace Gamer.Estate.Ultima.Loader
         {
             var assetUri = new Uri("game://Zero/");
 
-            AssetPack = assetUri.GetUltimaAssetPackAsync().Result;
+            AssetPack = assetUri.GetUltimaAssetPackAsync().Result();
 
             //MakeObject("sta010").transform.Translate(Vector3.left * 1 + Vector3.up);
             //MakeObject("sta069").transform.Translate(Vector3.left * 1 + Vector3.down);

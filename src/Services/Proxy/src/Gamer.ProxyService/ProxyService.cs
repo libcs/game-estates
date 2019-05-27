@@ -1,4 +1,5 @@
 ﻿using Gamer.Estate.Tes;
+using Gamer.Estate.Ultima;
 using Gamer.Proxy;
 using NLog;
 using System;
@@ -54,7 +55,7 @@ namespace Gamer.ProxyService
         public void Start()
         {
             _log.Info("ProxyService");
-            _target.Initialize(new TesEstateHandler());
+            _target.Initialize(TesEstateHandler.Handler, UltimaEstateHandler.Handler);
         }
 
         public void ProxyWatch(CancellationToken cancellationToken)

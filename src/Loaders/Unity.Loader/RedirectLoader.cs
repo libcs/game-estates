@@ -1,7 +1,8 @@
 ﻿// TES
-//using Redirect = Gamer.Estate.Tes.Loader.LoadAsset;
+using System.Threading.Tasks;
+using Redirect = Gamer.Estate.Tes.Loader.LoadAsset;
 //using Redirect = Gamer.Estate.Tes.Loader.LoadData;
-using Redirect = Gamer.Estate.Tes.Loader.LoadEngine;
+//using Redirect = Gamer.Estate.Tes.Loader.LoadEngine;
 
 // ULTIMA
 //using Redirect = Gamer.Estate.Ultima.Loader.LoadAsset;
