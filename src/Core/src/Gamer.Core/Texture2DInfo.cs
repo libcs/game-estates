@@ -57,14 +57,25 @@ namespace Gamer.Core
         /// </summary>
         public Texture2D ToTexture2D()
         {
-            var texture = new Texture2D(Width, Height, Format, HasMipmaps);
+            var tex = new Texture2D(Width, Height, Format, HasMipmaps);
             if (RawData != null)
             {
-                texture.LoadRawTextureData(RawData);
-                texture.Apply();
-                texture.Compress(true);
+                tex.LoadRawTextureData(RawData);
+                tex.Apply();
+                tex.Compress(true);
             }
-            return texture;
+            return tex;
+        }
+
+        /// <summary>
+        /// Creates a Unity Texture2D from this Texture2DInfo.
+        /// </summary>
+        public Texture2DSlim ToTexture2DSlim()
+        {
+            var tex = new Texture2DSlim(Width, Height, Format, HasMipmaps);
+            if (RawData != null)
+                tex.LoadRawTextureData(RawData);
+            return tex;
         }
 
         public void Rotate2D(int angle)
@@ -81,8 +92,8 @@ namespace Gamer.Core
             var pixels = new byte[W * H * 4];
             fixed (byte* pPixels = pixels, pData = RawData)
             {
-                uint* rPixels = (uint*)pPixels;
-                uint* rData = (uint*)pData;
+                var rPixels = (uint*)pPixels;
+                var rData = (uint*)pData;
                 for (var j = 0; j < W; ++j)
                     for (var i = 0; i < H; ++i)
                         rPixels[i * W + j] = rData[(W - j - 1) * W + i];
@@ -96,13 +107,13 @@ namespace Gamer.Core
             var cs = Mathf.Cos(phi);
 
             var W = Width; var H = Height;
-            int xc = W / 2; int yc = H / 2;
+            var xc = W / 2; var yc = H / 2;
 
             var pixels = new byte[W * H * 4];
             fixed (byte* pPixels = pixels, pData = RawData)
             {
-                uint* rPixels = (uint*)pPixels;
-                uint* rData = (uint*)pData;
+                var rPixels = (uint*)pPixels;
+                var rData = (uint*)pData;
                 int x, y;
                 for (var j = 0; j < H; ++j)
                     for (var i = 0; i < W; ++i)

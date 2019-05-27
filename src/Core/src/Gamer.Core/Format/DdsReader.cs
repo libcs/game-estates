@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Text;
 using UnityEngine;
 using static Gamer.Core.Debug;
 
@@ -223,12 +224,12 @@ namespace Gamer.Core.Format
                 // Check the magic string.
                 var magicString = r.ReadBytes(4);
                 if (!"DDS ".EqualsASCIIBytes(magicString))
-                    throw new FileFormatException($"Invalid DDS file magic string: \"{System.Text.Encoding.ASCII.GetString(magicString)}\".");
+                    throw new FileFormatException($"Invalid DDS file magic string: \"{Encoding.ASCII.GetString(magicString)}\".");
                 // Deserialize the DDS file header.
                 var header = new DDSHeader();
                 header.Read(r);
                 // Figure out the texture format and load the texture data.
-                ExtractDDSTextureFormatAndData(header, r, out bool hasMipmaps, out uint ddsMipmapLevelCount, out TextureFormat textureFormat, out int bytesPerPixel, out byte[] textureData);
+                ExtractDDSTextureFormatAndData(header, r, out var hasMipmaps, out var ddsMipmapLevelCount, out var textureFormat, out int bytesPerPixel, out var textureData);
                 // Post-process the texture to generate missing mipmaps and possibly flip it vertically.
                 PostProcessDDSTexture((int)header.dwWidth, (int)header.dwHeight, bytesPerPixel, hasMipmaps, (int)ddsMipmapLevelCount, textureData, flipVertically);
                 return new Texture2DInfo((int)header.dwWidth, (int)header.dwHeight, textureFormat, hasMipmaps, textureData);
@@ -462,7 +463,6 @@ namespace Gamer.Core.Format
         /// </summary>
         static void ExtractDDSTextureFormatAndData(DDSHeader header, GenericReader r, out bool hasMipmaps, out uint DDSMipmapLevelCount, out TextureFormat textureFormat, out int bytesPerPixel, out byte[] textureData)
         {
-
             hasMipmaps = Utils.ContainsBitFlags((int)header.dwCaps, (int)DDSCaps.Mipmap);
             // Non-mipmapped textures still have one mipmap level: the texture itself.
             DDSMipmapLevelCount = hasMipmaps ? header.dwMipMapCount : 1;

@@ -1,0 +1,51 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net471</TargetFramework>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="**\*.swift" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Magick.NET-Q8-AnyCPU" Version="7.13.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Gamer.Core\Gamer.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Nvidia.TextureTools">
+      <HintPath>..\..\..\..\lib\UnityTexTool\Nvidia.TextureTools.dll</HintPath>
+    </Reference>
+    <Reference Include="PVRTexLibNET">
+      <HintPath>..\..\..\..\lib\UnityTexTool\PVRTexLibNET.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine">
+      <HintPath>..\..\..\..\lib\Unity\UnityEngine.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\..\..\lib\UnityTexTool\nvtt.dll" Link="nvtt.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\..\..\lib\UnityTexTool\PVRTexLibWrapper.dll" Link="PVRTexLibWrapper.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\..\..\lib\UnityTexTool\TextureConverter.dll" Link="TextureConverter.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="copy &quot;$(TargetDir)Gamer.Proxy.???&quot; &quot;$(ProjectDir)..\..\..\Loaders\Unity\Assets\Plugins\&quot;&#xD;&#xA;copy &quot;%userprofile%\.nuget\packages\Newtonsoft.Json\12.0.2\lib\netstandard2.0\*.*&quot; &quot;$(ProjectDir)..\..\..\Loaders\Unity\Assets\Plugins\&quot;&#xD;&#xA;copy &quot;%userprofile%\.nuget\packages\microsoft.extensions.caching.memory\3.0.0-preview5.19210.2\lib\netstandard2.0\*.*&quot; &quot;$(ProjectDir)..\..\..\Loaders\Unity\Assets\Plugins\&quot;&#xD;&#xA;copy &quot;%userprofile%\.nuget\packages\microsoft.extensions.caching.abstractions\3.0.0-preview5.19210.2\lib\netstandard2.0\*.*&quot; &quot;$(ProjectDir)..\..\..\Loaders\Unity\Assets\Plugins\&quot;&#xD;&#xA;copy &quot;%userprofile%\.nuget\packages\microsoft.extensions.options\2.2.0\lib\netstandard2.0\*.*&quot; &quot;$(ProjectDir)..\..\..\Loaders\Unity\Assets\Plugins\&quot;&#xD;&#xA;copy &quot;%userprofile%\.nuget\packages\microsoft.extensions.primitives\2.2.0\lib\netstandard2.0\*.*&quot; &quot;$(ProjectDir)..\..\..\Loaders\Unity\Assets\Plugins\&quot;&#xD;&#xA;copy &quot;%userprofile%\.nuget\packages\microsoft.extensions.dependencyinjection.abstractions\2.2.0\lib\netstandard2.0\*.*&quot; &quot;$(ProjectDir)..\..\..\Loaders\Unity\Assets\Plugins\&quot;&#xD;&#xA;copy &quot;%userprofile%\.nuget\packages\microsoft.extensions.logging.abstractions\2.2.0\lib\netstandard2.0\*.*&quot; &quot;$(ProjectDir)..\..\..\Loaders\Unity\Assets\Plugins\&quot;&#xD;&#xA;copy &quot;%userprofile%\.nuget\packages\system.memory\4.5.2\lib\netstandard2.0\*.*&quot; &quot;$(ProjectDir)..\..\..\Loaders\Unity\Assets\Plugins\&quot;&#xD;&#xA;copy &quot;%userprofile%\.nuget\packages\system.runtime.compilerservices.unsafe\4.5.2\lib\netstandard2.0\*.*&quot; &quot;$(ProjectDir)..\..\..\Loaders\Unity\Assets\Plugins\&quot;&#xD;&#xA;copy &quot;%userprofile%\.nuget\packages\system.buffers\4.5.0\lib\netstandard2.0\*.*&quot; &quot;$(ProjectDir)..\..\..\Loaders\Unity\Assets\Plugins\&quot;&#xD;&#xA;&#xD;&#xA;" />
+  </Target>
+
+</Project>
