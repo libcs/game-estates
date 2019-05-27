@@ -74,13 +74,13 @@ namespace Gamer.Core.Components
             Rotate();
             if (Input.GetKeyDown(KeyCode.Tab))
                 IsFlying = !IsFlying;
-            if (_isGrounded && !IsFlying && InputManager.GetButtonDown("Jump"))
+            if (_isGrounded && !IsFlying && Input.GetButtonDown("Jump"))
             {
                 var newVelocity = _rigidbody.velocity;
                 newVelocity.y = 5;
                 _rigidbody.velocity = newVelocity;
             }
-            if (HasLight && InputManager.GetButtonDown("Light"))
+            if (HasLight && Input.GetButtonDown("Light"))
                 lantern.enabled = !lantern.enabled;
             //// clamp
             //var lastPostion = _transform.position;
@@ -118,7 +118,7 @@ namespace Gamer.Core.Components
             // Make eulerAngles.x range from -180 to 180 so we can clamp it between a negative and positive angle.
             if (eulerAngles.x > 180)
                 eulerAngles.x = eulerAngles.x - 360;
-            var deltaMouse = mouseSensitivity * new Vector2(InputManager.GetAxis("Mouse X"), InputManager.GetAxis("Mouse Y"));
+            var deltaMouse = mouseSensitivity * new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
             eulerAngles.x = Mathf.Clamp(eulerAngles.x - deltaMouse.y, minVerticalAngle, maxVerticalAngle);
             eulerAngles.y = Mathf.Repeat(eulerAngles.y + deltaMouse.x, 360);
             _camTransform.localEulerAngles = new Vector3(eulerAngles.x, 0, 0);
@@ -149,7 +149,7 @@ namespace Gamer.Core.Components
         Vector3 CalculateLocalMovementDirection()
         {
             // Calculate the local movement direction.
-            var direction = new Vector3(InputManager.GetAxis("Horizontal"), 0.0f, InputManager.GetAxis("Vertical"));
+            var direction = new Vector3(Input.GetAxis("Horizontal"), 0.0f, Input.GetAxis("Vertical"));
             // A small hack for French Keyboard...
             //if (Application.systemLanguage == SystemLanguage.French)
             //{
@@ -168,8 +168,8 @@ namespace Gamer.Core.Components
         float CalculateSpeed()
         {
             var speed = normalSpeed;
-            if (HasRunAndSlow && InputManager.GetButton("Run")) speed = fastSpeed;
-            else if (HasRunAndSlow && InputManager.GetButton("Slow")) speed = slowSpeed;
+            if (HasRunAndSlow && Input.GetButton("Run")) speed = fastSpeed;
+            else if (HasRunAndSlow && Input.GetButton("Slow")) speed = slowSpeed;
             if (IsFlying) speed *= flightSpeedMultiplier;
             return speed;
         }

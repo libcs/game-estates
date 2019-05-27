@@ -21,9 +21,9 @@ namespace Gamer.Estate.Tes.Loader
             AssetPack = assetUri.GetTesAssetPackAsync().Result();
 
             // Morrowind
-            MakeObject("meshes/i/in_dae_room_l_floor_01.nif");
+            //MakeObject("meshes/i/in_dae_room_l_floor_01.nif");
             //MakeObject("meshes/w/w_arrow01.nif");
-            //MakeObject("meshes/x/ex_common_balcony_01.nif");
+            MakeObject("meshes/x/ex_common_balcony_01.nif");
 
             // Skyrim
             //var nifFileLoadingTask = await Asset.LoadObjectInfoAsync("meshes/actors/alduin/alduin.nif");

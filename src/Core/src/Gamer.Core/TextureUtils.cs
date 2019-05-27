@@ -3,7 +3,7 @@ using static Gamer.Core.Debug;
 
 namespace Gamer.Core
 {
-    public static class TextureUtils
+    public static partial class TextureUtils
     {
         //public static void FlipTexture2DVertically(Texture2D texture2D)
         //{

@@ -12,7 +12,6 @@ namespace Gamer.Estate.Tes
             return Task.FromResult((IAssetUnityPack)new TesAssetPack(proxySink, filePaths));
         }
 
-        public static ICellManager GetTesCellManager(this TemporalLoadBalancer loadBalancer, IAssetPack assetPack, IDataPack dataPack, Func<object> func = null)
-            => new TesCellManager(loadBalancer, (TesAssetPack)assetPack, (TesDataPack)dataPack);
+        public static ICellManager GetTesCellManager(this TemporalLoadBalancer loadBalancer, IAssetPack assetPack, IDataPack dataPack, Func<object> func = null) => new TesCellManager(loadBalancer, (TesAssetPack)assetPack, (TesDataPack)dataPack);
     }
 }

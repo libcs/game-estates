@@ -8,7 +8,7 @@ namespace Gamer.Proxy
 {
     public static class ProxyUtils
     {
-        public static T ToGame<T>(Uri uri, Func<object> func, out ProxySink proxySink, out string[] filePaths, string estateKey, Func<string, T, string[]> fileManager)
+        public static T ToGame<T>(Uri uri, Func<object> func, out ProxySink proxySink, out string[] filePaths, string platform, string estateKey, Func<string, T, string[]> fileManager)
         {
             // game
             var fragment = uri.Fragment?.Substring(uri.Fragment.Length != 0 ? 1 : 0);
@@ -29,7 +29,7 @@ namespace Gamer.Proxy
             }
             else
             {
-                proxySink = new ProxySinkClient(uri, estateKey);
+                proxySink = new ProxySinkClient(uri, platform, estateKey);
                 filePaths = new[] { uri.LocalPath };
             }
             return game;

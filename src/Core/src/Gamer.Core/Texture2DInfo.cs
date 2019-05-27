@@ -62,6 +62,7 @@ namespace Gamer.Core
             {
                 texture.LoadRawTextureData(RawData);
                 texture.Apply();
+                texture.Compress(true);
             }
             return texture;
         }

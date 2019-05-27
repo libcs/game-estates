@@ -9,7 +9,7 @@ namespace Gamer.Estate.Tes
 {
     public static class TesExtensions
     {
-        public static TesGame ToTesGame(this Uri uri, Func<object> func, out ProxySink proxySink, out string[] filePaths) => ProxyUtils.ToGame<TesGame>(uri, func, out proxySink, out filePaths, "Tes", (path, game) => TesFileManager.GetFilePaths(Path.GetExtension(path) == ".bsa" || Path.GetExtension(path) == ".ba2", path, game));
+        public static TesGame ToTesGame(this Uri uri, Func<object> func, out ProxySink proxySink, out string[] filePaths) => ProxyUtils.ToGame<TesGame>(uri, func, out proxySink, out filePaths, UnityEngine.Application.platform.ToString(), "Tes", (path, game) => TesFileManager.GetFilePaths(Path.GetExtension(path) == ".bsa" || Path.GetExtension(path) == ".ba2", path, game));
 
         public static Task<IDataPack> GetTesDataPackAsync(this Uri uri, Func<object> func = null)
         {

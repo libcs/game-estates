@@ -34,10 +34,7 @@ namespace Gamer.Core
                 return;
             // Start loading the texture file asynchronously if we haven't already started.
             if (!_textureFilePreloadTasks.TryGetValue(texturePath, out var textureFileLoadingTask))
-            {
-                textureFileLoadingTask = _asset.LoadTextureInfoAsync(texturePath);
-                _textureFilePreloadTasks[texturePath] = textureFileLoadingTask;
-            }
+                textureFileLoadingTask = _textureFilePreloadTasks[texturePath] = _asset.LoadTextureInfoAsync(texturePath);
         }
 
         Texture2DInfo LoadTextureInfo(string texturePath)

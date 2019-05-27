@@ -121,6 +121,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gamer.Format.Wavefront.Test
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gamer.Proxy.Tests", "Core\test\Gamer.Proxy.Tests\Gamer.Proxy.Tests.csproj", "{E8395C0C-0E97-4BAC-B30A-F1118B1858C6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gamer.Core.Web", "Core\src\Gamer.Core.Web\Gamer.Core.Web.csproj", "{B4BDD000-9551-40C4-A04F-394157EBC30E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -283,6 +285,10 @@ Global
 		{E8395C0C-0E97-4BAC-B30A-F1118B1858C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E8395C0C-0E97-4BAC-B30A-F1118B1858C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E8395C0C-0E97-4BAC-B30A-F1118B1858C6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B4BDD000-9551-40C4-A04F-394157EBC30E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B4BDD000-9551-40C4-A04F-394157EBC30E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B4BDD000-9551-40C4-A04F-394157EBC30E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B4BDD000-9551-40C4-A04F-394157EBC30E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -341,6 +347,7 @@ Global
 		{D7DDDAED-3E62-40DE-B245-936E056A0AE0} = {7A09A5CB-8C56-4438-A36C-49B2D0C18742}
 		{49983FA7-C3AC-46C4-85A8-C7279FEE2455} = {5E03E2F6-2644-4985-9103-D8876EDD9570}
 		{E8395C0C-0E97-4BAC-B30A-F1118B1858C6} = {D62024D3-476E-4A68-8A24-1B14491536B4}
+		{B4BDD000-9551-40C4-A04F-394157EBC30E} = {D62024D3-476E-4A68-8A24-1B14491536B4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7ACB76E5-A8E8-4292-994C-E0779E009E43}
