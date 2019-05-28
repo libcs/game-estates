@@ -9,10 +9,10 @@ namespace Gamer.Core
 {
     public static class TextureConversion
     {
-        public static unsafe bool Compress(this Texture2DSlim tex, TextureFormat format)
+        public static unsafe bool Compress(this Texture2DInfo tex, TextureFormat format)
         {
-            var data = tex.textureData;
-            int width = tex.width, height = tex.height, pos, outPos;
+            var data = tex.RawData;
+            int width = tex.Width, height = tex.Height, pos, outPos;
             switch (format)
             {
                 case TextureFormat.Alpha8:
@@ -31,7 +31,7 @@ namespace Gamer.Core
                                     pos += 4;
                                     outPos += 1;
                                 }
-                        tex.textureData = out_;
+                        tex.RawData = out_;
                         return true;
                     }
 
@@ -72,7 +72,7 @@ namespace Gamer.Core
                                             outPos += 2;
                                         }
                             }
-                            tex.textureData = out_;
+                            tex.RawData = out_;
                             return true;
                         }
                     }
@@ -96,7 +96,7 @@ namespace Gamer.Core
                                     pos += 4;
                                     outPos += 3;
                                 }
-                        tex.textureData = out_;
+                        tex.RawData = out_;
                         return true;
                     }
 
@@ -122,7 +122,7 @@ namespace Gamer.Core
                                     pos += 4;
                                     outPos += 4;
                                 }
-                        tex.textureData = out_;
+                        tex.RawData = out_;
                         return true;
                     }
 
@@ -139,7 +139,7 @@ namespace Gamer.Core
                         case TextureFormat.ETC_RGB4: format2 = TextureConverterWrapper.CompressionFormat.Etc1; break;
                         default: throw new ArgumentOutOfRangeException(nameof(format), format.ToString());
                     }
-                    tex.textureData = TextureConverterWrapper.Compress(data, width, height, format2);
+                    tex.RawData = TextureConverterWrapper.Compress(data, width, height, format2);
                     return true;
 
                 case TextureFormat.DXT1:
@@ -174,7 +174,7 @@ namespace Gamer.Core
                                 dxtCompressor.Compress(inputOptions, compressionOptions, outputOptions);
                                 out_ = handler.dst;
                             }
-                            tex.textureData = out_;
+                            tex.RawData = out_;
                             return true;
                         }
                         finally { dataHandle.Free(); }
@@ -182,17 +182,17 @@ namespace Gamer.Core
 
                 case TextureFormat.ASTC_RGBA_4x4:
                 case TextureFormat.ASTC_RGB_4x4:
-                    AstcencWrapper.EncodeASTC(data, width, height, 4, 4, out tex.textureData);
+                    AstcencWrapper.EncodeASTC(data, width, height, 4, 4, out tex.RawData);
                     return true;
 
                 default: throw new ArgumentOutOfRangeException(nameof(format), format.ToString());
             }
         }
 
-        public static unsafe bool Decompress(this Texture2DSlim tex, TextureFormat format)
+        public static unsafe bool Decompress(this Texture2DInfo tex, TextureFormat format)
         {
-            var data = tex.textureData;
-            int width = tex.width, height = tex.height, pos, outPos;
+            var data = tex.RawData;
+            int width = tex.Width, height = tex.Height, pos, outPos;
             switch (format)
             {
                 case TextureFormat.Alpha8:
@@ -211,7 +211,7 @@ namespace Gamer.Core
                                     pos += 1;
                                     outPos += 4;
                                 }
-                        tex.textureData = out_;
+                        tex.RawData = out_;
                         return true;
                     }
 
@@ -241,7 +241,7 @@ namespace Gamer.Core
                                     pos += 2;
                                     outPos += 4;
                                 }
-                        tex.textureData = out_;
+                        tex.RawData = out_;
                         return true;
                     }
 
@@ -271,7 +271,7 @@ namespace Gamer.Core
                                     pos += 2;
                                     outPos += 4;
                                 }
-                        tex.textureData = out_;
+                        tex.RawData = out_;
                         return true;
                     }
 
@@ -294,7 +294,7 @@ namespace Gamer.Core
                                     pos += 4;
                                     outPos += 4;
                                 }
-                        tex.textureData = out_;
+                        tex.RawData = out_;
                         return true;
                     }
 
@@ -317,7 +317,7 @@ namespace Gamer.Core
                                     pos += 4;
                                     outPos += 4;
                                 }
-                        tex.textureData = out_;
+                        tex.RawData = out_;
                         return true;
                     }
 
@@ -339,7 +339,7 @@ namespace Gamer.Core
                                     pos += 3;
                                     outPos += 4;
                                 }
-                        tex.textureData = out_;
+                        tex.RawData = out_;
                         return true;
                     }
 
@@ -363,7 +363,7 @@ namespace Gamer.Core
                             var texDataSize = pvrTexture.GetTextureDataSize(0);
                             var out_ = new byte[texDataSize];
                             pvrTexture.GetTextureData(out_, texDataSize);
-                            tex.textureData = out_;
+                            tex.RawData = out_;
                             return true;
                         }
                     }
@@ -377,14 +377,14 @@ namespace Gamer.Core
                             var texDataSize = pvrTexture.GetTextureDataSize(0);
                             var out_ = new byte[texDataSize];
                             pvrTexture.GetTextureData(out_, texDataSize);
-                            tex.textureData = out_;
+                            tex.RawData = out_;
                             return true;
                         }
                     }
 
                 case TextureFormat.ASTC_RGB_4x4:
                 case TextureFormat.ASTC_RGBA_4x4:
-                    AstcencWrapper.DecodeASTC(data, width, height, 4, 4, out tex.textureData);
+                    AstcencWrapper.DecodeASTC(data, width, height, 4, 4, out tex.RawData);
                     return true;
 
                 default: throw new ArgumentOutOfRangeException(nameof(format), format.ToString());

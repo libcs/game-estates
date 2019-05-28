@@ -62,6 +62,24 @@ namespace Gamer.Estate.Tes.Tests
         }
 
         [Theory]
+        [InlineData("game:/Morrowind.esm#Morrowind", @"C:\T_\Split")]
+        public async Task SplitDataPack(string path, string splitPath)
+        {
+            using (var dataPack = await new Uri(path).GetTesDataPackAsync())
+            {
+                dataPack.SplitToFiles(splitPath);
+            }
+
+            ////TestLoadCell(new Vector3(((-2 << 5) + 1) * ConvertUtils.ExteriorCellSideLengthInMeters, 0, ((-1 << 5) + 1) * ConvertUtils.ExteriorCellSideLengthInMeters));
+            ////TestLoadCell(new Vector3((-1 << 3) * ConvertUtils.ExteriorCellSideLengthInMeters, 0, (-1 << 3) * ConvertUtils.ExteriorCellSideLengthInMeters));
+            //TestLoadCell(new Vector3(0 * ConvertUtils.ExteriorCellSideLengthInMeters, 0, 0 * ConvertUtils.ExteriorCellSideLengthInMeters));
+            ////TestLoadCell(new Vector3((1 << 3) * ConvertUtils.ExteriorCellSideLengthInMeters, 0, (1 << 3) * ConvertUtils.ExteriorCellSideLengthInMeters));
+            ////TestLoadCell(new Vector3((1 << 5) * ConvertUtils.ExteriorCellSideLengthInMeters, 0, (1 << 5) * ConvertUtils.ExteriorCellSideLengthInMeters));
+            ////TestAllCells();
+        }
+
+
+        [Theory]
 #if LONGTEST
         [InlineData("game:/Morrowind.esm#Morrowind")]
         [InlineData("game:/Bloodmoon.esm#Morrowind")]

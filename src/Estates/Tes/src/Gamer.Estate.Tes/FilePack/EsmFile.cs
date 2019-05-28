@@ -114,5 +114,10 @@ namespace Gamer.Estate.Tes.FilePack
                 _r.Position = nextPosition;
             }
         }
+
+        public void SplitToFiles(string splitPath)
+        {
+
+        }
     }
 }

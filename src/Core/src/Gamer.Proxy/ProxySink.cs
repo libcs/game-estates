@@ -1,10 +1,13 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.IO;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using System.Linq;
+using System.Web;
 
 namespace Gamer.Proxy
 {
@@ -34,6 +37,18 @@ namespace Gamer.Proxy
                 var message = JsonConvert.DeserializeObject<Message>(jsonPayload);
                 Console.WriteLine("Message received: {0} {1} {2}", message.dt, message.username, message.text);
             }
+        }
+
+        protected static string ToPathAndQueryString(string path, NameValueCollection nvc)
+        {
+            if (nvc == null)
+                return path;
+            var array = (
+                from key in nvc.AllKeys
+                from value in nvc.GetValues(key)
+                select !string.IsNullOrEmpty(value) ? string.Format("{0}={1}", HttpUtility.UrlEncode(key), HttpUtility.UrlEncode(value)) : null)
+                .Where(x => x != null).ToArray();
+            return path + (array.Length > 0 ? "?" + string.Join("&", array) : string.Empty);
         }
 
         public void OpenSse(Uri address) => _wc.OpenReadAsync(address);

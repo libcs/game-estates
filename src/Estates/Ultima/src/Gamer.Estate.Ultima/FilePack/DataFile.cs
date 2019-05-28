@@ -125,5 +125,10 @@ namespace Gamer.Estate.Ultima.FilePack
                     _LANDsById[land.GridId] = land;
             }
         }
+
+        public void SplitToFiles(string splitPath)
+        {
+
+        }
     }
 }

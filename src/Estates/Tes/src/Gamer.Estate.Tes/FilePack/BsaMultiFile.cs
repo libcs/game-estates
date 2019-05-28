@@ -72,6 +72,5 @@ namespace Gamer.Estate.Tes.FilePack
         public Task<byte[]> LoadFileDataAsync(string filePath) => _proxySink.LoadFileDataAsync(filePath, () =>
             (Packs.FirstOrDefault(x => x.ContainsFile(filePath)) ?? throw new FileNotFoundException($"Could not find file \"{filePath}\" in a BSA file."))
             .LoadFileDataAsync(filePath));
-
     }
 }

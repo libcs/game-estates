@@ -52,7 +52,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="default.htm" />
-    <Content Include="Web.config" />
+    <Content Include="web.config" />
     <Content Include="_land_default.dds" />
   </ItemGroup>
   <ItemGroup>
@@ -70,6 +70,9 @@
       <Project>{4b414633-2d46-4f28-b43b-afc788833986}</Project>
       <Name>Gamer.Core</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

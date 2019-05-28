@@ -1,4 +1,6 @@
 ﻿using System;
+using System.IO;
+using System.Text;
 using UnityEngine;
 
 namespace Gamer.Core
@@ -8,7 +10,7 @@ namespace Gamer.Core
     /// </summary>
     public class Texture2DInfo
     {
-        public enum RawDataFormat { Raw, DXT }
+        public enum RawDataFormat : byte { Img, Raw, DXT }
 
         public RawDataFormat DataFormat;
         public int Width, Height;
@@ -22,6 +24,9 @@ namespace Gamer.Core
             DataFormat = dataFormat;
             switch (dataFormat)
             {
+                case RawDataFormat.Img:
+                    LoadImage(rawData);
+                    return;
                 case RawDataFormat.DXT:
                     if (format != TextureFormat.DXT1 && format != TextureFormat.DXT5)
                         throw new ArgumentOutOfRangeException(nameof(format), "Invalid TextureFormat. Only DXT1 and DXT5 formats are supported by this method.");
@@ -67,16 +72,44 @@ namespace Gamer.Core
             return tex;
         }
 
-        /// <summary>
-        /// Creates a Unity Texture2D from this Texture2DInfo.
-        /// </summary>
-        public Texture2DSlim ToTexture2DSlim()
+        public void LoadImage(byte[] data)
         {
-            var tex = new Texture2DSlim(Width, Height, Format, HasMipmaps);
-            if (RawData != null)
-                tex.LoadRawTextureData(RawData);
-            return tex;
+            using (var ms = new MemoryStream(data))
+            using (var r = new EndianBinaryReader(ms, Endian.LittleEndian))
+            {
+                var magicString = r.ReadBytes(4);
+                if (!"IMG ".EqualsASCIIBytes(magicString))
+                    throw new FileFormatException($"Invalid IMG file magic string: \"{Encoding.ASCII.GetString(magicString)}\".");
+                DataFormat = (RawDataFormat)r.ReadByte();
+                HasMipmaps = r.ReadByte() != 0;
+                Format = (TextureFormat)r.ReadInt16();
+                Width = r.ReadInt32();
+                Height = r.ReadInt32();
+                var rawDataSize = r.ReadInt32();
+                RawData = r.ReadBytes(rawDataSize);
+            }
         }
+
+        public byte[] GetImage()
+        {
+            using (var ms = new MemoryStream())
+            using (var r = new EndianBinaryWriter(ms, Endian.LittleEndian))
+            {
+                r.Write(Encoding.ASCII.GetBytes("IMG "));
+                r.Write((byte)DataFormat);
+                r.Write((byte)DataFormat);
+                r.Write((byte)(HasMipmaps ? 1 : 0));
+                r.Write((short)Format);
+                r.Write(Width);
+                r.Write(Height);
+                r.Write(RawData.Length);
+                r.Write(RawData);
+                ms.Position = 0;
+                return ms.ToArray();
+            }
+        }
+
+        #region Transform
 
         public void Rotate2D(int angle)
         {
@@ -148,5 +181,7 @@ namespace Gamer.Core
                 Array.Copy(tmpRow, 0, arr, rowStartIndex, columnCount); // tmp -> row
             }
         }
+
+        #endregion
     }
 }

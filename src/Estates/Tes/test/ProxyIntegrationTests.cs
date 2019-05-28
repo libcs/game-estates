@@ -1,7 +1,9 @@
+using Gamer.Format.Nif;
 using Gamer.Proxy;
 using Gamer.Proxy.Server;
 using System;
 using System.Threading.Tasks;
+using UnityEngine;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -39,6 +41,27 @@ namespace Gamer.Estate.Tes.Tests
                 // then
                 Assert.True(exist0);
                 Assert.NotNull(data0);
+            }
+        }
+
+        public static Vector3Int GetCellId(Vector3 point, int world) => new Vector3Int(Mathf.FloorToInt(point.x / ConvertUtils.ExteriorCellSideLengthInMeters), Mathf.FloorToInt(point.z / ConvertUtils.ExteriorCellSideLengthInMeters), world);
+
+        [Theory]
+        [InlineData("game:/Morrowind.esm#Morrowind")]
+        //[InlineData("game://localhost:{0}/Morrowind.esm#Morrowind")]
+        //[InlineData("game://localhost:{0}/Oblivion.esm#Oblivion")]
+        public async Task LoadDataPack(string path)
+        {
+            // given
+            var position = new Vector3(0 * ConvertUtils.ExteriorCellSideLengthInMeters, 0, 0 * ConvertUtils.ExteriorCellSideLengthInMeters);
+            var uri = new Uri(string.Format(path, _fixture.Target.Port));
+            using (var dataPack = await uri.GetTesDataPackAsync())
+            {
+                // when
+                var cellId = GetCellId(position, 60);
+                var cell0 = dataPack.FindCellRecord(cellId);
+                // then
+                Assert.NotNull(cell0);
             }
         }
     }

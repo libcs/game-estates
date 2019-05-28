@@ -26,10 +26,15 @@ namespace Gamer.Core
             var app = (HttpApplication)source;
             var req = app.Context.Request;
             var fileExtension = Path.GetExtension(req.Url.LocalPath);
+            //var platform = req.QueryString["p"] ?? req.Headers["Platform"];
+            //throw new HttpException(500, $"ext: {fileExtension} platform: {platform}");
             if (fileExtension.ToLowerInvariant() != ".dds")
                 return;
             var res = app.Context.Response;
-            res.Filter = new CompressTextureStream(res.Filter);
+            var platform = req.QueryString["p"] ?? req.Headers["Platform"];
+            //throw new HttpException(500, $"ext: {fileExtension} platform: {platform}");
+            if (!string.IsNullOrEmpty(platform))
+                res.Filter = new CompressTextureStream(app.Context, res.Filter, platform);
         }
     }
 }

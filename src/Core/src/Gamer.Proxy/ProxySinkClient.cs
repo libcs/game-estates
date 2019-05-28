@@ -2,8 +2,10 @@
 using Microsoft.Extensions.Caching.Memory;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Net.Http;
 using System.Threading.Tasks;
+using static Gamer.Core.Debug;
 
 namespace Gamer.Proxy
 {
@@ -11,10 +13,12 @@ namespace Gamer.Proxy
     {
         readonly MemoryCache _cache = new MemoryCache(new MemoryCacheOptions());
         readonly HttpClient _hc = new HttpClient();
+        readonly string _platform;
         readonly bool _schemeGame;
 
         public ProxySinkClient(Uri address, string platform, string estate)
         {
+            _platform = platform;
             _schemeGame = address.Scheme == UriSchemeGame || address.Scheme == UriSchemeGames;
             _hc.BaseAddress = _schemeGame
                 ? new UriBuilder(address) { Scheme = address.Scheme == UriSchemeGame ? Uri.UriSchemeHttp : Uri.UriSchemeHttps }.Uri
@@ -26,9 +30,10 @@ namespace Gamer.Proxy
                 _hc.DefaultRequestHeaders.Add("Pack", new UriBuilder(address) { Host = "serv", Port = -1 }.ToString());
         }
 
-        public async Task<T> CallAsync<T>(string method)
+        public async Task<T> CallAsync<T>(string path, NameValueCollection nvc = null)
         {
-            var r = await _hc.GetAsync(method).ConfigureAwait(false);
+            Log($"query: {ToPathAndQueryString(path, nvc)}");
+            var r = await _hc.GetAsync(ToPathAndQueryString(path, nvc)).ConfigureAwait(false);
             if (!r.IsSuccessStatusCode)
                 throw new InvalidOperationException(r.ReasonPhrase);
             var data = await r.Content.ReadAsByteArrayAsync();
@@ -42,6 +47,6 @@ namespace Gamer.Proxy
             .Contains(filePath.Replace('\\', '/'));
 
         public override async Task<byte[]> LoadFileDataAsync(string filePath, Func<Task<byte[]>> action) =>
-            await _cache.GetOrCreateAsync(filePath.Replace('\\', '/'), async x => await CallAsync<byte[]>((string)x.Key));
+            await _cache.GetOrCreateAsync(filePath.Replace('\\', '/'), async x => await CallAsync<byte[]>((string)x.Key, new NameValueCollection { { "p", _platform }, { "t", DateTime.Now.Ticks.ToString() } }));
     }
 }
