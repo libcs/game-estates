@@ -7,11 +7,11 @@ namespace Gamer.Estate.Ultima.Resources
 {
     public class GumpDefTranslator
     {
-        static readonly Dictionary<int, Tuple<int, int>> _translations;
+        static readonly Dictionary<int, (int, int)> _translations;
 
         static GumpDefTranslator()
         {
-            _translations = new Dictionary<int, Tuple<int, int>>();
+            _translations = new Dictionary<int, (int, int)>();
             StreamReader gumpDefFile = null;
             try { gumpDefFile = new StreamReader(UltimaFileManager.GetFile("gump.def")); }
             catch { Log("GumpDefTranslator: unable to open gump.def file. No item/itemgumpling translations are available."); return; }
@@ -33,7 +33,7 @@ namespace Gamer.Estate.Ultima.Resources
                     var outHue = int.Parse(defs[2]);
                     if (_translations.ContainsKey(inGump))
                         _translations.Remove(inGump);
-                    _translations.Add(inGump, new Tuple<int, int>(outGump, outHue));
+                    _translations.Add(inGump, (outGump, outHue));
                 }
             }
             catch { Log("GumpDefTranslator: unable to parse gump.def file. No item/itemgumpling translations are available."); }
@@ -42,7 +42,7 @@ namespace Gamer.Estate.Ultima.Resources
 
         public static bool ItemHasGumpTranslation(int gumpIndex, out int gumpIndexTranslated, out int defaultHue)
         {
-            if (_translations.TryGetValue(gumpIndex, out Tuple<int, int> translation))
+            if (_translations.TryGetValue(gumpIndex, out var translation))
             {
                 gumpIndexTranslated = translation.Item1;
                 defaultHue = translation.Item2;

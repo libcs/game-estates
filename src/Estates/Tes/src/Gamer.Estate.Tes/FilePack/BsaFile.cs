@@ -164,19 +164,23 @@ namespace Gamer.Estate.Tes.FilePack
         /// </summary>
         Task<byte[]> LoadFileDataAsync(FileMetadata file)
         {
-            _r.Position = file.Offset;
             var fileSize = (int)file.Size;
-            if (_hasNamePrefix)
+            byte[] fileData;
+            bool bsaCompressed;
+            int newFileSize;
+            lock (_r)
             {
-                var len = _r.ReadByte();
-                fileSize -= len + 1;
-                _r.Position = file.Offset + 1 + len;
+                _r.Position = file.Offset;
+                if (_hasNamePrefix)
+                {
+                    var len = _r.ReadByte();
+                    fileSize -= len + 1;
+                    _r.Position = file.Offset + 1 + len;
+                }
+                fileData = _r.ReadBytes(fileSize);
+                bsaCompressed = file.SizeFlags > 0 && file.Compressed ^ _compressToggle;
+                newFileSize = Version == SSE_BSAHEADER_VERSION && bsaCompressed ? _r.ReadInt32() - 4 : fileSize;
             }
-            var newFileSize = fileSize;
-            var bsaCompressed = file.SizeFlags > 0 && file.Compressed ^ _compressToggle;
-            if (Version == SSE_BSAHEADER_VERSION && bsaCompressed)
-                newFileSize = _r.ReadInt32() - 4;
-            var fileData = _r.ReadBytes(fileSize);
             // BSA
             if (bsaCompressed)
             {
@@ -221,7 +225,6 @@ namespace Gamer.Estate.Tes.FilePack
                 };
                 var dx10Header = new DDSHeader_DXT10();
                 var dx10 = false;
-
                 // map tex format
                 switch (file.Tex.Format)
                 {

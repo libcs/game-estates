@@ -13,19 +13,20 @@ namespace Gamer.Estate.Tes.FilePack
         public Task<Texture2DInfo> LoadTextureInfoAsync(string texturePath)
         {
             var filePath = FindTexture(texturePath);
-            return filePath != null ? Task.Run(async () =>
-            {
-                var fileData = await LoadFileDataAsync(filePath);
-                var fileExtension = Path.GetExtension(filePath);
-                if (fileExtension.ToLowerInvariant() == ".dds") return DdsReader.LoadDDSTexture(new MemoryStream(fileData));
-                else throw new NotSupportedException($"Unsupported texture type: {fileExtension}");
-            }) : null;
+            return filePath == null
+                ? null
+                : Task.Run(async () =>
+                {
+                    var fileData = await LoadFileDataAsync(filePath);
+                    var fileExtension = Path.GetExtension(filePath);
+                    if (fileExtension.ToLowerInvariant() == ".dds") return DdsReader.LoadDDSTexture(new MemoryStream(fileData));
+                    else throw new NotSupportedException($"Unsupported texture type: {fileExtension}");
+                });
         }
 
         public Task<object> LoadObjectInfoAsync(string filePath) => Task.Run(async () =>
         {
             var fileData = await LoadFileDataAsync(filePath);
-            //throw new Exception($"ER: {fileData.Length}");
             var file = new NiFile(Path.GetFileNameWithoutExtension(filePath));
             file.Deserialize(new BinaryFileReader(new MemoryStream(fileData)));
             return (object)file;

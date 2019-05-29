@@ -1,6 +1,7 @@
 //#define LONGTEST
 using Gamer.Estate.Tes.Records;
 using Gamer.Format.Nif;
+using Gamer.Proxy;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -62,20 +63,13 @@ namespace Gamer.Estate.Tes.Tests
         }
 
         [Theory]
-        [InlineData("game:/Morrowind.esm#Morrowind", @"C:\T_\Split")]
-        public async Task SplitDataPack(string path, string splitPath)
+        [InlineData("game:/Morrowind.esm#Morrowind", @"C:\T_\Split1")]
+        [InlineData("game:/Oblivion.esm#Oblivion", @"C:\T_\Split2")]
+        //[InlineData("game:/Skyrim.esm#SkyrimVR", @"C:\T_\Split3")]
+        //[InlineData("game:/Fallout4.esm#Fallout4VR", @"C:\T_\Split3")]
+        public async Task SplitDataPack(string path, string exportPath)
         {
-            using (var dataPack = await new Uri(path).GetTesDataPackAsync())
-            {
-                dataPack.SplitToFiles(splitPath);
-            }
-
-            ////TestLoadCell(new Vector3(((-2 << 5) + 1) * ConvertUtils.ExteriorCellSideLengthInMeters, 0, ((-1 << 5) + 1) * ConvertUtils.ExteriorCellSideLengthInMeters));
-            ////TestLoadCell(new Vector3((-1 << 3) * ConvertUtils.ExteriorCellSideLengthInMeters, 0, (-1 << 3) * ConvertUtils.ExteriorCellSideLengthInMeters));
-            //TestLoadCell(new Vector3(0 * ConvertUtils.ExteriorCellSideLengthInMeters, 0, 0 * ConvertUtils.ExteriorCellSideLengthInMeters));
-            ////TestLoadCell(new Vector3((1 << 3) * ConvertUtils.ExteriorCellSideLengthInMeters, 0, (1 << 3) * ConvertUtils.ExteriorCellSideLengthInMeters));
-            ////TestLoadCell(new Vector3((1 << 5) * ConvertUtils.ExteriorCellSideLengthInMeters, 0, (1 << 5) * ConvertUtils.ExteriorCellSideLengthInMeters));
-            ////TestAllCells();
+            await new Uri(path).ExportTesDataPackAsync(exportPath);
         }
 
 
@@ -120,7 +114,7 @@ namespace Gamer.Estate.Tes.Tests
 
         static void TestAllCells(TesDataPack data)
         {
-            foreach (var record in data.Groups["CELL"].Records.Cast<CELLRecord>())
+            foreach (var record in data.GroupByLabel["CELL"].Records.Cast<CELLRecord>())
                 if (!string.IsNullOrEmpty(record.EDID.Value))
                     Core.Debug.Log(record.EDID.Value);
         }

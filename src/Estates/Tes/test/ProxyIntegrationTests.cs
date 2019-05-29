@@ -47,18 +47,17 @@ namespace Gamer.Estate.Tes.Tests
         public static Vector3Int GetCellId(Vector3 point, int world) => new Vector3Int(Mathf.FloorToInt(point.x / ConvertUtils.ExteriorCellSideLengthInMeters), Mathf.FloorToInt(point.z / ConvertUtils.ExteriorCellSideLengthInMeters), world);
 
         [Theory]
-        [InlineData("game:/Morrowind.esm#Morrowind")]
-        //[InlineData("game://localhost:{0}/Morrowind.esm#Morrowind")]
-        //[InlineData("game://localhost:{0}/Oblivion.esm#Oblivion")]
-        public async Task LoadDataPack(string path)
+        //[InlineData("game:/Morrowind.esm#Morrowind", -137.94f, 2.30f, -1037.6f, 0)]
+        //[InlineData("game://localhost:{0}/Morrowind.esm#Morrowind", -137.94f, 2.30f, -1037.6f, 0)]
+        [InlineData("game://localhost:{0}/Oblivion.esm#Oblivion", -137.94f, 2.30f, -1037.6f, 0)]
+        public async Task LoadDataPack(string path, float x, float y, float z, int world)
         {
             // given
-            var position = new Vector3(0 * ConvertUtils.ExteriorCellSideLengthInMeters, 0, 0 * ConvertUtils.ExteriorCellSideLengthInMeters);
+            var cellId = GetCellId(new Vector3(x, y, z), world);
             var uri = new Uri(string.Format(path, _fixture.Target.Port));
             using (var dataPack = await uri.GetTesDataPackAsync())
             {
                 // when
-                var cellId = GetCellId(position, 60);
                 var cell0 = dataPack.FindCellRecord(cellId);
                 // then
                 Assert.NotNull(cell0);

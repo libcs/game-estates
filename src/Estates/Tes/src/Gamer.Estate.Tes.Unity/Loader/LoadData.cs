@@ -50,7 +50,7 @@ namespace Gamer.Estate.Tes.Loader
 
         static void TestAllCells()
         {
-            var cells = ((TesDataPack)DataPack).Groups["CELL"].Records;
+            var cells = ((TesDataPack)DataPack).GroupByLabel["CELL"].Records;
             Log($"CELLS: {cells.Count}");
             foreach (var record in cells.Cast<CELLRecord>())
                 Log(record.EDID.Value);

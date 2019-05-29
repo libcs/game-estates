@@ -21,8 +21,8 @@ namespace Gamer.Core
             //return new MemoryStream(new byte[] { 1, 2, 3 });
             switch (_platform)
             {
-                case "WindowsEditor":
-                case "WindowsPlayer":
+                //case "WindowsEditor":
+                //case "WindowsPlayer":
                 case "Android":
                     //var filename = Path.ChangeExtension(Path.GetFileName(_ctx.Request.Url.LocalPath), ".img");
                     //_ctx.Response.AddHeader("Content-Disposition", $"filename={HttpUtility.UrlEncode(filename)}");

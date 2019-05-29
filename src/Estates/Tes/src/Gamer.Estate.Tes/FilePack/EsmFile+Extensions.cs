@@ -18,34 +18,34 @@ namespace Gamer.Estate.Tes.FilePack
         Dictionary<string, CELLRecord> _CELLsByName;
 
         // TES4
-        Dictionary<uint, Tuple<WRLDRecord, RecordGroup[]>> _WRLDsById;
+        Dictionary<uint, (WRLDRecord wrld, List<RecordGroup> groups)> _WRLDsById;
         Dictionary<string, LTEXRecord> _LTEXsByEid;
 
         void Process()
         {
             if (Format == GameFormat.TES3)
             {
-                var manyGroups = new List<Record>[] { Groups.ContainsKey("STAT") ? Groups["STAT"].Load() : null };
+                var manyGroups = new List<Record>[] { GroupByLabel.ContainsKey("STAT") ? GroupByLabel["STAT"].Load() : null };
                 MANYsById = manyGroups.SelectMany(x => x).Cast<IHaveEDID>().Where(x => x != null).ToDictionary(x => x.EDID.Value, x => (IRecord)x);
-                _LTEXsById = Groups["LTEX"].Load().Cast<LTEXRecord>().ToDictionary(x => x.INTV.Value);
-                var lands = Groups["LAND"].Load().Cast<LANDRecord>().ToList();
+                _LTEXsById = GroupByLabel["LTEX"].Load().Cast<LTEXRecord>().ToDictionary(x => x.INTV.Value);
+                var lands = GroupByLabel["LAND"].Load().Cast<LANDRecord>().ToList();
                 foreach (var land in lands)
                     land.GridId = new Vector3Int(land.INTV.CellX, land.INTV.CellY, 0);
                 _LANDsById = lands.ToDictionary(x => x.GridId);
-                var cells = Groups["CELL"].Load().Cast<CELLRecord>().ToList();
+                var cells = GroupByLabel["CELL"].Load().Cast<CELLRecord>().ToList();
                 foreach (var cell in cells)
                     cell.GridId = new Vector3Int(cell.XCLC.Value.GridX, cell.XCLC.Value.GridY, !cell.IsInterior ? 0 : -1);
                 _CELLsById = cells.Where(x => !x.IsInterior).ToDictionary(x => x.GridId);
                 _CELLsByName = cells.Where(x => x.IsInterior).ToDictionary(x => x.EDID.Value);
                 return;
             }
-            var wrldsByLabel = Groups["WRLD"].GroupsByLabel;
-            _WRLDsById = Groups["WRLD"].Load().Cast<WRLDRecord>().ToDictionary(x => x.Id, x =>
+            var wrldsByLabel = GroupByLabel["WRLD"].GroupsByLabel;
+            _WRLDsById = GroupByLabel["WRLD"].Load().Cast<WRLDRecord>().ToDictionary(x => x.Id, x =>
             {
                 wrldsByLabel.TryGetValue(BitConverter.GetBytes(x.Id), out var wrlds);
-                return new Tuple<WRLDRecord, RecordGroup[]>(x, wrlds);
+                return (x, wrlds);
             });
-            _LTEXsByEid = Groups["LTEX"].Load().Cast<LTEXRecord>().ToDictionary(x => x.EDID.Value);
+            _LTEXsByEid = GroupByLabel["LTEX"].Load().Cast<LTEXRecord>().ToDictionary(x => x.EDID.Value);
         }
 
         public LTEXRecord FindLTEXRecord(int index)
@@ -66,7 +66,7 @@ namespace Gamer.Estate.Tes.FilePack
                 return land;
             }
             var world = _WRLDsById[(uint)cellId.z];
-            foreach (var wrld in world.Item2)
+            foreach (var wrld in world.groups)
                 foreach (var cellBlock in wrld.EnsureWrldAndCell(cellId))
                     if (cellBlock.LANDsById.TryGetValue(cellId, out var land))
                         return land;
@@ -81,7 +81,7 @@ namespace Gamer.Estate.Tes.FilePack
                 return cell;
             }
             var world = _WRLDsById[(uint)cellId.z];
-            foreach (var wrld in world.Item2)
+            foreach (var wrld in world.groups)
                 foreach (var cellBlock in wrld.EnsureWrldAndCell(cellId))
                     if (cellBlock.CELLsById.TryGetValue(cellId, out var cell))
                         return cell;
@@ -150,7 +150,7 @@ namespace Gamer.Estate.Tes.FilePack
                     if (cellSubBlock.GroupsByLabel.TryGetValue(BitConverter.GetBytes(cell.Id), out var cellChildren))
                     {
                         var cellChild = cellChildren.Single();
-                        var cellTemporaryChildren = cellChild.Groups.Single(x => x.Headers.First().GroupType == Header.HeaderGroupType.CellTemporaryChildren);
+                        var cellTemporaryChildren = cellChild.GroupsByLabel.SelectMany(x => x.Value).Single(x => x.Headers.First().GroupType == Header.HeaderGroupType.CellTemporaryChildren);
                         foreach (var land in cellTemporaryChildren.Records.Cast<LANDRecord>())
                         {
                             land.GridId = new Vector3Int(cell.XCLC.Value.GridX, cell.XCLC.Value.GridY, !cell.IsInterior ? cellId.z : -1);

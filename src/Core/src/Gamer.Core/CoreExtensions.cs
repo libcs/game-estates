@@ -12,7 +12,7 @@ namespace Gamer.Core
     public static class CoreExtensions
     {
         public static TResult Result<TResult>(this Task<TResult> task) => task.GetAwaiter().GetResult();
-        //public static TResult ResultPool<TResult>(this Task<TResult> task) => task.ConfigureAwait(false).GetAwaiter().GetResult();
+        public static TResult ResultPool<TResult>(this Task<TResult> task) => task.ConfigureAwait(false).GetAwaiter().GetResult();
 
 #if WINDOWS
         [DllImport("Kernel32")]

@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using static Gamer.Core.Debug;
 
@@ -32,7 +33,9 @@ namespace Gamer.Proxy
 
         public async Task<T> CallAsync<T>(string path, NameValueCollection nvc = null)
         {
-            Log($"query: {ToPathAndQueryString(path, nvc)}");
+            if (nvc == null)
+                nvc = new NameValueCollection { { "p", _platform } }; //, { "t", DateTime.Now.Ticks.ToString() } };
+            //Log($"query: {ToPathAndQueryString(path, nvc)}");
             var r = await _hc.GetAsync(ToPathAndQueryString(path, nvc)).ConfigureAwait(false);
             if (!r.IsSuccessStatusCode)
                 throw new InvalidOperationException(r.ReasonPhrase);
@@ -40,13 +43,18 @@ namespace Gamer.Proxy
             return ProxyUtils.FromBytes<T>(_schemeGame, data);
         }
 
+        // ASSET
         public override HashSet<string> GetContainsSet(Func<HashSet<string>> action) => throw new NotSupportedException();
-
         public override bool ContainsFile(string filePath, Func<bool> action) =>
             _cache.GetOrCreate(".set", x => CallAsync<HashSet<string>>((string)x.Key).Result())
             .Contains(filePath.Replace('\\', '/'));
-
         public override async Task<byte[]> LoadFileDataAsync(string filePath, Func<Task<byte[]>> action) =>
-            await _cache.GetOrCreateAsync(filePath.Replace('\\', '/'), async x => await CallAsync<byte[]>((string)x.Key, new NameValueCollection { { "p", _platform }, { "t", DateTime.Now.Ticks.ToString() } }));
+            await _cache.GetOrCreateAsync(filePath.Replace('\\', '/'), async x => await CallAsync<byte[]>((string)x.Key));
+
+        // DATA
+        public override byte[] GetDataContains(Func<byte[]> action) =>
+             _cache.GetOrCreate("d/.set", x => CallAsync<byte[]>((string)x.Key).Result());
+        public override async Task<byte[]> LoadDataLabelAsync(byte[] label, Func<Task<byte[]>> action) =>
+            await _cache.GetOrCreateAsync($"d/{Encoding.ASCII.GetString(label)}.dat", async x => await CallAsync<byte[]>((string)x.Key));
     }
 }

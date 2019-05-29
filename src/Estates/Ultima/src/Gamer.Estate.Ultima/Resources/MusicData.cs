@@ -9,7 +9,7 @@ namespace Gamer.Estate.Ultima.Resources
         const string _configFilePath = @"Music/Digital/Config.txt";
         static readonly char[] _configFileDelimiters = { ' ', ',', '\t' };
 
-        static readonly Dictionary<int, Tuple<string, bool>> _musicData = new Dictionary<int, Tuple<string, bool>>();
+        static readonly Dictionary<int, (string, bool)> _musicData = new Dictionary<int, (string, bool)>();
 
         static MusicData()
         {
@@ -20,8 +20,8 @@ namespace Gamer.Estate.Ultima.Resources
             string line;
             using (var r = new StreamReader(UltimaFileManager.GetFile(_configFilePath)))
                 while ((line = r.ReadLine()) != null)
-                    if (TryParseConfigLine(line, out Tuple<int, string, bool> songData))
-                        _musicData.Add(songData.Item1, new Tuple<string, bool>(songData.Item2, songData.Item3));
+                    if (TryParseConfigLine(line, out var songData))
+                        _musicData.Add(songData.Item1, (songData.Item2, songData.Item3));
         }
 
         /// <summary>

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Gamer.Estate.Tes.FilePack
 {
@@ -17,7 +18,7 @@ namespace Gamer.Estate.Tes.FilePack
         BinaryFileReader _r;
         public string FilePath;
         public GameFormat Format;
-        public Dictionary<string, RecordGroup> Groups;
+        public Dictionary<string, RecordGroup> GroupByLabel;
 
         public EsmFile(ProxySink proxySink, string filePath, TesGame game)
         {
@@ -39,17 +40,20 @@ namespace Gamer.Estate.Tes.FilePack
                     default: throw new InvalidOperationException();
                 }
             }
-
-            if (filePath == null)
-                return;
             FilePath = filePath;
             Format = format();
             _proxySink = proxySink;
-            if (proxySink is ProxySinkClient)
+            if (proxySink == null || proxySink is ProxySinkServer)
                 return;
-            _r = new BinaryFileReader(File.Open(filePath, FileMode.Open, FileAccess.Read));
+            if (proxySink is ProxySinkClient)
+            {
+                SinkDataContains();
+                return;
+            }
+            if (filePath == null)
+                return;
             //var watch = new Stopwatch(); watch.Start();
-            Read(1);
+            Read(File.Open(FilePath, FileMode.Open, FileAccess.Read));
             //Log($"Loading: {watch.ElapsedMilliseconds}");
             Process();
             //watch.Stop();
@@ -68,8 +72,52 @@ namespace Gamer.Estate.Tes.FilePack
             _r = null;
         }
 
-        void Read(int recordLevel)
+        public void ExportDataPack(string path)
         {
+            var info = new ProxySink.DataInfo();
+            Read(File.Open(FilePath, FileMode.Open, FileAccess.Read), info);
+            //    foreach (var group in Groups)
+            //        foreach (var image in group.Value.GetImages())
+            //            File.WriteAllBytes(Path.Combine(splitPath, image.Item1 + ".dat"), image.Item2);
+        }
+
+        public void SinkDataContains()
+        {
+            var info = new ProxySink.DataInfo(_proxySink.GetDataContains(() =>
+            {
+                var info2 = new ProxySink.DataInfo();
+                Read(File.Open(FilePath, FileMode.Open, FileAccess.Read), info: info2);
+                return info2.ToArray();
+            }));
+            //var state = GroupByLabel; RecordGroup last = null;
+            //var stack = new Stack<(List<RecordGroup> state, RecordGroup last)>();
+            //info.Decoder(
+            //    header: (l, b) =>
+            //    {
+            //        var label = Encoding.ASCII.GetString(l);
+            //        if (!state.TryGetValue(label, out var group))
+            //        {
+            //            group = new RecordGroup(null, FilePath, Format, 0);
+            //            state.Add(label, group);
+            //        }
+            //        last = group;
+            //    },
+            //    headerPush: () => { stack.Push((a: state, b: last)); state = last.Groups; },
+            //    headerPop: () => { var (a, b) = stack.Pop(); state = a; last = b; }
+            //);
+        }
+
+        public Task<byte[]> LoadDataLabelAsync(byte[] label) => _proxySink.LoadDataLabelAsync(label, () =>
+        {
+            return null;
+        });
+
+        void Read(Stream input, ProxySink.DataInfo info = null)
+        {
+            var recordLevel = 1;
+            if (_r != null)
+                throw new InvalidOperationException("Attempt to re-open existing reader");
+            _r = new BinaryFileReader(input);
             var rootHeader = new Header(_r, Format, null);
             if ((Format == GameFormat.TES3 && rootHeader.Type != "TES3") || (Format != GameFormat.TES3 && rootHeader.Type != "TES4"))
                 throw new FormatException($"{FilePath} record header {rootHeader.Type} is not valid for this {Format}");
@@ -79,24 +127,26 @@ namespace Gamer.Estate.Tes.FilePack
             if (Format == GameFormat.TES3)
             {
                 var group = new RecordGroup(_r, FilePath, Format, recordLevel);
-                group.AddHeader(new Header
+                var header = new Header
                 {
                     Label = null,
                     DataSize = (uint)(_r.BaseStream.Length - _r.Position),
                     Position = _r.Position,
-                });
-                group.Load();
-                Groups = group.Records.GroupBy(x => x.Header.Type)
+                };
+                group.AddHeader(header, info);
+                info?.AddHeader(header.Label, header.Position);
+                group.Load(true, info);
+                GroupByLabel = group.Records.GroupBy(x => x.Header.Type)
                     .ToDictionary(x => x.Key, x =>
                     {
                         var s = new RecordGroup(_r, FilePath, Format, recordLevel) { Records = x.ToList() };
-                        s.AddHeader(new Header { Label = Encoding.ASCII.GetBytes(x.Key) });
+                        s.AddHeader(new Header { Label = Encoding.ASCII.GetBytes(x.Key) }, null);
                         return s;
                     });
                 return;
             }
             // read groups
-            Groups = new Dictionary<string, RecordGroup>();
+            GroupByLabel = new Dictionary<string, RecordGroup>();
             var endPosition = _r.BaseStream.Length;
             while (_r.Position < endPosition)
             {
@@ -105,19 +155,14 @@ namespace Gamer.Estate.Tes.FilePack
                     throw new InvalidOperationException($"{header.Type} not GRUP");
                 var nextPosition = _r.Position + header.DataSize;
                 var label = Encoding.ASCII.GetString(header.Label);
-                if (!Groups.TryGetValue(label, out RecordGroup group))
-                {
-                    group = new RecordGroup(_r, FilePath, Format, recordLevel);
-                    Groups.Add(label, group);
-                }
-                group.AddHeader(header);
+                if (!GroupByLabel.TryGetValue(label, out var group))
+                    GroupByLabel.Add(label, group = new RecordGroup(_r, FilePath, Format, recordLevel));
+                group.AddHeader(header, info);
+                info?.AddHeader(header.Label, header.Position);
+                if (info != null)
+                    group.Load(info: info);
                 _r.Position = nextPosition;
             }
-        }
-
-        public void SplitToFiles(string splitPath)
-        {
-
         }
     }
 }

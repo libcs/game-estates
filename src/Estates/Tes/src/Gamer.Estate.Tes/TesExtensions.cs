@@ -13,8 +13,15 @@ namespace Gamer.Estate.Tes
 
         public static Task<IDataPack> GetTesDataPackAsync(this Uri uri, Func<object> func = null)
         {
-            var game = uri.ToTesGame(func, out var client, out var filePaths);
-            return Task.FromResult((IDataPack)new TesDataPack(client, filePaths.Single(), game));
+            var game = uri.ToTesGame(func, out var proxySink, out var filePaths);
+            return Task.FromResult((IDataPack)new TesDataPack(proxySink, filePaths.Single(), game));
+        }
+
+        public static async Task ExportTesDataPackAsync(this Uri uri, string exportPath)
+        {
+            var game = uri.ToTesGame(null, out var proxySink, out var filePaths);
+            var pack = await Task.FromResult(new TesDataPack(null, filePaths.Single(), game));
+            pack.ExportDataPack(exportPath);
         }
     }
 }

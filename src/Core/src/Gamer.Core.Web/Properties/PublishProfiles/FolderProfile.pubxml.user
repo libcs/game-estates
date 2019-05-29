@@ -10,22 +10,22 @@ by editing this MSBuild file. In order to learn more about this please visit htt
   </PropertyGroup>
   <ItemGroup>
     <File Include="bin/Gamer.Conversion.dll">
-      <publishTime>05/27/2019 18:45:43</publishTime>
+      <publishTime>05/28/2019 00:07:31</publishTime>
     </File>
     <File Include="bin/Gamer.Conversion.pdb">
-      <publishTime>05/27/2019 18:45:43</publishTime>
+      <publishTime>05/28/2019 00:07:31</publishTime>
     </File>
     <File Include="bin/Gamer.Core.dll">
-      <publishTime>05/27/2019 18:45:43</publishTime>
+      <publishTime>05/28/2019 00:07:31</publishTime>
     </File>
     <File Include="bin/Gamer.Core.pdb">
-      <publishTime>05/27/2019 18:45:43</publishTime>
+      <publishTime>05/28/2019 00:07:31</publishTime>
     </File>
     <File Include="bin/Gamer.Core.Web.dll">
-      <publishTime>05/27/2019 18:46:50</publishTime>
+      <publishTime>05/28/2019 16:40:34</publishTime>
     </File>
     <File Include="bin/Gamer.Core.Web.pdb">
-      <publishTime>05/27/2019 18:46:50</publishTime>
+      <publishTime>05/28/2019 16:40:34</publishTime>
     </File>
     <File Include="bin/Magick.NET-Q8-AnyCPU.dll">
       <publishTime>05/21/2019 21:52:22</publishTime>
@@ -88,7 +88,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>05/27/2019 12:25:11</publishTime>
     </File>
     <File Include="web.config">
-      <publishTime>05/27/2019 19:42:59</publishTime>
+      <publishTime>05/28/2019 00:10:33</publishTime>
     </File>
     <File Include="_land_default.dds">
       <publishTime>05/27/2019 12:06:07</publishTime>
