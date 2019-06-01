@@ -1,4 +1,5 @@
 ﻿using Gamer.Core;
+using Gamer.Core.Records;
 using Gamer.Estate.Tes.Records;
 using Gamer.Proxy;
 using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
@@ -78,7 +79,7 @@ namespace Gamer.Estate.Tes.FilePack
         public uint FormId;
         public long Position;
         // group
-        public byte[] Label;
+        public string Label;
         public HeaderGroupType GroupType;
 
         public Header() { }
@@ -89,7 +90,7 @@ namespace Gamer.Estate.Tes.FilePack
             if (Type == "GRUP")
             {
                 DataSize = (uint)(r.ReadUInt32() - (format == GameFormat.TES4 ? 20 : 24));
-                Label = r.ReadBytes(4);
+                Label = EsmFile.ToLabel(parent == null, r.ReadBytes(4));
                 GroupType = (HeaderGroupType)r.ReadInt32();
                 r.ReadUInt32(); // stamp | stamp + uknown
                 if (format != GameFormat.TES4)
@@ -236,14 +237,14 @@ namespace Gamer.Estate.Tes.FilePack
         }
     }
 
-    public partial class RecordGroup
+    public partial class RecordGroup : IRecordGroup
     {
-        public byte[] Label => Headers.First.Value.Label;
+        public RecordGroup Next;
+        public string Label => Headers.First.Value.Label;
         public override string ToString() => Headers.First.Value.ToString();
         public LinkedList<Header> Headers = new LinkedList<Header>();
         public List<Record> Records = new List<Record>();
-        //public List<RecordGroup> Groups;
-        public Dictionary<byte[], List<RecordGroup>> GroupsByLabel;
+        public Dictionary<string, RecordGroup> GroupByLabel;
         readonly BinaryFileReader _r;
         readonly string _filePath;
         readonly GameFormat _format;
@@ -260,10 +261,10 @@ namespace Gamer.Estate.Tes.FilePack
 
         public void AddHeader(Header header, ProxySink.DataInfo info)
         {
-            //Console.WriteLine($"Read: {header.Label}");
+            //Log($"Read: {header.Label}");
             Headers.AddLast(header);
             if (header.Label != null && header.GroupType == Header.HeaderGroupType.Top)
-                switch (Encoding.ASCII.GetString(header.Label))
+                switch (header.Label)
                 {
                     case "CELL": case "WRLD": Load(info: info); break; // "DIAL"
                 }
@@ -283,20 +284,16 @@ namespace Gamer.Estate.Tes.FilePack
         }
 
         static int _cellsLoaded = 0;
-        void ReadGroup(Header header, bool loadAll, ProxySink.DataInfo info)
+        void ReadGroup(Header parentHeader, bool loadAll, ProxySink.DataInfo info)
         {
-            _r.Position = header.Position;
-            var endPosition = header.Position + header.DataSize;
+            _r.Position = parentHeader.Position;
+            var endPosition = parentHeader.Position + parentHeader.DataSize;
             while (_r.Position < endPosition)
             {
-                var recordHeader = new Header(_r, _format, header);
-                if (recordHeader.Type == "GRUP")
+                var header = new Header(_r, _format, parentHeader);
+                if (header.Type == "GRUP")
                 {
-                    info?.HeaderPush();
-                    var group = ReadGRUP(header, recordHeader, info);
-                    if (loadAll || info?.Level <= int.MaxValue)
-                        group.Load(loadAll, info);
-                    info?.HeaderPop();
+                    ReadGRUP(parentHeader, header, loadAll, info);
                     continue;
                 }
                 //if (info != null)
@@ -305,52 +302,53 @@ namespace Gamer.Estate.Tes.FilePack
                 //    info.Data(bytes);
                 //}
                 // HACK to limit cells loading
-                if (recordHeader.Type == "CELL" && _cellsLoaded > int.MaxValue)
+                if (header.Type == "CELL" && _cellsLoaded > int.MaxValue)
                 {
-                    _r.Position += recordHeader.DataSize;
+                    _r.Position += header.DataSize;
                     continue;
                 }
-                var record = recordHeader.CreateRecord(_r.Position, _recordLevel);
+                var record = header.CreateRecord(_r.Position, _recordLevel);
                 if (record == null)
                 {
-                    _r.Position += recordHeader.DataSize;
+                    _r.Position += header.DataSize;
                     continue;
                 }
-                ReadRecord(record, recordHeader.Compressed);
+                ReadRecord(record, header.Compressed);
                 Records.Add(record);
-                if (recordHeader.Type == "CELL") _cellsLoaded++;
+                if (header.Type == "CELL") _cellsLoaded++;
             }
-            //GroupsByLabel = Groups?.GroupBy(x => x.Label, ByteArrayComparer.Default).ToDictionary(x => x.Key, x => x.ToArray(), ByteArrayComparer.Default);
         }
 
-        RecordGroup ReadGRUP(Header header, Header recordHeader, ProxySink.DataInfo info)
+        RecordGroup ReadGRUP(Header parentHeader, Header header, bool loadAll, ProxySink.DataInfo info)
         {
-            info?.AddHeader(header.Label, header.Position);
-            var nextPosition = _r.Position + recordHeader.DataSize;
-            if (GroupsByLabel == null)
-                GroupsByLabel = new Dictionary<byte[], List<RecordGroup>>(ByteArrayComparer.Default);
-            var group = new RecordGroup(_r, _filePath, _format, _recordLevel);
-            group.AddHeader(recordHeader, info);
-            if (!GroupsByLabel.TryGetValue(Label, out var groups))
-                GroupsByLabel.Add(Label, groups = new List<RecordGroup>());
-            groups.Add(group);
+            var nextPosition = _r.Position + header.DataSize;
+            var label = header.Label;
+            info?.AddGroup(header.Label, header.Position);
+            if (GroupByLabel == null)
+                GroupByLabel = new Dictionary<string, RecordGroup>();
+            if (!GroupByLabel.TryGetValue(label, out var group))
+                GroupByLabel.Add(label, group = new RecordGroup(_r, _filePath, _format, _recordLevel));
+            else group = new RecordGroup(_r, _filePath, _format, _recordLevel) { Next = group };
+            group.AddHeader(header, info);
             _r.Position = nextPosition;
             // print header path
-            var headerPath = string.Join("/", GetHeaderPath(new List<string>(), header).ToArray());
-            Console.WriteLine($"Grup: {headerPath} {header.GroupType}");
+            //Log($"Grup: {string.Join("/", GetHeaderPath(new List<string>(), parentHeader).ToArray())} {parentHeader.GroupType}");
+            if (loadAll || info?.Level <= int.MaxValue)
+                group.Load(loadAll, info);
+            info?.LeaveGroup();
             return group;
         }
 
-        static List<string> GetHeaderPath(List<string> b, Header header)
-        {
-            if (header.Parent != null) GetHeaderPath(b, header.Parent);
-            b.Add(header.GroupType != Header.HeaderGroupType.Top ? BitConverter.ToString(header.Label).Replace("-", string.Empty) : Encoding.ASCII.GetString(header.Label));
-            return b;
-        }
+        //static List<string> GetHeaderPath(List<string> b, Header header)
+        //{
+        //    if (header.Parent != null) GetHeaderPath(b, header.Parent);
+        //    b.Add(header.Label);
+        //    return b;
+        //}
 
         void ReadRecord(Record record, bool compressed)
         {
-            //Console.WriteLine($"Recd: {record.Header.Type}");
+            //Log($"Recd: {record.Header.Type}");
             if (!compressed)
             {
                 record.Read(_r, _filePath, _format);

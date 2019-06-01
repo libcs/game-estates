@@ -3,6 +3,7 @@ using Gamer.Estate.Tes.Records;
 using Gamer.Proxy;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -19,6 +20,8 @@ namespace Gamer.Estate.Tes.FilePack
         public string FilePath;
         public GameFormat Format;
         public Dictionary<string, RecordGroup> GroupByLabel;
+        internal static string ToLabel(bool top, byte[] label) => top ? Encoding.ASCII.GetString(label) : Utils.ToB64String(label);
+        internal static string ToLabel(bool top, uint label) => ToLabel(top, BitConverter.GetBytes(label));
 
         public EsmFile(ProxySink proxySink, string filePath, TesGame game)
         {
@@ -52,11 +55,11 @@ namespace Gamer.Estate.Tes.FilePack
             }
             if (filePath == null)
                 return;
-            //var watch = new Stopwatch(); watch.Start();
+            var watch = new Stopwatch(); watch.Start();
             Read(File.Open(FilePath, FileMode.Open, FileAccess.Read));
-            //Log($"Loading: {watch.ElapsedMilliseconds}");
+            Core.Debug.Log($"Loading: {watch.ElapsedMilliseconds}");
             Process();
-            //watch.Stop();
+            watch.Stop();
         }
 
         public void Dispose()
@@ -83,28 +86,25 @@ namespace Gamer.Estate.Tes.FilePack
 
         public void SinkDataContains()
         {
-            var info = new ProxySink.DataInfo(_proxySink.GetDataContains(() =>
+            RecordGroup last = null;
+            var stack = new Stack<(Dictionary<string, RecordGroup> state, RecordGroup last)>();
+            var groupByLabel = GroupByLabel = new Dictionary<string, RecordGroup>();
+            new ProxySink.DataInfo(_proxySink.GetDataContains(() =>
             {
-                var info2 = new ProxySink.DataInfo();
-                Read(File.Open(FilePath, FileMode.Open, FileAccess.Read), info: info2);
-                return info2.ToArray();
-            }));
-            //var state = GroupByLabel; RecordGroup last = null;
-            //var stack = new Stack<(List<RecordGroup> state, RecordGroup last)>();
-            //info.Decoder(
-            //    header: (l, b) =>
-            //    {
-            //        var label = Encoding.ASCII.GetString(l);
-            //        if (!state.TryGetValue(label, out var group))
-            //        {
-            //            group = new RecordGroup(null, FilePath, Format, 0);
-            //            state.Add(label, group);
-            //        }
-            //        last = group;
-            //    },
-            //    headerPush: () => { stack.Push((a: state, b: last)); state = last.Groups; },
-            //    headerPop: () => { var (a, b) = stack.Pop(); state = a; last = b; }
-            //);
+                var info = new ProxySink.DataInfo();
+                Read(File.Open(FilePath, FileMode.Open, FileAccess.Read), info);
+                return info.ToArray();
+            })).Decoder(
+            header: (label, b) =>
+            {
+                if (!groupByLabel.TryGetValue(label, out var group))
+                    groupByLabel.Add(label, group = new RecordGroup(null, FilePath, Format, 0));
+                else group = new RecordGroup(null, FilePath, Format, 0) { Next = group };
+                last = group;
+            }
+            //group: () => { stack.Push((state, last)); state = last.GroupsByLabel; },
+            //groupLeave: () => { var (a, b) = stack.Pop(); state = a; last = b; }
+            );
         }
 
         public Task<byte[]> LoadDataLabelAsync(byte[] label) => _proxySink.LoadDataLabelAsync(label, () =>
@@ -133,14 +133,14 @@ namespace Gamer.Estate.Tes.FilePack
                     DataSize = (uint)(_r.BaseStream.Length - _r.Position),
                     Position = _r.Position,
                 };
+                info?.AddGroup(header.Label, header.Position);
                 group.AddHeader(header, info);
-                info?.AddHeader(header.Label, header.Position);
                 group.Load(true, info);
                 GroupByLabel = group.Records.GroupBy(x => x.Header.Type)
                     .ToDictionary(x => x.Key, x =>
                     {
                         var s = new RecordGroup(_r, FilePath, Format, recordLevel) { Records = x.ToList() };
-                        s.AddHeader(new Header { Label = Encoding.ASCII.GetBytes(x.Key) }, null);
+                        s.AddHeader(new Header { Label = x.Key }, null);
                         return s;
                     });
                 return;
@@ -154,11 +154,11 @@ namespace Gamer.Estate.Tes.FilePack
                 if (header.Type != "GRUP")
                     throw new InvalidOperationException($"{header.Type} not GRUP");
                 var nextPosition = _r.Position + header.DataSize;
-                var label = Encoding.ASCII.GetString(header.Label);
+                var label = header.Label;
+                info?.AddGroup(label, header.Position);
                 if (!GroupByLabel.TryGetValue(label, out var group))
                     GroupByLabel.Add(label, group = new RecordGroup(_r, FilePath, Format, recordLevel));
                 group.AddHeader(header, info);
-                info?.AddHeader(header.Label, header.Position);
                 if (info != null)
                     group.Load(info: info);
                 _r.Position = nextPosition;

@@ -23,14 +23,19 @@ namespace Gamer.Core
     public class ByteArrayComparer : IEqualityComparer<byte[]>
     {
         public static ByteArrayComparer Default = new ByteArrayComparer();
-
         public bool Equals(byte[] left, byte[] right) => left == null || right == null ? left == right : left.SequenceEqual(right);
-
         public int GetHashCode(byte[] key) => (key ?? throw new ArgumentNullException(nameof(key))).Sum(b => b);
     }
 
     public static class Utils
     {
+        public static string ToB64String(byte[] source)
+        {
+            var v = Convert.ToBase64String(source);
+            var i = v.Length - 1; for (; i >= 0 && (v[i] == '=' || v[i] == 'A'); i--) ;
+            return v.Substring(0, i + 1).Replace("/", "_").Replace("+", "-");
+        }
+
         public static void Swap<T>(ref T a, ref T b)
         {
             var tmp = a;

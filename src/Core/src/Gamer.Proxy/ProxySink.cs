@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Linq;
 using System.Web;
+using Gamer.Core.Records;
 
 namespace Gamer.Proxy
 {
@@ -27,7 +28,7 @@ namespace Gamer.Proxy
 
         public class DataInfo
         {
-            enum Record : byte { Header, HeaderPush, HeaderPop };
+            enum Record : byte { Group, LeaveGroup };
             public string Path;
             public int Level;
             readonly MemoryStream _s;
@@ -46,28 +47,26 @@ namespace Gamer.Proxy
                 _r = new BinaryReader(_s);
             }
 
-            public void AddHeader(byte[] label, long dataSize)
+            public void AddGroup(string label, long dataSize)
             {
-                _w.Write((byte)Record.Header);
+                _w.Write((byte)Record.Group);
                 _w.Write(label?.Length ?? 0); if (label != null) _w.Write(label);
                 _w.Write(dataSize);
             }
 
-            public void HeaderPush() => _w.Write((byte)Record.HeaderPush);
-            public void HeaderPop() => _w.Write((byte)Record.HeaderPop);
+            public void LeaveGroup() => _w.Write((byte)Record.LeaveGroup);
 
             public void Data(byte[] bytes) { }
 
-            public void Decoder(Action<byte[], long> header, Action headerPush, Action headerPop)
+            public void Decoder(Action<string, long> header = null, Action<string, long> group = null, Action leaveGroup = null)
             {
                 int length;
                 var endPosition = _r.BaseStream.Length;
                 while (_r.BaseStream.Position != endPosition)
                     switch ((Record)_r.ReadByte())
                     {
-                        case Record.Header: header((length = _r.ReadInt32()) != 0 ? _r.ReadBytes(length) : null, _r.ReadInt64()); break;
-                        case Record.HeaderPush: headerPush(); break;
-                        case Record.HeaderPop: headerPop(); break;
+                        case Record.Group: group((length = _r.ReadInt32()) != 0 ? _r.ReadString() : null, _r.ReadInt64()); break;
+                        case Record.LeaveGroup: leaveGroup(); break;
                         default: throw new ArgumentOutOfRangeException(nameof(_r));
                     }
             }
