@@ -10,8 +10,8 @@ namespace Gamer.Estate.Ultima
     {
         public UltimaDataPack(uint map) : base(map) { }
 
-        public void SinkDataContains() => throw new System.NotImplementedException();
-        public Task<byte[]> LoadDataLabelAsync(byte[] label) => throw new System.NotImplementedException();
+        public void SinkDataContains(string path) => throw new System.NotImplementedException();
+        public Task<byte[]> LoadDataLabelAsync(string label) => throw new System.NotImplementedException();
 
         ICellRecord IDataPack.FindCellRecord(Vector3Int cellId) => FindCellRecord(cellId);
     }

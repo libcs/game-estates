@@ -6,60 +6,37 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Gamer.Estate.Tes.FilePack
 {
-    public partial class EsmFile : IDisposable
+    public partial class EsmFile : RecordGroup, IDisposable
     {
         const int recordHeaderSizeInBytes = 16;
         public override string ToString() => Path.GetFileName(FilePath);
-        readonly ProxySink _proxySink;
-        BinaryFileReader _r;
-        public string FilePath;
-        public GameFormat Format;
-        public Dictionary<string, RecordGroup> GroupByLabel;
-        internal static string ToLabel(bool top, byte[] label) => top ? Encoding.ASCII.GetString(label) : Utils.ToB64String(label);
-        internal static string ToLabel(bool top, uint label) => ToLabel(top, BitConverter.GetBytes(label));
 
         public EsmFile(ProxySink proxySink, string filePath, TesGame game)
+            : base(proxySink, filePath != null ? new BinaryFileReader(File.Open(filePath, FileMode.Open, FileAccess.Read)) : null, filePath, ToFormat(game), 1)
         {
-            GameFormat format()
+            void process()
             {
-                switch (game)
-                {
-                    // tes
-                    case TesGame.Morrowind: return GameFormat.TES3;
-                    case TesGame.Oblivion: return GameFormat.TES4;
-                    case TesGame.Skyrim:
-                    case TesGame.SkyrimSE:
-                    case TesGame.SkyrimVR: return GameFormat.TES5;
-                    // fallout
-                    case TesGame.Fallout3:
-                    case TesGame.FalloutNV: return GameFormat.TES4;
-                    case TesGame.Fallout4:
-                    case TesGame.Fallout4VR: return GameFormat.TES5;
-                    default: throw new InvalidOperationException();
-                }
+                var watch = new Stopwatch(); watch.Start();
+                Core.Debug.Log($"Loading: {watch.ElapsedMilliseconds}");
+                Process();
+                watch.Stop();
             }
-            FilePath = filePath;
-            Format = format();
-            _proxySink = proxySink;
-            if (proxySink == null || proxySink is ProxySinkServer)
+            if (_proxySink == null || _proxySink is ProxySinkServer)
                 return;
-            if (proxySink is ProxySinkClient)
+            if (_proxySink is ProxySinkClient)
             {
-                SinkDataContains();
+                SinkDataContains(null);
+                process();
                 return;
             }
             if (filePath == null)
                 return;
-            var watch = new Stopwatch(); watch.Start();
-            Read(File.Open(FilePath, FileMode.Open, FileAccess.Read));
-            Core.Debug.Log($"Loading: {watch.ElapsedMilliseconds}");
-            Process();
-            watch.Stop();
+            Read();
+            process();
         }
 
         public void Dispose()
@@ -69,77 +46,40 @@ namespace Gamer.Estate.Tes.FilePack
         }
         ~EsmFile() => Close();
 
-        public void Close()
+        public void SinkDataContains(string path)
         {
-            _r?.Close();
-            _r = null;
-        }
-
-        public void ExportDataPack(string path)
-        {
-            var info = new ProxySink.DataInfo();
-            Read(File.Open(FilePath, FileMode.Open, FileAccess.Read), info);
+            var data = _proxySink.GetDataContains(() =>
+            {
+                var info = new ProxySink.DataInfo();
+                Read(info);
+                return info.ToArray();
+            });
             //    foreach (var group in Groups)
             //        foreach (var image in group.Value.GetImages())
             //            File.WriteAllBytes(Path.Combine(splitPath, image.Item1 + ".dat"), image.Item2);
+            if (_proxySink is ProxySinkClient)
+                ReadGRUP(new ProxySink.DataInfo(data));
         }
 
-        public void SinkDataContains()
+        void Read(ProxySink.DataInfo info = null)
         {
-            RecordGroup last = null;
-            var stack = new Stack<(Dictionary<string, RecordGroup> state, RecordGroup last)>();
-            var groupByLabel = GroupByLabel = new Dictionary<string, RecordGroup>();
-            new ProxySink.DataInfo(_proxySink.GetDataContains(() =>
-            {
-                var info = new ProxySink.DataInfo();
-                Read(File.Open(FilePath, FileMode.Open, FileAccess.Read), info);
-                return info.ToArray();
-            })).Decoder(
-            header: (label, b) =>
-            {
-                if (!groupByLabel.TryGetValue(label, out var group))
-                    groupByLabel.Add(label, group = new RecordGroup(null, FilePath, Format, 0));
-                else group = new RecordGroup(null, FilePath, Format, 0) { Next = group };
-                last = group;
-            }
-            //group: () => { stack.Push((state, last)); state = last.GroupsByLabel; },
-            //groupLeave: () => { var (a, b) = stack.Pop(); state = a; last = b; }
-            );
-        }
-
-        public Task<byte[]> LoadDataLabelAsync(byte[] label) => _proxySink.LoadDataLabelAsync(label, () =>
-        {
-            return null;
-        });
-
-        void Read(Stream input, ProxySink.DataInfo info = null)
-        {
-            var recordLevel = 1;
-            if (_r != null)
-                throw new InvalidOperationException("Attempt to re-open existing reader");
-            _r = new BinaryFileReader(input);
             var rootHeader = new Header(_r, Format, null);
             if ((Format == GameFormat.TES3 && rootHeader.Type != "TES3") || (Format != GameFormat.TES3 && rootHeader.Type != "TES4"))
                 throw new FormatException($"{FilePath} record header {rootHeader.Type} is not valid for this {Format}");
-            var rootRecord = rootHeader.CreateRecord(rootHeader.Position, recordLevel);
+            var rootRecord = rootHeader.CreateRecord(rootHeader.Position, RecordLevel);
             rootRecord.Read(_r, FilePath, Format);
             // morrowind hack
             if (Format == GameFormat.TES3)
             {
-                var group = new RecordGroup(_r, FilePath, Format, recordLevel);
-                var header = new Header
-                {
-                    Label = null,
-                    DataSize = (uint)(_r.BaseStream.Length - _r.Position),
-                    Position = _r.Position,
-                };
-                info?.AddGroup(header.Label, header.Position);
+                var header = new Header { Label = null, DataSize = (uint)(_r.BaseStream.Length - _r.Position), Position = _r.Position };
+                info?.AddGroup(header.Label, header.Position, null);
+                var group = new RecordGroup(_proxySink, _r, FilePath, Format, RecordLevel);
                 group.AddHeader(header, info);
                 group.Load(true, info);
                 GroupByLabel = group.Records.GroupBy(x => x.Header.Type)
                     .ToDictionary(x => x.Key, x =>
                     {
-                        var s = new RecordGroup(_r, FilePath, Format, recordLevel) { Records = x.ToList() };
+                        var s = new RecordGroup(_proxySink, _r, FilePath, Format, RecordLevel) { Records = x.ToList() };
                         s.AddHeader(new Header { Label = x.Key }, null);
                         return s;
                     });
@@ -153,15 +93,7 @@ namespace Gamer.Estate.Tes.FilePack
                 var header = new Header(_r, Format, null);
                 if (header.Type != "GRUP")
                     throw new InvalidOperationException($"{header.Type} not GRUP");
-                var nextPosition = _r.Position + header.DataSize;
-                var label = header.Label;
-                info?.AddGroup(label, header.Position);
-                if (!GroupByLabel.TryGetValue(label, out var group))
-                    GroupByLabel.Add(label, group = new RecordGroup(_r, FilePath, Format, recordLevel));
-                group.AddHeader(header, info);
-                if (info != null)
-                    group.Load(info: info);
-                _r.Position = nextPosition;
+                ReadGRUP(rootHeader, header, false, info);
             }
         }
     }

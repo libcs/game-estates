@@ -36,6 +36,12 @@ namespace Gamer.Core
             return v.Substring(0, i + 1).Replace("/", "_").Replace("+", "-");
         }
 
+        public static byte[] FromB64String(string source)
+        {
+            throw new NotImplementedException();
+        }
+
+
         public static void Swap<T>(ref T a, ref T b)
         {
             var tmp = a;

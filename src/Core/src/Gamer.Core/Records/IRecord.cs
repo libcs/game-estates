@@ -4,7 +4,7 @@
     {
     }
 
-    public interface IRecordGroup
-    {
-    }
+    //public interface IRecordGroup
+    //{
+    //}
 }

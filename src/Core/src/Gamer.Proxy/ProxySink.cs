@@ -28,44 +28,31 @@ namespace Gamer.Proxy
 
         public class DataInfo
         {
-            enum Record : byte { Group, LeaveGroup };
-            public string Path;
+            enum Record : byte { Group, EnterGroup, LeaveGroup };
+            //public string Path;
             public int Level;
             readonly MemoryStream _s;
             readonly BinaryReader _r;
             readonly BinaryWriter _w;
 
-            public DataInfo()
-            {
-                _s = new MemoryStream();
-                _w = new BinaryWriter(_s);
-            }
+            public DataInfo() { _s = new MemoryStream(); _w = new BinaryWriter(_s); }
+            public DataInfo(byte[] data) { _s = new MemoryStream(data); _r = new BinaryReader(_s); }
 
-            public DataInfo(byte[] data)
-            {
-                _s = new MemoryStream(data);
-                _r = new BinaryReader(_s);
-            }
-
-            public void AddGroup(string label, long dataSize)
-            {
-                _w.Write((byte)Record.Group);
-                _w.Write(label?.Length ?? 0); if (label != null) _w.Write(label);
-                _w.Write(dataSize);
-            }
-
+            public void AddGroup(string label, long position, byte[] headerData) { _w.Write((byte)Record.Group); _w.Write(label.Length); if (label.Length != 0) _w.Write(label); _w.Write(position); }
+            public void EnterGroup() => _w.Write((byte)Record.EnterGroup);
             public void LeaveGroup() => _w.Write((byte)Record.LeaveGroup);
 
-            public void Data(byte[] bytes) { }
+            //public void Data(byte[] bytes) { }
 
-            public void Decoder(Action<string, long> header = null, Action<string, long> group = null, Action leaveGroup = null)
+            public void Decoder(Action<string, long, byte[]> group = null, Action enterGroup = null, Action leaveGroup = null)
             {
                 int length;
                 var endPosition = _r.BaseStream.Length;
                 while (_r.BaseStream.Position != endPosition)
                     switch ((Record)_r.ReadByte())
                     {
-                        case Record.Group: group((length = _r.ReadInt32()) != 0 ? _r.ReadString() : null, _r.ReadInt64()); break;
+                        case Record.Group: group((length = _r.ReadInt32()) != 0 ? _r.ReadString() : string.Empty, _r.ReadInt64(), null); break;
+                        case Record.EnterGroup: enterGroup(); break;
                         case Record.LeaveGroup: leaveGroup(); break;
                         default: throw new ArgumentOutOfRangeException(nameof(_r));
                     }
@@ -109,6 +96,6 @@ namespace Gamer.Proxy
 
         // DATA
         public virtual byte[] GetDataContains(Func<byte[]> action) => throw new NotSupportedException();
-        public virtual Task<byte[]> LoadDataLabelAsync(byte[] label, Func<Task<byte[]>> action) => throw new NotSupportedException();
+        public virtual Task<byte[]> LoadDataLabelAsync(string label, Func<Task<byte[]>> action) => throw new NotSupportedException();
     }
 }

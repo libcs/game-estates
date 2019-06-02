@@ -6,14 +6,13 @@ using System.Collections.Specialized;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using static Gamer.Core.Debug;
 
 namespace Gamer.Proxy
 {
     public class ProxySinkClient : ProxySink
     {
-        readonly MemoryCache _cache = new MemoryCache(new MemoryCacheOptions());
-        readonly HttpClient _hc = new HttpClient();
+        readonly MemoryCache _cache = new MemoryCache(new MemoryCacheOptions { });
+        readonly HttpClient _hc = new HttpClient { Timeout = TimeSpan.FromMinutes(30) };
         readonly string _platform;
         readonly bool _schemeGame;
 
@@ -54,7 +53,7 @@ namespace Gamer.Proxy
         // DATA
         public override byte[] GetDataContains(Func<byte[]> action) =>
              _cache.GetOrCreate("d/.set", x => CallAsync<byte[]>((string)x.Key).Result());
-        public override async Task<byte[]> LoadDataLabelAsync(byte[] label, Func<Task<byte[]>> action) =>
-            await _cache.GetOrCreateAsync($"d/{Encoding.ASCII.GetString(label)}.dat", async x => await CallAsync<byte[]>((string)x.Key));
+        public override async Task<byte[]> LoadDataLabelAsync(string label, Func<Task<byte[]>> action) =>
+            await _cache.GetOrCreateAsync($"d/{label}.dat", async x => await CallAsync<byte[]>((string)x.Key));
     }
 }

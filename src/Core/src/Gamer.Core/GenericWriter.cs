@@ -18,10 +18,10 @@ namespace Gamer.Core
 
         //public abstract long Position { get; }
 
-        public abstract string WriteASCIIString(int length, ASCIIFormat format = ASCIIFormat.Raw);
-        public abstract string[] WriteASCIIMultiString(int length, int bufSize = 64);
-        public abstract unsafe T WriteT<T>(int length);
-        public abstract unsafe T[] WriteTArray<T>(int length, int count);
+        public abstract void WriteASCIIString(string value, int length, ASCIIFormat format = ASCIIFormat.Raw);
+        public abstract void WriteASCIIMultiString(string[] value, int length, int bufSize = 64);
+        public abstract unsafe void WriteT<T>(T value, int length);
+        public abstract unsafe void WriteTArray<T>(T[] value, int length, int count);
 
         public abstract void Write(DateTime value);
         public abstract void Write(DateTimeOffset value);
@@ -162,9 +162,9 @@ namespace Gamer.Core
             Write(value.End);
         }
 
-        public override string WriteASCIIString(int length, ASCIIFormat format = ASCIIFormat.Raw) => throw new NotImplementedException();
-        public override string[] WriteASCIIMultiString(int length, int bufSize = 64) => throw new NotImplementedException();
-        public override T WriteT<T>(int length) => throw new NotImplementedException();
-        public override T[] WriteTArray<T>(int length, int count) => throw new NotImplementedException();
+        public override void WriteASCIIString(string value, int length, ASCIIFormat format = ASCIIFormat.Raw) => throw new NotImplementedException();
+        public override void WriteASCIIMultiString(string[] value, int length, int bufSize = 64) => throw new NotImplementedException();
+        public override void WriteT<T>(T value, int length) => throw new NotImplementedException();
+        public override void WriteTArray<T>(T[] value, int length, int count) => throw new NotImplementedException();
     }
 }

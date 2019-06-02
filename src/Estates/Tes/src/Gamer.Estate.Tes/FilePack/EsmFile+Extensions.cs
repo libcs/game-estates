@@ -4,6 +4,7 @@ using Gamer.Estate.Tes.Records;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using UnityEngine;
 
 namespace Gamer.Estate.Tes.FilePack
@@ -104,7 +105,7 @@ namespace Gamer.Estate.Tes.FilePack
         internal HashSet<byte[]> _ensureCELLsByLabel;
         internal Dictionary<Vector3Int, CELLRecord> CELLsById;
         internal Dictionary<Vector3Int, LANDRecord> LANDsById;
-
+        
         public RecordGroup EnsureWrldAndCell(Vector3Int cellId)
         {
             var cellBlockX = (short)(cellId.x >> 5);
@@ -113,7 +114,7 @@ namespace Gamer.Estate.Tes.FilePack
             Buffer.BlockCopy(BitConverter.GetBytes(cellBlockY), 0, cellBlockId, 0, 2);
             Buffer.BlockCopy(BitConverter.GetBytes(cellBlockX), 0, cellBlockId, 2, 2);
             Load();
-            return GroupByLabel.TryGetValue(EsmFile.ToLabel(false, cellBlockId), out var cellBlock) ? cellBlock.EnsureCell(cellId) : null;
+            return GroupByLabel.TryGetValue(ToLabel(false, cellBlockId), out var cellBlock) ? cellBlock.EnsureCell(cellId) : null;
         }
 
         //  = nxn[nbits] + 4x4[2bits] + 8x8[3bit]
@@ -140,7 +141,7 @@ namespace Gamer.Estate.Tes.FilePack
                 CELLsById = new Dictionary<Vector3Int, CELLRecord>();
             if (LANDsById == null && cellId.z >= 0)
                 LANDsById = new Dictionary<Vector3Int, LANDRecord>();
-            if (!GroupByLabel.TryGetValue(EsmFile.ToLabel(false, cellSubBlockId), out var cellSubBlocks))
+            if (!GroupByLabel.TryGetValue(ToLabel(false, cellSubBlockId), out var cellSubBlocks))
                 return null;
             // find cell
             var cellSubBlock = cellSubBlocks;
@@ -152,7 +153,7 @@ namespace Gamer.Estate.Tes.FilePack
                 cell.GridId = new Vector3Int(cell.XCLC.Value.GridX, cell.XCLC.Value.GridY, !cell.IsInterior ? cellId.z : -1);
                 CELLsById.Add(cell.GridId, cell);
                 // find children
-                if (cellSubBlock.GroupByLabel.TryGetValue(EsmFile.ToLabel(false, cell.Id), out var cellChildren))
+                if (cellSubBlock.GroupByLabel.TryGetValue(ToLabel(false, cell.Id), out var cellChildren))
                 {
                     var cellChild = cellChildren;
                     if (cellChild.Next != null)

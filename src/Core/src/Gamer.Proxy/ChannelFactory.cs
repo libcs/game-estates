@@ -93,7 +93,7 @@ namespace Gamer.Proxy
                 _asyncRes.Value = res;
                 var dataPack = await _cache.GetOrCreateAsync($"d:{pack}", async x => await estate.DataPackFunc(new Uri(pack), () => _asyncRes.Value));
                 if (val == ".set") dataPack.SinkDataContains();
-                else await dataPack.LoadDataLabelAsync(Encoding.ASCII.GetBytes(val));
+                else await dataPack.LoadDataLabelAsync(val);
                 res.Headers.Add("Content-Type", "text/html");
                 res.Headers.Add("Cache-Control", "no-cache");
                 res.Headers.Add("Connection", "close");

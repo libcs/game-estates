@@ -26,7 +26,7 @@ namespace Gamer.Estate.Tes.FilePack
         public BsaMultiFile(ProxySink proxySink, string[] filePaths)
         {
             _proxySink = proxySink;
-            if (proxySink is ProxySinkClient)
+            if (_proxySink is ProxySinkClient)
                 return;
             var files = (filePaths ?? throw new ArgumentNullException(nameof(filePaths)))
                 .Where(x => Path.GetExtension(x) == ".bsa" || Path.GetExtension(x) == ".ba2");

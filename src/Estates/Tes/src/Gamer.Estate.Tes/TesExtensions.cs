@@ -21,7 +21,7 @@ namespace Gamer.Estate.Tes
         {
             var game = uri.ToTesGame(null, out var proxySink, out var filePaths);
             var pack = await Task.FromResult(new TesDataPack(null, filePaths.Single(), game));
-            pack.ExportDataPack(exportPath);
+            pack.SinkDataContains(exportPath);
         }
     }
 }

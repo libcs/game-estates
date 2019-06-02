@@ -57,7 +57,7 @@ namespace Gamer.Proxy.Server
                 while (_running)
                 {
                     var client = await _server.AcceptTcpClientAsync();
-                    var cancelTokenSource = new CancellationTokenSource(delay ?? TimeSpan.FromSeconds(5)); // todo configuration
+                    var cancelTokenSource = new CancellationTokenSource(delay ?? TimeSpan.FromMinutes(30)); // todo configuration
                     var task = Task.Run(async () => await ProcessClientAsync(client, cancelTokenSource), cancelTokenSource.Token);
                 }
             });

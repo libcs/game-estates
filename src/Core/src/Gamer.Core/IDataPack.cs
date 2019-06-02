@@ -7,8 +7,8 @@ namespace Gamer.Core
 {
     public interface IDataPack : IDisposable
     {
-        void SinkDataContains();
-        Task<byte[]> LoadDataLabelAsync(byte[] label);
+        void SinkDataContains(string path = null);
+        Task<byte[]> LoadDataLabelAsync(string label);
         ICellRecord FindCellRecord(Vector3Int cellId);
     }
 }
