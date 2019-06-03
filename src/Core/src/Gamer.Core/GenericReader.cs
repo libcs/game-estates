@@ -19,6 +19,7 @@ namespace Gamer.Core
         public abstract long Seek(long offset, SeekOrigin origin);
         public abstract void Skip(int count);
 
+        public abstract byte[] ReadAbsoluteBytes(long position, int count);
         public abstract byte[] ReadRestOfBytes();
         public abstract void ReadRestOfBytes(byte[] buffer, int startIndex);
         public abstract string ReadASCIIString(int length, ASCIIFormat format = ASCIIFormat.Raw);
@@ -69,6 +70,14 @@ namespace Gamer.Core
         public override long Seek(long offset, SeekOrigin origin) => BaseStream.Seek(offset, origin);
         public override void Skip(int count) => BaseStream.Position += count;
 
+        public override byte[] ReadAbsoluteBytes(long position, int count)
+        {
+            var last = BaseStream.Position;
+            BaseStream.Position = position;
+            var r = ReadBytes(count);
+            BaseStream.Position = last;
+            return r;
+        }
         public override byte[] ReadRestOfBytes()
         {
             var remainingByteCount = BaseStream.Length - BaseStream.Position;
@@ -94,7 +103,7 @@ namespace Gamer.Core
                 case ASCIIFormat.ZeroPadded:
                     var zeroIdx = bytes.Length - 1; for (; zeroIdx >= 0 && bytes[zeroIdx] == 0; zeroIdx--) { }
                     return Encoding.ASCII.GetString(bytes, 0, zeroIdx + 1);
-                default: throw new ArgumentOutOfRangeException("format", format.ToString());
+                default: throw new ArgumentOutOfRangeException(nameof(format), format.ToString());
             }
         }
         public override string[] ReadASCIIMultiString(int length, int bufSize = 64)

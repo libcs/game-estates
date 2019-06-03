@@ -72,26 +72,28 @@ namespace Gamer.Estate.Tes.FilePack
         }
 
         public override string ToString() => $"{Type}:{GroupType}";
-        public Header Parent;
+        public RecordGroup Group;
         public string Type; // 4 bytes
         public uint DataSize;
         public HeaderFlags Flags;
         public bool Compressed => (Flags & HeaderFlags.Compressed) != 0;
         public uint FormId;
+        public long HeaderPosition;
         public long Position;
         // group
         public string Label;
         public HeaderGroupType GroupType;
 
         public Header() { }
-        public Header(BinaryFileReader r, GameFormat format, Header parent)
+        public Header(RecordGroup group, BinaryFileReader r, GameFormat format)
         {
-            Parent = parent;
+            Group = group;
+            HeaderPosition = r.Position;
             Type = r.ReadASCIIString(4);
             if (Type == "GRUP")
             {
                 DataSize = (uint)(r.ReadUInt32() - (format == GameFormat.TES4 ? 20 : 24));
-                Label = RecordGroup.ToLabel(parent == null, r.ReadBytes(4));
+                Label = RecordGroup.ToLabel(Group.Depth == 0, r.ReadBytes(4));
                 GroupType = (HeaderGroupType)r.ReadInt32();
                 r.ReadUInt32(); // stamp | stamp + uknown
                 if (format != GameFormat.TES4)
@@ -101,7 +103,7 @@ namespace Gamer.Estate.Tes.FilePack
             }
             DataSize = r.ReadUInt32();
             if (format == GameFormat.TES3)
-                r.ReadUInt32(); // Unknown
+                r.ReadUInt32(); // unknown
             Flags = (HeaderFlags)r.ReadUInt32();
             if (format == GameFormat.TES3)
             {
@@ -127,14 +129,26 @@ namespace Gamer.Estate.Tes.FilePack
             if (Type == "GRUP")
             {
                 w.Write(DataSize + (format == GameFormat.TES4 ? 20 : 24));
-                w.Write(RecordGroup.FromLabel(Parent == null, Label), 0, 4);
+                w.Write(RecordGroup.FromLabel(Group.Depth == 0, Label), 0, 4);
                 w.Write((int)GroupType);
                 w.Write(0U); // stamp | stamp + uknown
                 if (format != GameFormat.TES4)
                     w.Write(0U); // version + uknown
                 return;
             }
-            throw new NotImplementedException();
+            w.Write(DataSize);
+            if (format == GameFormat.TES3)
+                w.Write(0U); // unknown
+            w.Write((uint)Flags);
+            if (format == GameFormat.TES3)
+                return;
+            // tes4
+            w.Write(FormId);
+            w.Write(0U);
+            if (format == GameFormat.TES4)
+                return;
+            // tes5
+            w.Write(0U);
         }
 
         struct RecordType
@@ -256,6 +270,7 @@ namespace Gamer.Estate.Tes.FilePack
 
     public partial class RecordGroup
     {
+        const int MaxDepthStreamed = 20;
         public RecordGroup Next;
         public string Label => Headers.First.Value.Label;
         public override string ToString() => Headers.First.Value.ToString();
@@ -267,15 +282,17 @@ namespace Gamer.Estate.Tes.FilePack
         public readonly string FilePath;
         public readonly GameFormat Format;
         public readonly int RecordLevel;
+        public readonly int Depth;
         int _headerSkip;
 
-        public RecordGroup(ProxySink proxySink, BinaryFileReader r, string filePath, GameFormat format, int recordLevel)
+        public RecordGroup(ProxySink proxySink, BinaryFileReader r, string filePath, GameFormat format, int recordLevel, int depth)
         {
             _proxySink = proxySink;
             _r = r;
             FilePath = filePath;
             Format = format;
             RecordLevel = recordLevel;
+            Depth = depth;
         }
 
         public void Close()
@@ -284,29 +301,49 @@ namespace Gamer.Estate.Tes.FilePack
             _r = null;
         }
 
+        public void Clear()
+        {
+            Headers.Clear();
+            Records.Clear();
+            GroupByLabel = new Dictionary<string, RecordGroup>();
+            _r.Position = 0;
+            _headerSkip = 0;
+        }
+
         public void AddHeader(Header header, ProxySink.DataInfo info)
         {
             //Log($"Read: {header.Label}");
             Headers.AddLast(header);
-            if (header.GroupType == Header.HeaderGroupType.Top)
+            if (info == null && header.GroupType == Header.HeaderGroupType.Top)
                 switch (header.Label)
                 {
-                    case "CELL":
                     //case "DIAL":
-                    case "WRLD": Load(info: info); break;
+                    case "CELL":
+                    case "WRLD": Load(); break;
                 }
         }
 
-        public Task<byte[]> LoadDataLabelAsync(string label) => _proxySink.LoadDataLabelAsync(label, () =>
+        public Task<byte[]> LoadDataLabelAsync(string filePath) => _proxySink.LoadDataLabelAsync(filePath, () =>
         {
-            return Task.FromResult(new byte[] { 1, 2, 3 });
+            var labels = FromPath(filePath);
+            var group = Format != GameFormat.TES3 ? labels.Aggregate(this, (a, b) => a.GroupByLabel[b]) : this;
+            var ms = new MemoryStream();
+            var info = new ProxySink.DataInfo { Data = data => ms.Write(data, 0, data.Length) };
+            foreach (var header in group.Headers)
+                ReadGroup(header, false, info);
+            ms.Position = 0;
+            return Task.FromResult(ms.ToArray());
         });
 
         public List<Record> Load(bool loadAll = false, ProxySink.DataInfo info = null)
         {
-            if (_r == null)
-                _r = new BinaryFileReader(new MemoryStream(LoadDataLabelAsync(FilePath).Result()));
             if (_headerSkip == Headers.Count) return Records;
+            if (_r == null && Headers.Count == 1)
+            {
+                var bytes = LoadDataLabelAsync(FilePath ?? ToPath(null)).Result();
+                _r = new BinaryFileReader(new MemoryStream(bytes));
+                Headers.First.Value.DataSize = (uint)bytes.Length;
+            }
             lock (_r ?? throw new InvalidOperationException("Should not reach here"))
             {
                 if (_headerSkip == Headers.Count) return Records;
@@ -320,83 +357,135 @@ namespace Gamer.Estate.Tes.FilePack
         static int _cellsLoaded = 0;
         void ReadGroup(Header parentHeader, bool loadAll, ProxySink.DataInfo info)
         {
-            //if (_r == null)
-            //    _r = new BinaryFileReader(_i)
             _r.Position = parentHeader.Position;
             var endPosition = parentHeader.Position + parentHeader.DataSize;
             while (_r.Position < endPosition)
             {
-                var header = new Header(_r, Format, parentHeader);
+                var header = new Header(this, _r, Format);
+
+                // STREAMING READ
+                if (info != null && (info.Data != null || Format != GameFormat.TES3))
+                {
+                    if (header.Type == "GRUP" && Depth < MaxDepthStreamed)
+                    {
+                        if (info.Data != null)
+                            goto next;
+                        info.EnterGroup();
+                        ReadGRUP(header, loadAll, info);
+                        info.LeaveGroup();
+                        continue;
+                    }
+                    else
+                        info.Data?.Invoke(_r.ReadAbsoluteBytes(header.HeaderPosition, (int)(header.Position - header.HeaderPosition) + (int)header.DataSize));
+                    goto next;
+                }
+
+                // LOCAL READ
                 if (header.Type == "GRUP")
                 {
-                    info?.EnterGroup();
-                    ReadGRUP(parentHeader, header, loadAll, info);
-                    info?.LeaveGroup();
+                    ReadGRUP(header, loadAll, null);
                     continue;
                 }
-                //if (info != null)
-                //{
-                //    var bytes = _r.ReadBytes((int)recordHeader.DataSize);
-                //    info.Data(bytes);
-                //}
                 // HACK to limit cells loading
                 if (header.Type == "CELL" && _cellsLoaded > int.MaxValue)
-                {
-                    _r.Position += header.DataSize;
-                    continue;
-                }
+                    goto next;
                 var record = header.CreateRecord(_r.Position, RecordLevel);
                 if (record == null)
-                {
-                    _r.Position += header.DataSize;
-                    continue;
-                }
+                    goto next;
                 ReadRecord(record, header.Compressed);
                 Records.Add(record);
-                if (header.Type == "CELL") _cellsLoaded++;
+                if (header.Type == "CELL")
+                    _cellsLoaded++;
+                continue;
+
+            // NEXT
+            next:
+                _r.Position += header.DataSize;
             }
         }
 
-        protected RecordGroup ReadGRUP(Header parentHeader, Header header, bool loadAll, ProxySink.DataInfo info)
+        protected RecordGroup ReadTES3(Header header, bool loadAll, ProxySink.DataInfo info)
         {
+            using (var ms = new MemoryStream())
+            using (var w = new BinaryFileWriter(ms))
+            {
+                header.Write(w, Format);
+                ms.Position = 0;
+                var headerBytes = ms.ToArray();
+                info?.AddGroup(header.Label, headerBytes);
+            }
+            //var group = new RecordGroup(_proxySink, _r, FilePath, Format, RecordLevel, Depth + 1);
+            AddHeader(header, info);
+            if (loadAll || info != null)
+                Load(loadAll, info);
+            ReadTES3Transform(this, info);
+            return this;
+        }
+
+        void ReadTES3Transform(RecordGroup group, ProxySink.DataInfo info) => GroupByLabel = group.Records.GroupBy(x => x.Header.Type)
+            .ToDictionary(x => x.Key, x =>
+            {
+                var s = new RecordGroup(_proxySink, _r, FilePath, Format, RecordLevel, Depth + 1) { Records = x.ToList() };
+                s.AddHeader(new Header { Label = x.Key }, info);
+                return s;
+            });
+
+        protected RecordGroup ReadGRUP(Header header, bool loadAll, ProxySink.DataInfo info)
+        {
+            var headerBytes = _r.ReadAbsoluteBytes(header.HeaderPosition, (int)(header.Position - header.HeaderPosition));
             var nextPosition = _r.Position + header.DataSize;
             var label = header.Label;
-            var headerData = new byte[0];
-            info?.AddGroup(label, header.Position, headerData);
+            info?.AddGroup(label, headerBytes);
             if (GroupByLabel == null)
                 GroupByLabel = new Dictionary<string, RecordGroup>();
             if (!GroupByLabel.TryGetValue(label, out var group))
-                GroupByLabel.Add(label, group = new RecordGroup(_proxySink, _r, FilePath, Format, RecordLevel));
-            else group = new RecordGroup(_proxySink, _r, FilePath, Format, RecordLevel) { Next = group };
+                GroupByLabel.Add(label, group = new RecordGroup(_proxySink, _r, FilePath, Format, RecordLevel, Depth + 1));
+            else group = new RecordGroup(_proxySink, _r, FilePath, Format, RecordLevel, Depth + 1) { Next = group };
             group.AddHeader(header, info);
             _r.Position = nextPosition;
-            // print header path
-            //Log($"Grup: {string.Join("/", GetHeaderPath(new List<string>(), parentHeader).ToArray())} {parentHeader.GroupType}");
-            if (loadAll || info?.Level <= int.MaxValue)
+            if (loadAll || info != null)
                 group.Load(loadAll, info);
+            //Log($"Grup: {string.Join("/", GetHeaderPath(new List<string>(), parentHeader).ToArray())} {parentHeader.GroupType}");
             return group;
         }
 
-        protected RecordGroup ReadGRUP(ProxySink.DataInfo info)
+        protected RecordGroup ReadGRUP(ProxySink.DataInfo info, string path)
         {
             var stack = new Stack<RecordGroup>();
-            RecordGroup group = this;
-            var groupByLabel = group.GroupByLabel = new Dictionary<string, RecordGroup>();
+            if (GroupByLabel == null)
+                GroupByLabel = new Dictionary<string, RecordGroup>();
+            var groupByLabel = GroupByLabel;
             var r = new BinaryFileReader(new MemoryStream());
+            var depth = 0;
+            RecordGroup group = this;
             info.Decoder(
-                group: (label, position, headerData) =>
+                group: (label, headerData) =>
                 {
-                    if (!groupByLabel.TryGetValue(label, out group))
-                        groupByLabel.Add(label, group = new RecordGroup(_proxySink, null, FilePath, Format, RecordLevel));
-                    else group = new RecordGroup(_proxySink, null, FilePath, Format, 0) { Next = group };
-                    r.Position = 0;
-                    r.BaseStream.Write(headerData, 0, headerData.Length);
-                    group.AddHeader(new Header(r, Format, null), null);
+                    var filePath = ToPath(stack.Reverse().Select(x => x.Label).Concat(new[] { label }).ToArray());
+                    // write data
+                    if (path != null)
+                    {
+                        var bytes = LoadDataLabelAsync(filePath).Result();
+                        File.WriteAllBytes(Path.Combine(path, filePath), bytes);
+                        return;
+                    }
+                    if (Format != GameFormat.TES3)
+                        if (!groupByLabel.TryGetValue(label, out group))
+                            groupByLabel.Add(label, group = new RecordGroup(_proxySink, null, filePath, Format, RecordLevel, depth));
+                        else group = new RecordGroup(_proxySink, null, filePath, Format, RecordLevel, depth) { Next = group };
+                    r.Position = 0; r.BaseStream.Write(headerData, 0, headerData.Length); r.Position = 0;
+                    var header = new Header(group, r, Format) { DataSize = 0, Position = 0 };
+                    group.AddHeader(header, null);
                 },
-                enterGroup: () => { stack.Push(group); groupByLabel = group.GroupByLabel = new Dictionary<string, RecordGroup>(); },
-                leaveGroup: () => { group = stack.Pop(); groupByLabel = group.GroupByLabel; }
+                enterGroup: () => { stack.Push(group); if (path == null) groupByLabel = group.GroupByLabel = new Dictionary<string, RecordGroup>(); depth++; },
+                leaveGroup: () => { group = stack.Pop(); if (path == null) groupByLabel = group.GroupByLabel; depth--; }
             );
-            return group;
+            if (Format == GameFormat.TES3)
+            {
+                group.Load(true, info);
+                ReadTES3Transform(group, info);
+            }
+            return this;
         }
 
         void ReadRecord(Record record, bool compressed)
@@ -424,6 +513,8 @@ namespace Gamer.Estate.Tes.FilePack
         internal static string ToLabel(bool top, byte[] label) => top ? Encoding.ASCII.GetString(label) : Utils.ToB64String(label);
         internal static string ToLabel(bool top, uint label) => ToLabel(top, BitConverter.GetBytes(label));
         internal static byte[] FromLabel(bool top, string label) => top ? Encoding.ASCII.GetBytes(label) : Utils.FromB64String(label);
+        internal static string ToPath(string[] labels) => labels != null ? string.Join(".", labels.Select(x => x.Length != 0 ? x : "0")) + ".dat" : "0.dat";
+        internal static string[] FromPath(string path) => path != null ? Path.GetFileNameWithoutExtension(path).Split('.').Select(x => x != "0" ? x : string.Empty).ToArray() : new[] { "0" };
 
         internal static GameFormat ToFormat(TesGame game)
         {

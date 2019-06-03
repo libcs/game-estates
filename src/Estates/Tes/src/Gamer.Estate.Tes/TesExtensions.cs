@@ -16,12 +16,5 @@ namespace Gamer.Estate.Tes
             var game = uri.ToTesGame(func, out var proxySink, out var filePaths);
             return Task.FromResult((IDataPack)new TesDataPack(proxySink, filePaths.Single(), game));
         }
-
-        public static async Task ExportTesDataPackAsync(this Uri uri, string exportPath)
-        {
-            var game = uri.ToTesGame(null, out var proxySink, out var filePaths);
-            var pack = await Task.FromResult(new TesDataPack(null, filePaths.Single(), game));
-            pack.SinkDataContains(exportPath);
-        }
     }
 }

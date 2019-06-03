@@ -34,8 +34,9 @@ namespace Gamer.Proxy
         {
             if (nvc == null)
                 nvc = new NameValueCollection { { "p", _platform } }; //, { "t", DateTime.Now.Ticks.ToString() } };
-            //Log($"query: {ToPathAndQueryString(path, nvc)}");
-            var r = await _hc.GetAsync(ToPathAndQueryString(path, nvc)).ConfigureAwait(false);
+            var requestUri = ToPathAndQueryString(path, nvc);
+            //Log($"query: {requestUri}");
+            var r = await _hc.GetAsync(requestUri).ConfigureAwait(false);
             if (!r.IsSuccessStatusCode)
                 throw new InvalidOperationException(r.ReasonPhrase);
             var data = await r.Content.ReadAsByteArrayAsync();
@@ -52,8 +53,10 @@ namespace Gamer.Proxy
 
         // DATA
         public override byte[] GetDataContains(Func<byte[]> action) =>
-             _cache.GetOrCreate("d/.set", x => CallAsync<byte[]>((string)x.Key).Result());
-        public override async Task<byte[]> LoadDataLabelAsync(string label, Func<Task<byte[]>> action) =>
-            await _cache.GetOrCreateAsync($"d/{label}.dat", async x => await CallAsync<byte[]>((string)x.Key));
+            //_cache.GetOrCreate("d/.set", x => CallAsync<byte[]>((string)x.Key).Result());
+            CallAsync<byte[]>("d/.set").Result();
+        public override async Task<byte[]> LoadDataLabelAsync(string filePath, Func<Task<byte[]>> action) =>
+            //await _cache.GetOrCreateAsync($"d/{filePath}", async x => await CallAsync<byte[]>((string)x.Key));
+            await CallAsync<byte[]>($"d/{filePath}");
     }
 }

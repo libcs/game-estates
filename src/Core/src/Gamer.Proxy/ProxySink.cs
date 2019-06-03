@@ -3,12 +3,11 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
-using System.Linq;
 using System.Web;
-using Gamer.Core.Records;
 
 namespace Gamer.Proxy
 {
@@ -29,29 +28,35 @@ namespace Gamer.Proxy
         public class DataInfo
         {
             enum Record : byte { Group, EnterGroup, LeaveGroup };
-            //public string Path;
-            public int Level;
             readonly MemoryStream _s;
             readonly BinaryReader _r;
             readonly BinaryWriter _w;
 
             public DataInfo() { _s = new MemoryStream(); _w = new BinaryWriter(_s); }
-            public DataInfo(byte[] data) { _s = new MemoryStream(data); _r = new BinaryReader(_s); }
+            public DataInfo(byte[] bytes) { _s = new MemoryStream(bytes); _r = new BinaryReader(_s); }
 
-            public void AddGroup(string label, long position, byte[] headerData) { _w.Write((byte)Record.Group); _w.Write(label.Length); if (label.Length != 0) _w.Write(label); _w.Write(position); }
+            public void AddGroup(string label, byte[] headerBytes)
+            {
+                _w.Write((byte)Record.Group);
+                _w.Write(label.Length); if (label.Length != 0) _w.Write(label);
+                _w.Write(headerBytes.Length); if (headerBytes.Length != 0) _w.Write(headerBytes);
+            }
             public void EnterGroup() => _w.Write((byte)Record.EnterGroup);
             public void LeaveGroup() => _w.Write((byte)Record.LeaveGroup);
 
-            //public void Data(byte[] bytes) { }
+            public Action<byte[]> Data { get; set; }
 
-            public void Decoder(Action<string, long, byte[]> group = null, Action enterGroup = null, Action leaveGroup = null)
+            public void Decoder(Action<string, byte[]> group = null, Action enterGroup = null, Action leaveGroup = null)
             {
                 int length;
                 var endPosition = _r.BaseStream.Length;
                 while (_r.BaseStream.Position != endPosition)
                     switch ((Record)_r.ReadByte())
                     {
-                        case Record.Group: group((length = _r.ReadInt32()) != 0 ? _r.ReadString() : string.Empty, _r.ReadInt64(), null); break;
+                        case Record.Group:
+                            group(
+                                (length = _r.ReadInt32()) != 0 ? _r.ReadString() : string.Empty,
+                                (length = _r.ReadInt32()) != 0 ? _r.ReadBytes(length) : null); break;
                         case Record.EnterGroup: enterGroup(); break;
                         case Record.LeaveGroup: leaveGroup(); break;
                         default: throw new ArgumentOutOfRangeException(nameof(_r));
@@ -90,12 +95,12 @@ namespace Gamer.Proxy
         public void OpenSse(Uri address) => _wc.OpenReadAsync(address);
 
         // ASSET
-        public virtual HashSet<string> GetContainsSet(Func<HashSet<string>> action) => throw new NotSupportedException();
+        public virtual HashSet<string> GetContainsSet(Func<HashSet<string>> action) => action();
         public virtual bool ContainsFile(string filePath, Func<bool> action) => action();
         public virtual Task<byte[]> LoadFileDataAsync(string filePath, Func<Task<byte[]>> action) => action();
 
         // DATA
-        public virtual byte[] GetDataContains(Func<byte[]> action) => throw new NotSupportedException();
-        public virtual Task<byte[]> LoadDataLabelAsync(string label, Func<Task<byte[]>> action) => throw new NotSupportedException();
+        public virtual byte[] GetDataContains(Func<byte[]> action) => action();
+        public virtual Task<byte[]> LoadDataLabelAsync(string filePath, Func<Task<byte[]>> action) => action();
     }
 }

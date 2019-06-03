@@ -30,7 +30,7 @@ namespace Gamer.Proxy
             var res = (HttpResponse)_func();
             var r = action(); res.ContentBytes = ProxyUtils.ToBytes(true, r); return r;
         }
-        public async override Task<byte[]> LoadDataLabelAsync(string label, Func<Task<byte[]>> action)
+        public async override Task<byte[]> LoadDataLabelAsync(string filePath, Func<Task<byte[]>> action)
         {
             var res = (HttpResponse)_func();
             var r = await action(); res.ContentBytes = ProxyUtils.ToBytes(true, r); return r;

@@ -114,7 +114,7 @@ namespace Gamer.Estate.Tes.FilePack
             if (filePath == null)
                 return;
             FilePath = filePath;
-            _r = new BinaryFileReader(File.Open(filePath, FileMode.Open, FileAccess.Read));
+            _r = new BinaryFileReader(File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.Read));
             ReadMetadata();
         }
 

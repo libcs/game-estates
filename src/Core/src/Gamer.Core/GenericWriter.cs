@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Net;
 using System.Text;
+using static Gamer.Core.Debug;
 
 namespace Gamer.Core
 {
@@ -162,7 +163,20 @@ namespace Gamer.Core
             Write(value.End);
         }
 
-        public override void WriteASCIIString(string value, int length, ASCIIFormat format = ASCIIFormat.Raw) => throw new NotImplementedException();
+        public override void WriteASCIIString(string value, int length, ASCIIFormat format = ASCIIFormat.Raw)
+        {
+            Assert(length >= 0);
+            byte[] bytes;
+            switch (format)
+            {
+                case ASCIIFormat.Raw: bytes = Encoding.ASCII.GetBytes(value); Array.Resize(ref bytes, length); Write(bytes, 0, bytes.Length); break;
+                case ASCIIFormat.PossiblyNullTerminated: bytes = Encoding.ASCII.GetBytes(value); Array.Resize(ref bytes, length); Write(bytes, 0, bytes.Length); break;
+                //case ASCIIFormat.ZeroPadded:
+                //    var zeroIdx = bytes.Length - 1; for (; zeroIdx >= 0 && bytes[zeroIdx] == 0; zeroIdx--) { }
+                //    return Encoding.ASCII.GetString(bytes, 0, zeroIdx + 1);
+                default: throw new ArgumentOutOfRangeException(nameof(format), format.ToString());
+            }
+        }
         public override void WriteASCIIMultiString(string[] value, int length, int bufSize = 64) => throw new NotImplementedException();
         public override void WriteT<T>(T value, int length) => throw new NotImplementedException();
         public override void WriteTArray<T>(T[] value, int length, int count) => throw new NotImplementedException();

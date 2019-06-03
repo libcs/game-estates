@@ -1,7 +1,6 @@
 //#define LONGTEST
 using Gamer.Estate.Tes.Records;
 using Gamer.Format.Nif;
-using Gamer.Proxy;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -63,17 +62,6 @@ namespace Gamer.Estate.Tes.Tests
         }
 
         [Theory]
-        [InlineData("game:/Morrowind.esm#Morrowind", @"C:\T_\Split1")]
-        [InlineData("game:/Oblivion.esm#Oblivion", @"C:\T_\Split2")]
-        //[InlineData("game:/Skyrim.esm#SkyrimVR", @"C:\T_\Split3")]
-        //[InlineData("game:/Fallout4.esm#Fallout4VR", @"C:\T_\Split3")]
-        public async Task SplitDataPack(string path, string exportPath)
-        {
-            await new Uri(path).ExportTesDataPackAsync(exportPath);
-        }
-
-
-        [Theory]
 #if LONGTEST
         [InlineData("game:/Morrowind.esm#Morrowind")]
         [InlineData("game:/Bloodmoon.esm#Morrowind")]
@@ -83,10 +71,10 @@ namespace Gamer.Estate.Tes.Tests
         [InlineData("game:/Fallout4.esm#Fallout4")]
         [InlineData("game:/Fallout4.esm#Fallout4VR")]
 #else
-        [InlineData("game:/Oblivion.esm#Oblivion")]
+        //[InlineData("game:/Oblivion.esm#Oblivion")]
         //[InlineData("game:/Morrowind.esm#Morrowind")]
         //[InlineData("file:///C:/Program%20Files%20(x86)/Steam/steamapps/common/Morrowind/Data%20Files/Morrowind.esm#Morrowind")]
-        //[InlineData("http://192.168.1.3/ASSETS/Morrowind/Morrowind.esm#Morrowind")]
+        [InlineData("http://192.168.1.3/ASSETS/Morrowind/Morrowind.esm#Morrowind")]
 #endif
         public async Task LoadDataPack(string path)
         {

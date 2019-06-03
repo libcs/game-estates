@@ -48,8 +48,8 @@ namespace Gamer.Estate.Tes.Tests
 
         [Theory]
         //[InlineData("game:/Morrowind.esm#Morrowind", -137.94f, 2.30f, -1037.6f, 0)]
-        //[InlineData("game://localhost:{0}/Morrowind.esm#Morrowind", -137.94f, 2.30f, -1037.6f, 0)]
-        [InlineData("game://localhost:{0}/Oblivion.esm#Oblivion", -137.94f, 2.30f, -1037.6f, 0)]
+        [InlineData("game://localhost:{0}/Morrowind.esm#Morrowind", -137.94f, 2.30f, -1037.6f, 0)]
+        //[InlineData("game://localhost:{0}/Oblivion.esm#Oblivion", -137.94f, 2.30f, -1037.6f, 0)]
         public async Task LoadDataPack(string path, float x, float y, float z, int world)
         {
             // given
@@ -62,6 +62,17 @@ namespace Gamer.Estate.Tes.Tests
                 // then
                 Assert.NotNull(cell0);
             }
+        }
+
+        [Theory]
+        [InlineData("game:/Morrowind.esm#Morrowind", @"C:\T_\Split1")]
+        //[InlineData("game:/Oblivion.esm#Oblivion", @"C:\T_\Split2")]
+        //[InlineData("game:/Skyrim.esm#SkyrimVR", @"C:\T_\Split3")]
+        //[InlineData("game:/Fallout4.esm#Fallout4VR", @"C:\T_\Split3")]
+        public async Task SplitDataPack(string path, string exportPath)
+        {
+            var dataPack = await new Uri(path).GetTesDataPackAsync();
+            dataPack.SinkDataContains(exportPath);
         }
     }
 }

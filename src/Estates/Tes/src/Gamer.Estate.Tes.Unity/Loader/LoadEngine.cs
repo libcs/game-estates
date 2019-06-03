@@ -14,6 +14,7 @@ namespace Gamer.Estate.Tes.Loader
         public static void Start()
         {
             //var assetUri = new Uri("http://192.168.1.3/ASSETS/Morrowind/Morrowind.bsa#Morrowind");
+            //var dataUri = new Uri("http://192.168.1.3/ASSETS/Morrowind/Morrowind.esm#Morrowind");
 
             var assetUri = new Uri("game:/Morrowind.bsa#Morrowind");
             var dataUri = new Uri("game:/Morrowind.esm#Morrowind");
