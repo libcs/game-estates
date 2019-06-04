@@ -69,7 +69,7 @@ namespace Gamer.Proxy
                     var lines = Encoding.ASCII.GetString(data)?.Split('\n');
                     if (lines?.Length >= 0)
                     {
-                        var startIndex = Path.GetDirectoryName(lines[0].TrimEnd()).Length + 1;
+                        var startIndex = Path.GetDirectoryName(lines[0].TrimEnd().Replace('\\', '/')).Length + 1;
                         foreach (var line in lines)
                             if (line.Length >= startIndex)
                                 d.Add(line.Substring(startIndex).TrimEnd().Replace('\\', '/'));

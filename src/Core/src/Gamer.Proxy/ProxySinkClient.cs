@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Gamer.Proxy
@@ -35,7 +34,7 @@ namespace Gamer.Proxy
             if (nvc == null)
                 nvc = new NameValueCollection { { "p", _platform } }; //, { "t", DateTime.Now.Ticks.ToString() } };
             var requestUri = ToPathAndQueryString(path, nvc);
-            //Log($"query: {requestUri}");
+            //Core.Debug.Log($"query: {requestUri}");
             var r = await _hc.GetAsync(requestUri).ConfigureAwait(false);
             if (!r.IsSuccessStatusCode)
                 throw new InvalidOperationException(r.ReasonPhrase);

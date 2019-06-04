@@ -29,7 +29,7 @@ namespace Gamer.Core
                 throw new ArgumentNullException(nameof(handler));
             AssetPack = assetPack ?? throw new ArgumentNullException(nameof(assetPack));
             DataPack = dataPack ?? throw new ArgumentNullException(nameof(dataPack));
-            CellManager = handler.CellManagerFunc(LoadBalancer, assetPack, dataPack, null);
+            CellManager = handler.CellManagerFunc(LoadBalancer, assetPack, dataPack, null) ?? throw new ArgumentNullException(nameof(handler.CellManagerFunc));
 
             // ambient
             RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Flat;

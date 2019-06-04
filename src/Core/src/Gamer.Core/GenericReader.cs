@@ -4,6 +4,7 @@ using System.IO;
 using System.Net;
 using System.Runtime.InteropServices;
 using System.Text;
+using Unity.Collections.LowLevel.Unsafe;
 using UnityEngine;
 using static Gamer.Core.Debug;
 
@@ -58,8 +59,8 @@ namespace Gamer.Core
 
     public class BinaryFileReader : GenericReader
     {
-        [DllImport("msvcrt.dll", EntryPoint = "memcpy", CallingConvention = CallingConvention.Cdecl, SetLastError = false)]
-        static extern IntPtr memcpy(IntPtr dest, IntPtr src, UIntPtr count);
+        //[DllImport("msvcrt.dll", EntryPoint = "memcpy", CallingConvention = CallingConvention.Cdecl, SetLastError = false)]
+        //static extern IntPtr memcpy(IntPtr dest, IntPtr src, UIntPtr count);
 
         public BinaryFileReader(Stream input) : base(input) { }
         public override long Position
@@ -142,15 +143,28 @@ namespace Gamer.Core
         public override unsafe T[] ReadTArray<T>(int length, int count)
         {
             var bytes = ReadBytes(length);
-            fixed (byte* src = bytes)
+            fixed (byte* pbytes = bytes)
             {
                 var r = new T[count];
                 var dstHandle = GCHandle.Alloc(r, GCHandleType.Pinned);
-                memcpy(dstHandle.AddrOfPinnedObject(), new IntPtr(src), new UIntPtr((uint)bytes.Length));
+                UnsafeUtility.MemCmp((void*)dstHandle.AddrOfPinnedObject(), pbytes, bytes.Length);
+                //memcpy(dstHandle.AddrOfPinnedObject(), new IntPtr(pbytes), new UIntPtr((uint)bytes.Length));
                 dstHandle.Free();
                 return r;
             }
         }
+        //public override unsafe T[] ReadTArray<T>(int length, int count)
+        //{
+        //    var bytes = ReadBytes(length);
+        //    fixed (byte* src = bytes)
+        //    {
+        //        var r = new T[count];
+        //        var dstHandle = GCHandle.Alloc(r, GCHandleType.Pinned);
+        //        memcpy(dstHandle.AddrOfPinnedObject(), new IntPtr(src), new UIntPtr((uint)bytes.Length));
+        //        dstHandle.Free();
+        //        return r;
+        //    }
+        //}
 
         //
 

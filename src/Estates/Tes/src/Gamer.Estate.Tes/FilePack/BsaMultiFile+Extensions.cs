@@ -14,7 +14,7 @@ namespace Gamer.Estate.Tes.FilePack
         {
             var filePath = FindTexture(texturePath);
             return filePath == null
-                ? null
+                ? Task.FromResult<Texture2DInfo>(null)
                 : Task.Run(async () =>
                 {
                     var fileData = await LoadFileDataAsync(filePath);

@@ -11,16 +11,16 @@ namespace Gamer.Core
 {
     public static class CoreExtensions
     {
-        public static TResult Result<TResult>(this Task<TResult> task) => task.GetAwaiter().GetResult();
-        public static TResult ResultPool<TResult>(this Task<TResult> task) => task.ConfigureAwait(false).GetAwaiter().GetResult();
+        public static TResult Result<TResult>(this Task<TResult> task) => (task ?? throw new ArgumentNullException(nameof(task))).GetAwaiter().GetResult();
+        //public static TResult ResultPool<TResult>(this Task<TResult> task) => task.ConfigureAwait(false).GetAwaiter().GetResult();
 
 #if WINDOWS
         [DllImport("Kernel32")]
         unsafe static extern int _lread(SafeFileHandle hFile, void* lpBuffer, int wBytes);
-        public static unsafe void ReadBuffer(this FileStream stream, byte[] buffer, int length)
+        public static unsafe void ReadBuffer(this FileStream stream, byte[] buf, int length)
         {
-            fixed (byte* ptrBuffer = buffer)
-                _lread(stream.SafeFileHandle, ptrBuffer, length);
+            fixed (byte* pbuf = buf)
+                _lread(stream.SafeFileHandle, pbuf, length);
         }
 #else
         public static void ReadBuffer(this FileStream stream, byte[] buffer, int length) => stream.Read(buffer, 0, length);

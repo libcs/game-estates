@@ -340,7 +340,7 @@ namespace Gamer.Estate.Tes.FilePack
             if (_headerSkip == Headers.Count) return Records;
             if (_r == null && Headers.Count == 1)
             {
-                var bytes = LoadDataLabelAsync(FilePath ?? ToPath(null)).Result();
+                var bytes = Task.Run(async () => await LoadDataLabelAsync(FilePath ?? ToPath(null))).Result();
                 _r = new BinaryFileReader(new MemoryStream(bytes));
                 Headers.First.Value.DataSize = (uint)bytes.Length;
             }
