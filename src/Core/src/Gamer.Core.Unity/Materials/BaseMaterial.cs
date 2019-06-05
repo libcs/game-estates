@@ -22,6 +22,7 @@ namespace Gamer.Core.Materials
 
         public abstract Material BuildMaterialFromProperties(MaterialProps mp);
         public abstract Material BuildMaterial();
+        public abstract Material BuildMaterialTerrain();
         public abstract Material BuildMaterialBlended(BlendMode sourceBlendMode, BlendMode destinationBlendMode);
         public abstract Material BuildMaterialTested(float cutoff = 0.5f);
 

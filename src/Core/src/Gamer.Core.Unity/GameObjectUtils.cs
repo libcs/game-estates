@@ -41,7 +41,6 @@ namespace Gamer.Core
         public static TerrainData CreateTerrainData(int offset, float[,] heightPercents, float maxHeight, float heightSampleDistance, TerrainLayer[] terrainLayers, float[,,] alphaMap)
         {
             Assert(heightPercents.GetLength(0) == heightPercents.GetLength(1) && maxHeight >= 0 && heightSampleDistance >= 0);
-
             // Create the TerrainData.
             var heightmapResolution = heightPercents.GetLength(0);
             var terrainData = new TerrainData
@@ -57,7 +56,6 @@ namespace Gamer.Core
                 terrainData.SetHeights(0, 0, heightPercents);
             }
             else terrainData.size = new Vector3(terrainWidth, 1, terrainWidth);
-
             terrainData.terrainLayers = terrainLayers;
             if (alphaMap != null)
             {
@@ -78,17 +76,19 @@ namespace Gamer.Core
         /// <param name="alphaMap">Texture blending information.</param>
         /// <param name="position">The position of the terrain.</param>
         /// <returns>A terrain GameObject.</returns>
-        public static GameObject CreateTerrain(int offset, float[,] heightPercents, float maxHeight, float heightSampleDistance, TerrainLayer[] terrainLayers, float[,,] alphaMap, Vector3 position)
+        public static GameObject CreateTerrain(int offset, float[,] heightPercents, float maxHeight, float heightSampleDistance, TerrainLayer[] terrainLayers, float[,,] alphaMap, Vector3 position, Material materialTemplate)
         {
             var terrainData = CreateTerrainData(offset, heightPercents, maxHeight, heightSampleDistance, terrainLayers, alphaMap);
-            return CreateTerrainFromTerrainData(terrainData, position);
+            return CreateTerrainFromTerrainData(terrainData, position, materialTemplate);
         }
 
-        public static GameObject CreateTerrainFromTerrainData(TerrainData terrainData, Vector3 position)
+        public static GameObject CreateTerrainFromTerrainData(TerrainData terrainData, Vector3 position, Material materialTemplate)
         {
             // Create the terrain game object.
             var terrainObject = new GameObject("terrain") { isStatic = true };
             var terrain = terrainObject.AddComponent<Terrain>();
+            if (materialTemplate != null)
+                terrain.materialTemplate = materialTemplate;
             terrain.terrainData = terrainData;
             terrainObject.AddComponent<TerrainCollider>().terrainData = terrainData;
             terrainObject.transform.position = position;

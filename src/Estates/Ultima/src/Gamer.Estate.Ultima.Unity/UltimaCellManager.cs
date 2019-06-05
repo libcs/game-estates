@@ -430,7 +430,7 @@ namespace Gamer.Estate.Ultima
             var heightRange = maxHeight - minHeight;
             var terrainPosition = new Vector3(ConvertUtils.ExteriorCellSideLengthInMeters * land.GridId.x, minHeight / ConvertUtils.MeterInUnits, ConvertUtils.ExteriorCellSideLengthInMeters * land.GridId.y);
             var heightSampleDistance = ConvertUtils.ExteriorCellSideLengthInMeters / LAND_SIDELENGTH;
-            var terrain = GameObjectUtils.CreateTerrain(0, heights, heightRange / ConvertUtils.MeterInUnits, heightSampleDistance, terrainLayers, alphaMap, terrainPosition);
+            var terrain = GameObjectUtils.CreateTerrain(0, heights, heightRange / ConvertUtils.MeterInUnits, heightSampleDistance, terrainLayers, alphaMap, terrainPosition, null);
             terrain.GetComponent<Terrain>().materialType = Terrain.MaterialType.BuiltInLegacyDiffuse;
             terrain.transform.parent = parent.transform;
             terrain.isStatic = true;

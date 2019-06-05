@@ -32,6 +32,8 @@ namespace Gamer.Core.Materials
 
         public override Material BuildMaterial() => new Material(Shader.Find("Legacy Shaders/Bumped Diffuse"));
 
+        public override Material BuildMaterialTerrain() => new Material(Shader.Find("Nature/Terrain/Diffuse"));
+
         public override Material BuildMaterialBlended(ur.BlendMode sourceBlendMode, ur.BlendMode destinationBlendMode)
         {
             var material = new Material(Shader.Find("Legacy Shaders/Transparent/Cutout/Bumped Diffuse"));

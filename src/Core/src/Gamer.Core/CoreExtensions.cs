@@ -1,9 +1,5 @@
-﻿#define WINDOWS
-using Microsoft.Win32.SafeHandles;
-using System;
+﻿using System;
 using System.Globalization;
-using System.IO;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -13,18 +9,6 @@ namespace Gamer.Core
     {
         public static TResult Result<TResult>(this Task<TResult> task) => (task ?? throw new ArgumentNullException(nameof(task))).GetAwaiter().GetResult();
         //public static TResult ResultPool<TResult>(this Task<TResult> task) => task.ConfigureAwait(false).GetAwaiter().GetResult();
-
-#if WINDOWS
-        [DllImport("Kernel32")]
-        unsafe static extern int _lread(SafeFileHandle hFile, void* lpBuffer, int wBytes);
-        public static unsafe void ReadBuffer(this FileStream stream, byte[] buf, int length)
-        {
-            fixed (byte* pbuf = buf)
-                _lread(stream.SafeFileHandle, pbuf, length);
-        }
-#else
-        public static void ReadBuffer(this FileStream stream, byte[] buffer, int length) => stream.Read(buffer, 0, length);
-#endif
 
         /// <summary>
         /// Ensures the ends with.

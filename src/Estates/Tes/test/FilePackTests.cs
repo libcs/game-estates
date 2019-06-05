@@ -72,9 +72,9 @@ namespace Gamer.Estate.Tes.Tests
         [InlineData("game:/Fallout4.esm#Fallout4VR")]
 #else
         //[InlineData("game:/Oblivion.esm#Oblivion")]
-        //[InlineData("game:/Morrowind.esm#Morrowind")]
+        [InlineData("game:/Morrowind.esm#Morrowind")]
         //[InlineData("file:///C:/Program%20Files%20(x86)/Steam/steamapps/common/Morrowind/Data%20Files/Morrowind.esm#Morrowind")]
-        [InlineData("http://192.168.1.3/ASSETS/Morrowind/Morrowind.esm#Morrowind")]
+        //[InlineData("http://192.168.1.3/ASSETS/Morrowind/Morrowind.esm#Morrowind")]
 #endif
         public async Task LoadDataPack(string path)
         {

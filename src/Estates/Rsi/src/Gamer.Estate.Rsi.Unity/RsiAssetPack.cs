@@ -19,12 +19,10 @@ namespace Gamer.Estate.Rsi
             _cryManager = null;
         }
 
+        public MaterialManager MaterialManager => _materialManager;
         public Texture2D LoadTexture(string texturePath, int method = 0) => _textureManager.LoadTexture(texturePath, method);
-
         public void PreloadTextureTask(string texturePath) => _textureManager.PreloadTextureTask(texturePath);
-
         public GameObject CreateObject(string filePath) => _cryManager.InstantiateObj(filePath);
-
         public void PreloadObjectTask(string filePath) => _cryManager.PreloadObjectTask(filePath);
     }
 }

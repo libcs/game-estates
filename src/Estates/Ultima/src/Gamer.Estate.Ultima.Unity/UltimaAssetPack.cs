@@ -19,6 +19,7 @@ namespace Gamer.Estate.Ultima
             _staManager = new SifManager(this, _materialManager);
         }
 
+        public MaterialManager MaterialManager => _materialManager;
         public Texture2D LoadTexture(string texturePath, int method = 0) => _textureManager.LoadTexture(texturePath, method);
         public void PreloadTextureTask(string texturePath) => _textureManager.PreloadTextureTask(texturePath);
         public GameObject CreateObject(string filePath) => _staManager.CreateObject(filePath);

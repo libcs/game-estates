@@ -55,6 +55,8 @@ namespace Gamer.Core.Materials
             return material;
         }
 
+        public override Material BuildMaterialTerrain() => new Material(Shader.Find("Nature/Terrain/Diffuse"));
+
         public override Material BuildMaterialBlended(ur.BlendMode sourceBlendMode, ur.BlendMode destinationBlendMode)
         {
             var material = BuildMaterialTested();

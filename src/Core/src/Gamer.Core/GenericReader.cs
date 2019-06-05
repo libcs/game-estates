@@ -59,9 +59,6 @@ namespace Gamer.Core
 
     public class BinaryFileReader : GenericReader
     {
-        //[DllImport("msvcrt.dll", EntryPoint = "memcpy", CallingConvention = CallingConvention.Cdecl, SetLastError = false)]
-        //static extern IntPtr memcpy(IntPtr dest, IntPtr src, UIntPtr count);
-
         public BinaryFileReader(Stream input) : base(input) { }
         public override long Position
         {
@@ -120,51 +117,8 @@ namespace Gamer.Core
             }
             return list.ToArray();
         }
-        public override unsafe T ReadT<T>(int length)
-        {
-            var size = Marshal.SizeOf(typeof(T));
-            var bytes = ReadBytes(length);
-            if (size > length)
-                Array.Resize(ref bytes, size);
-            fixed (byte* src = bytes)
-            {
-                var r = (T)Marshal.PtrToStructure(new IntPtr(src), typeof(T));
-                return r;
-            }
-            //fixed (byte* src = bytes)
-            //{
-            //    var r = default(T);
-            //    var dstHandle = GCHandle.Alloc(r, GCHandleType.Pinned);
-            //    memcpy(dstHandle.AddrOfPinnedObject(), new IntPtr(src), new UIntPtr((uint)bytes.Length));
-            //    dstHandle.Free();
-            //    return r;
-            //}
-        }
-        public override unsafe T[] ReadTArray<T>(int length, int count)
-        {
-            var bytes = ReadBytes(length);
-            fixed (byte* pbytes = bytes)
-            {
-                var r = new T[count];
-                var dstHandle = GCHandle.Alloc(r, GCHandleType.Pinned);
-                UnsafeUtility.MemCmp((void*)dstHandle.AddrOfPinnedObject(), pbytes, bytes.Length);
-                //memcpy(dstHandle.AddrOfPinnedObject(), new IntPtr(pbytes), new UIntPtr((uint)bytes.Length));
-                dstHandle.Free();
-                return r;
-            }
-        }
-        //public override unsafe T[] ReadTArray<T>(int length, int count)
-        //{
-        //    var bytes = ReadBytes(length);
-        //    fixed (byte* src = bytes)
-        //    {
-        //        var r = new T[count];
-        //        var dstHandle = GCHandle.Alloc(r, GCHandleType.Pinned);
-        //        memcpy(dstHandle.AddrOfPinnedObject(), new IntPtr(src), new UIntPtr((uint)bytes.Length));
-        //        dstHandle.Free();
-        //        return r;
-        //    }
-        //}
+        public override T ReadT<T>(int length) => UnsafeUtils.MarshalT<T>(ReadBytes(length), length);
+        public override T[] ReadTArray<T>(int length, int count) => UnsafeUtils.MarshalTArray<T>(ReadBytes(length), length, count);
 
         //
 

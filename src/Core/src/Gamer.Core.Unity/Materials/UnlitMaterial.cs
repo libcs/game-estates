@@ -27,6 +27,8 @@ namespace Gamer.Core.Materials
 
         public override Material BuildMaterial() => new Material(Shader.Find("Unlit/Texture"));
 
+        public override Material BuildMaterialTerrain() => new Material(Shader.Find("Nature/Terrain/Diffuse"));
+
         public override Material BuildMaterialBlended(ur.BlendMode sourceBlendMode, ur.BlendMode destinationBlendMode)
         {
             var material = BuildMaterialTested();

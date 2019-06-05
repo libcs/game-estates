@@ -58,6 +58,7 @@ namespace Gamer.Core
             //}
         }
 
+        public Material BuildMaterialTerrain() => _material.BuildMaterialTerrain();
         public Material BuildMaterialFromProperties(MaterialProps mp) => _material.BuildMaterialFromProperties(mp);
         Material BuildMaterial() => _material.BuildMaterial();
         Material BuildMaterialBlended(BlendMode sourceBlendMode, BlendMode destinationBlendMode) => _material.BuildMaterialBlended(sourceBlendMode, destinationBlendMode);

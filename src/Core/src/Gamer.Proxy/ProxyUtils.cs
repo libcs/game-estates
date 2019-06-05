@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Gamer.Core;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -10,7 +11,7 @@ namespace Gamer.Proxy
     {
         public static T ToGame<T>(Uri uri, Func<object> func, out ProxySink proxySink, out string[] filePaths, string estateKey, Func<string, T, string[]> fileManager)
         {
-            var platform = Core.Debug.Platform;
+            var platform = UnsafeUtils.Platform;
             // game
             var fragment = uri.Fragment?.Substring(uri.Fragment.Length != 0 ? 1 : 0);
             var gameName = Enum.GetNames(typeof(T)).FirstOrDefault(x => string.Equals(x, fragment, StringComparison.OrdinalIgnoreCase)) ?? throw new ArgumentOutOfRangeException(nameof(uri), uri.ToString());
