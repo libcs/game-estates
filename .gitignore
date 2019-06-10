@@ -16,6 +16,7 @@ Logs/
 *.pidb.meta
 sysinfo.txt
 *.apk
+*.meta
 *.unitypackage
 UIElementsSchema/
 **/Assets/_Ter*

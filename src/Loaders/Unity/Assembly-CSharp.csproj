@@ -63,26 +63,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\Loader.cs" />
-    <Reference Include="Unity.TextMeshPro.Editor">
-      <HintPath>C:/_GITHUB/libcs/gamer.io.net/src/Loaders/Unity/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
-    </Reference>
     <Reference Include="Unity.PackageManagerUI.Editor">
       <HintPath>C:/_GITHUB/libcs/gamer.io.net/src/Loaders/Unity/Library/ScriptAssemblies/Unity.PackageManagerUI.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.XR.LegacyInputHelpers">
-      <HintPath>C:/_GITHUB/libcs/gamer.io.net/src/Loaders/Unity/Library/ScriptAssemblies/UnityEngine.XR.LegacyInputHelpers.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEditor.SpatialTracking">
-      <HintPath>C:/_GITHUB/libcs/gamer.io.net/src/Loaders/Unity/Library/ScriptAssemblies/UnityEditor.SpatialTracking.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.SpatialTracking">
-      <HintPath>C:/_GITHUB/libcs/gamer.io.net/src/Loaders/Unity/Library/ScriptAssemblies/UnityEngine.SpatialTracking.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.TextMeshPro">
-      <HintPath>C:/_GITHUB/libcs/gamer.io.net/src/Loaders/Unity/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEditor.XR.LegacyInputHelpers">
-      <HintPath>C:/_GITHUB/libcs/gamer.io.net/src/Loaders/Unity/Library/ScriptAssemblies/UnityEditor.XR.LegacyInputHelpers.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.AIModule">
       <HintPath>C:/Program Files/Unity/Hub/Editor/2019.1.2f1/Editor/Data/Managed/UnityEngine/UnityEngine.AIModule.dll</HintPath>
@@ -269,6 +251,12 @@
     </Reference>
     <Reference Include="Gamer.Core.UnityEngine">
       <HintPath>C:/_GITHUB/libcs/gamer.io.net/src/Loaders/Unity/Assets/Plugins/Gamer.Core.UnityEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="Gamer.Core.UnityOculus.Framework">
+      <HintPath>C:/_GITHUB/libcs/gamer.io.net/src/Loaders/Unity/Assets/Plugins/Gamer.Core.UnityOculus.Framework.dll</HintPath>
+    </Reference>
+    <Reference Include="Gamer.Core.UnityOculus.Platform">
+      <HintPath>C:/_GITHUB/libcs/gamer.io.net/src/Loaders/Unity/Assets/Plugins/Gamer.Core.UnityOculus.Platform.dll</HintPath>
     </Reference>
     <Reference Include="Gamer.Estate.Tes">
       <HintPath>C:/_GITHUB/libcs/gamer.io.net/src/Loaders/Unity/Assets/Plugins/Gamer.Estate.Tes.dll</HintPath>
