@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="copy &quot;$(TargetDir)Gamer.Core*.*&quot; &quot;$(ProjectDir)..\..\..\Loaders\Unity\Assets\Plugins\&quot;&#xD;&#xA;copy &quot;%userprofile%\.nuget\packages\zstdnet\1.3.3\lib\netstandard2.0\*.*&quot; &quot;$(ProjectDir)..\..\..\Loaders\Unity\Assets\Plugins\&quot;" />
+    <Exec Command="copy &quot;$(TargetDir)Gamer.Core*.*&quot; &quot;$(ProjectDir)..\..\..\Loaders\Unity\Assets\Plugins\&quot;&#xD;&#xA;copy &quot;%userprofile%\.nuget\packages\mathnet.numerics\4.7.0\lib\netstandard2.0\*.*&quot; &quot;$(ProjectDir)..\..\..\Loaders\Unity\Assets\Plugins\&quot;&#xD;&#xA;copy &quot;%userprofile%\.nuget\packages\zstdnet\1.3.3\build\x64\*.*&quot; &quot;$(ProjectDir)..\..\..\Loaders\Unity\Assets\Plugins\&quot;&#xD;&#xA;copy &quot;%userprofile%\.nuget\packages\zstdnet\1.3.3\lib\netstandard2.0\*.*&quot; &quot;$(ProjectDir)..\..\..\Loaders\Unity\Assets\Plugins\&quot;" />
   </Target>
 
   <ItemGroup>

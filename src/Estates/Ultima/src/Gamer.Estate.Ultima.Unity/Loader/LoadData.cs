@@ -14,7 +14,7 @@ namespace Gamer.Estate.Ultima.Loader
 
         public static void Start()
         {
-            var dataUri = new Uri("game://Zero/");
+            var dataUri = new Uri("game:/#Zero");
 
             DataPack = dataUri.GetUltimaDataPackAsync().Result();
 

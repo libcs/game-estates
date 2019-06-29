@@ -1,7 +1,10 @@
-﻿// TES
+﻿// RSI
+using Redirect = Gamer.Estate.Rsi.Loader.LoadAsset;
+
+// TES
 //using Redirect = Gamer.Estate.Tes.Loader.LoadAsset;
 //using Redirect = Gamer.Estate.Tes.Loader.LoadData;
-using Redirect = Gamer.Estate.Tes.Loader.LoadEngine;
+//using Redirect = Gamer.Estate.Tes.Loader.LoadEngine;
 
 // ULTIMA
 //using Redirect = Gamer.Estate.Ultima.Loader.LoadAsset;

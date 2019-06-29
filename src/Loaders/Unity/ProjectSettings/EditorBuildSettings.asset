@@ -5,22 +5,22 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 0
+  - enabled: 1
     path: Assets/Scenes/TheScene.unity
     guid: a4d920d9cecbd764c94172d7b720e608
   - enabled: 0
-    path: Assets/Oculus/VR/Scenes/Room.unity
-    guid: 54445976c1dbf1c49bb38ba7eba558e8
+    path: 
+    guid: 00000000000000000000000000000000
   - enabled: 0
-    path: Assets/Oculus/AudioManager/Scenes/Test.unity
-    guid: 600e5d49b0a68254286400e32c53addc
+    path: 
+    guid: 00000000000000000000000000000000
   - enabled: 0
-    path: Assets/Oculus/LipSync/Scenes/LipSync_Demo.unity
-    guid: 0a5206cd53b21be4588ef635952929e9
+    path: 
+    guid: 00000000000000000000000000000000
   - enabled: 0
-    path: Assets/Oculus/Spatializer/scenes/RedBallGreenBall.unity
-    guid: 305999d68a83b7d438df1bb704b6bc06
-  - enabled: 1
-    path: Assets/Oculus/VR/Scenes/GearVrControllerTest.unity
-    guid: d56af3aeb2176e7459f753c1c2e2dd97
+    path: 
+    guid: 00000000000000000000000000000000
+  - enabled: 0
+    path: 
+    guid: 00000000000000000000000000000000
   m_configObjects: {}

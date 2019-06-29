@@ -1,9 +1,10 @@
 ﻿using Gamer.Core;
 using System;
-using System.Threading.Tasks;
 using UnityEngine;
+using Gamer.Estate.Rsi;
+using static Gamer.Core.Debug;
 
-namespace Gamer.Estate.Ultima.Loader
+namespace Gamer.Estate.Rsi.Loader
 {
     public static class LoadAsset
     {
@@ -13,30 +14,11 @@ namespace Gamer.Estate.Ultima.Loader
 
         public static void Start()
         {
-            var assetUri = new Uri("game:/#Zero");
+            var assetUri = new Uri("game:/#StarCitizen");
 
-            AssetPack = assetUri.GetUltimaAssetPackAsync().Result();
+            AssetPack = assetUri.GetRsiAssetPackAsync().Result();
 
-            //MakeObject("sta010").transform.Translate(Vector3.left * 1 + Vector3.up);
-            //MakeObject("sta069").transform.Translate(Vector3.left * 1 + Vector3.down);
-
-            //MakeObject("lnd001").transform.Translate(Vector3.right * 1);
-            //MakeObject("lnd002").transform.Translate(Vector3.right * 1 + Vector3.up);
-            //MakeObject("lnd516").transform.Translate(Vector3.right * 1 + Vector3.down);
-
-            //MakeObject("gmp065").transform.Translate(Vector3.back * 5);
-
-            MakeTexture("sta010");
-            //MakeTexture("sta069");
-
-            //MakeTexture("lnd001");
-            //MakeTexture("lnd002");
-            //MakeTexture("lnd516");
-            //MakeTexture("lnd1137");
-
-            //MakeTexture("gmp065");
-
-            //MakeTexture("tex789");
+            MakeObject(@"Data\Objects\animals\fish\CleanerFish_clean_prop_animal_01.chr");
         }
 
         static GameObject MakeObject(string path) => AssetPack.CreateObject(path);

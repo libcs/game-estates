@@ -5,6 +5,7 @@ using System.Linq;
 using System.IO;
 using System.Threading.Tasks;
 using static Gamer.Core.Debug;
+using Gamer.Format.Cry;
 
 namespace Gamer.Estate.Rsi.FilePack
 {
@@ -34,10 +35,9 @@ namespace Gamer.Estate.Rsi.FilePack
         public Task<object> LoadObjectInfoAsync(string filePath) => Task.Run(async () =>
         {
             var fileData = await LoadFileDataAsync(filePath);
-            return (object)null;
-            //var file = new NiFile(Path.GetFileNameWithoutExtension(filePath));
+            var file = new CryFile(Path.GetFileName(filePath), null);
             //file.Deserialize(new BinaryFileReader(new MemoryStream(fileData)));
-            //return (object)file;
+            return (object)file;
         });
 
         /// <summary>

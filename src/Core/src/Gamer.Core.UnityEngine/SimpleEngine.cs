@@ -8,7 +8,7 @@ namespace Gamer.Core
 {
     public class SimpleEngine : IDisposable
     {
-        const bool DayNightCycle = true;
+        const bool DayNightCycle = false;
         const bool RenderSunShadows = true;
         const float AmbientIntensity = 1.5f;
 

@@ -16,7 +16,7 @@ namespace Gamer.Estate.Rsi
         {
             _textureManager = new TextureManager(this);
             _materialManager = new MaterialManager(_textureManager);
-            _cryManager = null;
+            _cryManager = new CryManager(this, _materialManager, 0);
         }
 
         public MaterialManager MaterialManager => _materialManager;

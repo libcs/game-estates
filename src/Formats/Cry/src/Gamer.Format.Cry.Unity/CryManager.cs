@@ -30,7 +30,6 @@ namespace Gamer.Format.Cry
             EnsurePrefabContainerObjectExists();
             // Load & cache the CRY prefab.
             if (!_prefabs.TryGetValue(filePath, out var prefab))
-                // Load & cache the CRY prefab.
                 prefab = _prefabs[filePath] = LoadPrefabDontAddToPrefabCache(filePath);
             // Instantiate the prefab.
             return Object.Instantiate(prefab);
@@ -43,7 +42,7 @@ namespace Gamer.Format.Cry
                 return;
             // Start loading the CRY asynchronously if we haven't already started.
             if (!_preloadTasks.TryGetValue(filePath, out var preloadTask))
-                preloadTask = _preloadTasks[filePath] = preloadTask;
+                preloadTask = _preloadTasks[filePath] = _asset.LoadObjectInfoAsync(filePath);
         }
 
         void EnsurePrefabContainerObjectExists()
@@ -59,8 +58,9 @@ namespace Gamer.Format.Cry
         {
             Assert(!_prefabs.ContainsKey(filePath));
             PreloadObjectTask(filePath);
-            var file = (CryFile) _preloadTasks[filePath].Result();
+            var file = (CryFile)_preloadTasks[filePath].Result();
             _preloadTasks.Remove(filePath);
+            Log("HERE1");
             // Start pre-loading all the NIF's textures.
             foreach (var texturePath in file.GetTexturePaths())
                 _materialManager.TextureManager.PreloadTextureTask(texturePath);

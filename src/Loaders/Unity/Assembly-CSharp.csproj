@@ -252,11 +252,20 @@
     <Reference Include="Gamer.Core.UnityEngine">
       <HintPath>C:/_GITHUB/libcs/gamer.io.net/src/Loaders/Unity/Assets/Plugins/Gamer.Core.UnityEngine.dll</HintPath>
     </Reference>
+    <Reference Include="Gamer.Core.UnityOculus">
+      <HintPath>C:/_GITHUB/libcs/gamer.io.net/src/Loaders/Unity/Assets/Plugins/Gamer.Core.UnityOculus.dll</HintPath>
+    </Reference>
     <Reference Include="Gamer.Core.UnityOculus.Framework">
       <HintPath>C:/_GITHUB/libcs/gamer.io.net/src/Loaders/Unity/Assets/Plugins/Gamer.Core.UnityOculus.Framework.dll</HintPath>
     </Reference>
     <Reference Include="Gamer.Core.UnityOculus.Platform">
       <HintPath>C:/_GITHUB/libcs/gamer.io.net/src/Loaders/Unity/Assets/Plugins/Gamer.Core.UnityOculus.Platform.dll</HintPath>
+    </Reference>
+    <Reference Include="Gamer.Estate.Rsi">
+      <HintPath>C:/_GITHUB/libcs/gamer.io.net/src/Loaders/Unity/Assets/Plugins/Gamer.Estate.Rsi.dll</HintPath>
+    </Reference>
+    <Reference Include="Gamer.Estate.Rsi.Unity">
+      <HintPath>C:/_GITHUB/libcs/gamer.io.net/src/Loaders/Unity/Assets/Plugins/Gamer.Estate.Rsi.Unity.dll</HintPath>
     </Reference>
     <Reference Include="Gamer.Estate.Tes">
       <HintPath>C:/_GITHUB/libcs/gamer.io.net/src/Loaders/Unity/Assets/Plugins/Gamer.Estate.Tes.dll</HintPath>
@@ -270,6 +279,12 @@
     <Reference Include="Gamer.Estate.Ultima.Unity">
       <HintPath>C:/_GITHUB/libcs/gamer.io.net/src/Loaders/Unity/Assets/Plugins/Gamer.Estate.Ultima.Unity.dll</HintPath>
     </Reference>
+    <Reference Include="Gamer.Format.Cry">
+      <HintPath>C:/_GITHUB/libcs/gamer.io.net/src/Loaders/Unity/Assets/Plugins/Gamer.Format.Cry.dll</HintPath>
+    </Reference>
+    <Reference Include="Gamer.Format.Cry.Unity">
+      <HintPath>C:/_GITHUB/libcs/gamer.io.net/src/Loaders/Unity/Assets/Plugins/Gamer.Format.Cry.Unity.dll</HintPath>
+    </Reference>
     <Reference Include="Gamer.Format.Nif">
       <HintPath>C:/_GITHUB/libcs/gamer.io.net/src/Loaders/Unity/Assets/Plugins/Gamer.Format.Nif.dll</HintPath>
     </Reference>
@@ -281,6 +296,9 @@
     </Reference>
     <Reference Include="ICSharpCode.SharpZipLib">
       <HintPath>C:/_GITHUB/libcs/gamer.io.net/src/Loaders/Unity/Assets/Plugins/ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
+    <Reference Include="MathNet.Numerics">
+      <HintPath>C:/_GITHUB/libcs/gamer.io.net/src/Loaders/Unity/Assets/Plugins/MathNet.Numerics.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Extensions.Caching.Abstractions">
       <HintPath>C:/_GITHUB/libcs/gamer.io.net/src/Loaders/Unity/Assets/Plugins/Microsoft.Extensions.Caching.Abstractions.dll</HintPath>

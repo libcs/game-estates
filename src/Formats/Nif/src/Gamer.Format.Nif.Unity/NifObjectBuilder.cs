@@ -63,7 +63,7 @@ namespace Gamer.Format.Nif
         GameObject InstantiateRootNiObject(NiObject obj)
         {
             var gameObject = InstantiateNiObject(obj);
-            ProcessExtraData(obj, out bool shouldAddMissingColliders, out bool isMarker);
+            ProcessExtraData(obj, out var shouldAddMissingColliders, out var isMarker);
             if (_obj.Name != null && IsMarkerFileName(_obj.Name))
             {
                 shouldAddMissingColliders = false;

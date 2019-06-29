@@ -13,8 +13,8 @@ namespace Gamer.Estate.Ultima.Loader
 
         public static void Start()
         {
-            var assetUri = new Uri("game://Zero/");
-            var dataUri = new Uri("game://Zero/");
+            var assetUri = new Uri("game:/#Zero");
+            var dataUri = new Uri("game:/#Zero");
 
             Engine = new SimpleEngine(UltimaEstateHandler.Handler, assetUri, dataUri);
 
