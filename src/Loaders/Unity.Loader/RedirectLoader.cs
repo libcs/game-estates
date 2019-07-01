@@ -1,5 +1,5 @@
-﻿// RSI
-using Redirect = Gamer.Estate.Rsi.Loader.LoadAsset;
+﻿// CRY
+using Redirect = Gamer.Estate.Cry.Loader.LoadAsset;
 
 // TES
 //using Redirect = Gamer.Estate.Tes.Loader.LoadAsset;

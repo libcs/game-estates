@@ -19,7 +19,8 @@ namespace Gamer.Estate.Cry.Tests
         [InlineData(@"Objects\buildingsets\human\hightech\prop\hydroponic\hydroponic_machine_1_incubator_01x01x02_a.cgf")]
         public void LoadModel(string path)
         {
-            var model = new CryFile(Path.Combine(AssetRoot, path), null);
+            var cryFile = new CryFile(Path.Combine(AssetRoot, path));
+            cryFile.LoadFromFile(null);
         }
     }
 }

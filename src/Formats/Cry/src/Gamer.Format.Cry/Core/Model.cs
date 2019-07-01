@@ -120,21 +120,21 @@ namespace Gamer.Format.Cry.Core
         /// </summary>
         /// <param name="fileName"></param>
         /// <returns></returns>
-        public static Model FromFile(string fileName) { var r = new Model(); r.Load(fileName); return r; }
+        public static Model FromFile((string, Stream) file) { var r = new Model(); r.Load(file); return r; }
 
         /// <summary>
         /// Load a cgf/cga/skin file
         /// </summary>
         /// <param name="fileName"></param>
-        public void Load(string fileName)
+        public void Load((string, Stream) file)
         {
-            var inputFile = new FileInfo(fileName);
+            var inputFile = new FileInfo(file.Item1);
             Console.Title = $"Processing {inputFile.Name}...";
             FileName = inputFile.Name;
             if (!inputFile.Exists)
                 throw new FileNotFoundException();
             // Open the file for reading.
-            var r = new BinaryReader(File.Open(fileName, FileMode.Open));
+            var r = new BinaryReader(file.Item2);
             // Get the header.  This isn't essential for .cgam files, but we need this info to find the version and offset to the chunk table
             Read_FileHeader(r);
             Read_ChunkHeaders(r);

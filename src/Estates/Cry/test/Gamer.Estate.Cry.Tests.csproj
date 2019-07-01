@@ -10,6 +10,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="ZstdNet" Version="1.3.3" />
   </ItemGroup>
 
   <ItemGroup>

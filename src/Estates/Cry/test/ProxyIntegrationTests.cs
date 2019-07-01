@@ -25,7 +25,7 @@ namespace Gamer.Estate.Cry.Tests
         public ProxyIntegrationTests(TestsFixture fixture, ITestOutputHelper helper) { _fixture = fixture; Core.Debug.LogFunc = x => helper.WriteLine(x.ToString()); }
 
         [Theory]
-        [InlineData("game://localhost:{0}/#Abc", "xxx")]
+        [InlineData("game://localhost:{0}/#StarCitizen", "xxx")]
         public async Task LoadAssetPack(string path, string modelPath)
         {
             // given

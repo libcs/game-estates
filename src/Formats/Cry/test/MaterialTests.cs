@@ -16,7 +16,9 @@ namespace Gamer.Estate.Cry.Tests
         [InlineData(@"Objects\animals\crab\props\crab_thorshu_prop_01.mtl")]
         public void LoadMaterial(string path)
         {
-            var material = Material.FromFile(new FileInfo(Path.Combine(AssetRoot, path)));
+            path = Path.Combine(AssetRoot, path);
+            var file = (path, File.Open(path, FileMode.Open));
+            var material = Material.FromFile(file);
         }
     }
 }

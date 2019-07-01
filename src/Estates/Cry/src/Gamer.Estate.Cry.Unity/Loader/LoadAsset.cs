@@ -1,10 +1,10 @@
 ﻿using Gamer.Core;
 using System;
 using UnityEngine;
-using Gamer.Estate.Rsi;
+using Gamer.Estate.Cry;
 using static Gamer.Core.Debug;
 
-namespace Gamer.Estate.Rsi.Loader
+namespace Gamer.Estate.Cry.Loader
 {
     public static class LoadAsset
     {
@@ -16,7 +16,7 @@ namespace Gamer.Estate.Rsi.Loader
         {
             var assetUri = new Uri("game:/#StarCitizen");
 
-            AssetPack = assetUri.GetRsiAssetPackAsync().Result();
+            AssetPack = assetUri.GetCryAssetPackAsync().Result();
 
             MakeObject(@"Data\Objects\animals\fish\CleanerFish_clean_prop_animal_01.chr");
         }

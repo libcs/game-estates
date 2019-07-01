@@ -22,7 +22,8 @@ namespace Gamer.Estate.Wavefront.Tests
         //[InlineData(@"Objects\Characters\Human\male_v7\armor\nvy\pilot_flightsuit\m_nvy_pilot_light_armor_helmet_01.skin")]
         public void LoadModel(string path)
         {
-            var cryFile = new CryFile(Path.Combine(AssetRoot, path), null);
+            var cryFile = new CryFile(Path.Combine(AssetRoot, path));
+            cryFile.LoadFromFile(null);
             var objFile = new WavefrontObjectWriter(cryFile);
             objFile.Write(@"C:\T_\Models", false);
         }

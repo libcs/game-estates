@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using static Gamer.Core.Debug;
 
 namespace Gamer.Format.Cry
@@ -21,33 +22,55 @@ namespace Gamer.Format.Cry
             ".anim"
         };
 
-        public CryFile(string fileName, string dataDir)
+        public CryFile(string fileName)
         {
-            InputFile = fileName;
-            var inputFile = new FileInfo(fileName);
-            var inputFiles = new List<FileInfo> { inputFile };
             // Validate file extension - handles .cgam / skinm
-            if (!_validExtensions.Contains(inputFile.Extension))
+            if (!_validExtensions.Contains(Path.GetExtension(fileName)))
             {
                 Log("Warning: Unsupported file extension - please use a cga, cgf, chr or skin file");
                 throw new FileLoadException("Warning: Unsupported file extension - please use a cga, cgf, chr or skin file", fileName);
             }
-            //
-            var mFile = new FileInfo(Path.ChangeExtension(fileName, $"{inputFile.Extension}m"));
-            if (mFile.Exists)
+            InputFile = fileName;
+        }
+
+        public void LoadFromFile(string dataDir)
+        {
+            var files = new List<(string, Stream)> { (InputFile, File.Open(InputFile, FileMode.Open)) };
+            var mFilePath = Path.ChangeExtension(InputFile, $"{Path.GetExtension(InputFile)}m");
+            if (File.Exists(mFilePath))
             {
-                Log($"Found geometry file {mFile.Name}");
-                inputFiles.Add(mFile); // Add to list of files to process
+                Log($"Found geometry file {Path.GetFileName(mFilePath)}");
+                files.Add((mFilePath, File.Open(mFilePath, FileMode.Open))); // Add to list of files to process
             }
-            //
+            LoadAsync(files, dataDir, FindMaterialFromFile, path => Task.FromResult<(string, Stream)>((path, File.Open(path, FileMode.Open)))).Wait();
+        }
+
+        static string FindMaterialFromFile(string materialPath, string fileName, string cleanName, string dataDir)
+        {
+            // First try relative to file being processed
+            if (Path.GetExtension(materialPath) != ".mtl") materialPath = Path.ChangeExtension(materialPath, "mtl");
+            // Then try just the last part of the chunk, relative to the file being processed
+            if (!File.Exists(materialPath)) materialPath = Path.Combine(Path.GetDirectoryName(fileName), Path.GetFileName(cleanName));
+            if (Path.GetExtension(materialPath) != ".mtl") materialPath = Path.ChangeExtension(materialPath, "mtl");
+            // Then try relative to the ObjectDir
+            if (!File.Exists(materialPath) && dataDir != null) materialPath = Path.Combine(dataDir, cleanName);
+            if (Path.GetExtension(materialPath) != ".mtl") materialPath = Path.ChangeExtension(materialPath, "mtl");
+            // Then try just the fileName.mtl
+            if (!File.Exists(materialPath)) materialPath = fileName;
+            if (Path.GetExtension(materialPath) != ".mtl") materialPath = Path.ChangeExtension(materialPath, "mtl");
+            // TODO: Try more paths
+            return File.Exists(materialPath) ? materialPath : null;
+        }
+
+        public async Task LoadAsync(IEnumerable<(string, Stream)> files, string dataDir, Func<string, string, string, string, string> getMaterialPath, Func<string, Task<(string, Stream)>> getFileAsync)
+        {
             Models = new List<Model> { };
-            foreach (var file in inputFiles)
+            foreach (var file in files)
             {
                 // Each file (.cga and .cgam if applicable) will have its own RootNode.  This can cause problems.  .cga files with a .cgam files won't have geometry for the one root node.
-                var model = Model.FromFile(file.FullName);
+                var model = Model.FromFile(file);
                 if (RootNode == null)
                     RootNode = model.RootNode; // This makes the assumption that we read the .cga file before the .cgam file.
-                //RootNode = RootNode ?? model.RootNode;
                 Bones = Bones ?? model.Bones;
                 Models.Add(model);
             }
@@ -55,6 +78,7 @@ namespace Gamer.Format.Cry
             // For eanch node with geometry info, populate that node's Mesh Chunk GeometryInfo with the geometry data.
             ConsolidateGeometryInfo();
             // Get the material file name
+            var fileName = files.First().Item1;
             foreach (ChunkMtlName mtlChunk in Models.SelectMany(a => a.ChunkMap.Values).Where(c => c.ChunkType == ChunkTypeEnum.MtlName))
             {
                 // Don't process child or collision materials for now
@@ -63,7 +87,7 @@ namespace Gamer.Format.Cry
                 // The Replace part is for SC files that point to a _core material file that doesn't exist.
                 var cleanName = mtlChunk.Name.Replace("_core", string.Empty);
                 //
-                FileInfo materialFile;
+                string materialFilePath;
                 if (mtlChunk.Name.Contains("default_body"))
                 {
                     // New MWO models for some crazy reason don't put the actual mtl file name in the mtlchunk.  They just have /objects/mechs/default_body
@@ -74,7 +98,7 @@ namespace Gamer.Format.Cry
                     if (charsToClean.Length > 0)
                         foreach (char character in charsToClean)
                             cleanName = cleanName.Replace(character.ToString(), string.Empty);
-                    materialFile = new FileInfo(Path.Combine(Path.GetDirectoryName(fileName), cleanName));
+                    materialFilePath = Path.Combine(Path.GetDirectoryName(fileName), cleanName);
                 }
                 else if (mtlChunk.Name.Contains(@"/") || mtlChunk.Name.Contains(@"\"))
                 {
@@ -82,11 +106,11 @@ namespace Gamer.Format.Cry
                     var stringSeparators = new[] { @"\", @"/" };
                     // if objectdir is provided, check objectdir + mtlchunk.name
                     if (dataDir != null)
-                        materialFile = new FileInfo(Path.Combine(dataDir, mtlChunk.Name));
+                        materialFilePath = Path.Combine(dataDir, mtlChunk.Name);
                     else // object dir not provided, but we have a path.  Just grab the last part of the name and check the dir of the cga file
                     {
                         var r = mtlChunk.Name.Split(stringSeparators, StringSplitOptions.None);
-                        materialFile = new FileInfo(r[r.Length - 1]);
+                        materialFilePath = r[r.Length - 1];
                     }
                 }
                 else
@@ -95,27 +119,15 @@ namespace Gamer.Format.Cry
                     if (charsToClean.Length > 0)
                         foreach (var character in charsToClean)
                             cleanName = cleanName.Replace(character.ToString(), string.Empty);
-                    materialFile = new FileInfo(Path.Combine(Path.GetDirectoryName(fileName), cleanName));
+                    materialFilePath = Path.Combine(Path.GetDirectoryName(fileName), cleanName);
                 }
-                // First try relative to file being processed
-                if (materialFile.Extension != ".mtl") materialFile = new FileInfo(Path.ChangeExtension(materialFile.FullName, "mtl"));
-                // Then try just the last part of the chunk, relative to the file being processed
-                if (!materialFile.Exists) materialFile = new FileInfo(Path.Combine(Path.GetDirectoryName(fileName), Path.GetFileName(cleanName)));
-                if (materialFile.Extension != ".mtl") materialFile = new FileInfo(Path.ChangeExtension(materialFile.FullName, "mtl"));
-                // Then try relative to the ObjectDir
-                if (!materialFile.Exists && dataDir != null) materialFile = new FileInfo(Path.Combine(dataDir, cleanName));
-                if (materialFile.Extension != ".mtl") materialFile = new FileInfo(Path.ChangeExtension(materialFile.FullName, "mtl"));
-                // Then try just the fileName.mtl
-                if (!materialFile.Exists) materialFile = new FileInfo(fileName);
-                if (materialFile.Extension != ".mtl") materialFile = new FileInfo(Path.ChangeExtension(materialFile.FullName, "mtl"));
-
-                // TODO: Try more paths
-
+                var materialPath = getMaterialPath(materialFilePath, fileName, cleanName, dataDir);
+                var materialFile = await getFileAsync(materialPath);
                 // Populate CryEngine_Core.Material
                 var material = Material.FromFile(materialFile);
                 if (material != null)
                 {
-                    Log($"Located material file {materialFile.Name}");
+                    Log($"Located material file {Path.GetFileName(materialFile.Item1)}");
                     Materials = FlattenMaterials(material).Where(m => m.Textures != null).ToArray();
                     if (Materials.Length == 1)
                     {

@@ -127,17 +127,12 @@ namespace Gamer.Format.Cry.Core
         // TODO: TimeOfDay Support
         [XmlArray(ElementName = "Textures"), XmlArrayItem(ElementName = "Texture")] public Texture[] Textures { get; set; }
 
-        public static Material FromFile(FileInfo materialfile)
+        public static Material FromFile((string, Stream) file)
         {
-            if (!materialfile.Exists)
+            if (file.Item2 == null)
                 return null;
-            try
-            {
-                using (var fileStream = materialfile.OpenRead())
-                    return CryXmlSerializer.Deserialize<Material>(fileStream);
-                //return CryXmlSerializer.Deserialize<Material>(materialfile.FullName);
-            }
-            catch (Exception ex) { Debug.WriteLine($"{materialfile} failed deserialize - {ex.Message}"); }
+            try { return CryXmlSerializer.Deserialize<Material>(file.Item2); }
+            catch (Exception ex) { Debug.WriteLine($"{file.Item1} failed deserialize - {ex.Message}"); }
             return null;
         }
     }

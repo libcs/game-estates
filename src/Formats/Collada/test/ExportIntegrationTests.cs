@@ -21,7 +21,8 @@ namespace Gamer.Estate.Collada.Tests
         //[InlineData(@"Objects\buildingsets\human\hightech\prop\hydroponic\hydroponic_machine_1_incubator_rotary_025x01x0225_a.cgf")]
         public void LoadModel(string path)
         {
-            var cryFile = new CryFile(Path.Combine(AssetRoot, path), null);
+            var cryFile = new CryFile(Path.Combine(AssetRoot, path));
+            cryFile.LoadFromFile(null);
             var daeFile = new ColladaObjectWriter(cryFile);
             daeFile.Write(@"C:\T_\Models", false);
         }
