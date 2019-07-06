@@ -21,7 +21,7 @@ namespace Gamer.Estate.Cry.Tests
         {
             path = Path.Combine(AssetRoot, path);
             var file = (path, File.Open(path, FileMode.Open));
-            var model = Model.FromFile(file);
+            var model = new Model(file);
         }
     }
 }

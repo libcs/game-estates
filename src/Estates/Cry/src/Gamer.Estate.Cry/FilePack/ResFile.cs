@@ -1,6 +1,7 @@
 ﻿using Gamer.Proxy;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using static Gamer.Estate.Cry.FilePack.PakFile;
 
@@ -9,9 +10,9 @@ namespace Gamer.Estate.Cry.FilePack
     public partial class ResFile : IDisposable
     {
         readonly ProxySink _proxySink;
-        readonly PakFile _pakFile;
+        readonly IPakFile _pakFile;
 
-        public ResFile(ProxySink proxySink, PakFile pakFile)
+        public ResFile(ProxySink proxySink, IPakFile pakFile)
         {
             _proxySink = proxySink;
             if (proxySink is ProxySinkClient)
@@ -35,7 +36,7 @@ namespace Gamer.Estate.Cry.FilePack
         public HashSet<string> GetContainsSet() => _proxySink.GetContainsSet(() => _pakFile.GetContainsSet());
 
         /// <summary>
-        /// Determines whether the BSA archive contains a file.
+        /// Determines whether the PAK archive contains a file.
         /// </summary>
         public bool ContainsFile(string filePath) => _proxySink.ContainsFile(filePath, () => _pakFile.ContainsFile(filePath));
 
@@ -47,6 +48,6 @@ namespace Gamer.Estate.Cry.FilePack
         /// <summary>
         /// Loads an archived file's data.
         /// </summary>
-        internal Task<byte[]> LoadFileDataAsync(FileMetadata file) => _pakFile.LoadFileDataAsync(file);
+        public async Task<SocPakFile> LoadSocPackAsync(string filePath) => new SocPakFile(filePath, new MemoryStream(await _proxySink.LoadFileDataAsync(filePath, () => _pakFile.LoadFileDataAsync(filePath))));
     }
 }

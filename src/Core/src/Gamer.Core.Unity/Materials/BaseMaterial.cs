@@ -29,14 +29,8 @@ namespace Gamer.Core.Materials
         protected static Texture2D GenerateNormalMap(Texture2D source, float strength)
         {
             strength = Mathf.Clamp(strength, 0.0F, 1.0F);
-            Texture2D normalTexture;
-            float xLeft;
-            float xRight;
-            float yUp;
-            float yDown;
-            float yDelta;
-            float xDelta;
-            normalTexture = new Texture2D(source.width, source.height, TextureFormat.ARGB32, true);
+            float xLeft, xRight, yUp, yDown, yDelta, xDelta;
+            var normalTexture = new Texture2D(source.width, source.height, TextureFormat.ARGB32, true);
             for (var y = 0; y < normalTexture.height; y++)
                 for (var x = 0; x < normalTexture.width; x++)
                 {
@@ -44,8 +38,8 @@ namespace Gamer.Core.Materials
                     xRight = source.GetPixel(x + 1, y).grayscale * strength;
                     yUp = source.GetPixel(x, y - 1).grayscale * strength;
                     yDown = source.GetPixel(x, y + 1).grayscale * strength;
-                    xDelta = ((xLeft - xRight) + 1) * 0.5f;
-                    yDelta = ((yUp - yDown) + 1) * 0.5f;
+                    xDelta = (xLeft - xRight + 1) * 0.5f;
+                    yDelta = (yUp - yDown + 1) * 0.5f;
                     normalTexture.SetPixel(x, y, new Color(xDelta, yDelta, 1.0f, yDelta));
                 }
             normalTexture.Apply();

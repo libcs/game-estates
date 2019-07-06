@@ -21,7 +21,7 @@ namespace Gamer.Core.Materials
         public override Material BuildMaterialFromProperties(MaterialProps mp)
         {
             // check if the material is already cached
-            if (!_existingMaterials.TryGetValue(mp, out Material material))
+            if (!_existingMaterials.TryGetValue(mp, out var material))
             {
                 // otherwise create a new material and cache it
                 if (mp.AlphaBlended)

@@ -9,7 +9,15 @@ using ZstdNet;
 
 namespace Gamer.Estate.Cry.FilePack
 {
-    public partial class PakFile : IDisposable
+    public interface IPakFile : IDisposable
+    {
+        void Close();
+        HashSet<string> GetContainsSet();
+        bool ContainsFile(string filePath);
+        Task<byte[]> LoadFileDataAsync(string filePath);
+    }
+
+    public partial class PakFile : IPakFile
     {
         public class FileMetadata
         {
@@ -56,7 +64,7 @@ namespace Gamer.Estate.Cry.FilePack
         public HashSet<string> GetContainsSet() => new HashSet<string>(_files.Select(x => x.Path));
 
         /// <summary>
-        /// Determines whether the BSA archive contains a file.
+        /// Determines whether the PAK archive contains a file.
         /// </summary>
         public bool ContainsFile(string filePath) => _filesByPath.Contains(filePath);
 
@@ -67,9 +75,10 @@ namespace Gamer.Estate.Cry.FilePack
         {
             var files = _filesByPath[filePath].ToArray();
             if (files.Length == 0)
-                throw new NotSupportedException();
+                throw new FileNotFoundException(filePath);
             if (files.Length == 1)
                 return LoadFileDataAsync(files[0]);
+            Debug.Log($"LoadFileDataAsync: {filePath} @ {files.Length}");
             throw new NotSupportedException();
         }
 
@@ -118,7 +127,7 @@ namespace Gamer.Estate.Cry.FilePack
                 var extraFieldSize = BitConverter.ToInt16(chunk, 0xC);
 
                 // file name
-                var fileNameRead = 2 + (((fileNameSize - 2) + 15) & ~15) + 16;
+                var fileNameRead = 2 + ((fileNameSize - 2 + 15) & ~15) + 16;
                 if (fileNameRead > buf.Length) buf = new byte[fileNameRead];
                 _r.Read(buf, 0, fileNameRead);
                 var fileName = Encoding.ASCII.GetString(buf, 0, fileNameSize);
@@ -145,7 +154,7 @@ namespace Gamer.Estate.Cry.FilePack
             }
 
             // files by path
-            _filesByPath = _files.ToLookup(x => x.Path);
+            _filesByPath = _files.ToLookup(x => x.Path, StringComparer.OrdinalIgnoreCase);
         }
     }
 }

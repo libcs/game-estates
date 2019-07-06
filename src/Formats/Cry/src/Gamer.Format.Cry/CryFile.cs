@@ -15,6 +15,7 @@ namespace Gamer.Format.Cry
         /// </summary>
         static HashSet<string> _validExtensions = new HashSet<string>
         {
+            ".soc",
             ".cgf",
             ".cga",
             ".chr",
@@ -68,7 +69,7 @@ namespace Gamer.Format.Cry
             foreach (var file in files)
             {
                 // Each file (.cga and .cgam if applicable) will have its own RootNode.  This can cause problems.  .cga files with a .cgam files won't have geometry for the one root node.
-                var model = Model.FromFile(file);
+                var model = new Model(file);
                 if (RootNode == null)
                     RootNode = model.RootNode; // This makes the assumption that we read the .cga file before the .cgam file.
                 Bones = Bones ?? model.Bones;
@@ -100,10 +101,10 @@ namespace Gamer.Format.Cry
                             cleanName = cleanName.Replace(character.ToString(), string.Empty);
                     materialFilePath = Path.Combine(Path.GetDirectoryName(fileName), cleanName);
                 }
-                else if (mtlChunk.Name.Contains(@"/") || mtlChunk.Name.Contains(@"\"))
+                else if (mtlChunk.Name.Contains("/") || mtlChunk.Name.Contains("\\"))
                 {
                     // The mtlname has a path.  Most likely starts at the Objects directory.
-                    var stringSeparators = new[] { @"\", @"/" };
+                    var stringSeparators = new[] { "/", "\\" };
                     // if objectdir is provided, check objectdir + mtlchunk.name
                     if (dataDir != null)
                         materialFilePath = Path.Combine(dataDir, mtlChunk.Name);
@@ -129,19 +130,15 @@ namespace Gamer.Format.Cry
                 {
                     Log($"Located material file {Path.GetFileName(materialFile.Item1)}");
                     Materials = FlattenMaterials(material).Where(m => m.Textures != null).ToArray();
+                    // only one material, so it's a material file with no submaterials.  Check and set the name
                     if (Materials.Length == 1)
-                    {
-                        // only one material, so it's a material file with no submaterials.  Check and set the name
-                        //Console.WriteLine("Single material found.  setting name...");
                         Materials[0].Name = RootNode.Name;
-                    }
-                    // Early return - we have the material map
-                    return;
+                    return; // Early return - we have the material map
                 }
                 else Log($"Unable to locate material file {mtlChunk.Name}.mtl");
             }
             Log("Unable to locate any material file");
-            Materials = new Material[] { };
+            Materials = new Material[0];
         }
 
         void ConsolidateGeometryInfo()
@@ -182,6 +179,7 @@ namespace Gamer.Format.Cry
         public ChunkCompiledBones Bones { get; internal set; }
         public SkinningInfo SkinningInfo { get; set; }
         public string InputFile { get; internal set; }
+        public string Name => Path.GetFileName(InputFile);
 
         Chunk[] _chunks;
         public Chunk[] Chunks
@@ -204,7 +202,7 @@ namespace Gamer.Format.Cry
                 {
                     _nodeMap = new Dictionary<string, ChunkNode>(StringComparer.InvariantCultureIgnoreCase) { };
                     ChunkNode rootNode = null;
-                    Log("Mapping Nodes");
+                    //Log("Mapping Nodes");
                     foreach (var model in Models)
                     {
                         model.RootNode = rootNode = rootNode ?? model.RootNode; // Each model will have it's own rootnode.
@@ -246,7 +244,8 @@ namespace Gamer.Format.Cry
         {
             foreach (var texture in Materials.SelectMany(x => x.Textures))
                 if (!string.IsNullOrEmpty(texture.File))
-                    yield return texture.File;
+                    yield return $@"Data\{texture.File.Replace("/", "\\")}";
+
         }
     }
 }

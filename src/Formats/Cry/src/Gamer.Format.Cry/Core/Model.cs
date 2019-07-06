@@ -24,7 +24,7 @@ namespace Gamer.Format.Cry.Core
         /// <summary>
         /// Collection of all loaded Chunks
         /// </summary>
-        public List<ChunkHeader> ChunkHeaders { get; internal set; }
+        public List<ChunkHeader> ChunkHeaders { get; } = new List<ChunkHeader>();
 
         /// <summary>
         /// All the node chunks in this Model
@@ -34,7 +34,7 @@ namespace Gamer.Format.Cry.Core
         /// <summary>
         /// Lookup Table for Chunks, indexed by ChunkID
         /// </summary>
-        public Dictionary<int, Chunk> ChunkMap { get; internal set; }
+        public Dictionary<int, Chunk> ChunkMap { get; } = new Dictionary<int, Chunk>();
 
         /// <summary>
         /// The name of the currently processed file
@@ -64,7 +64,7 @@ namespace Gamer.Format.Cry.Core
         /// <summary>
         /// Contains all the information about bones and skinning them.  This a reference to the Cryengine object, since multiple Models can exist for a single object).
         /// </summary>
-        public SkinningInfo SkinningInfo { get; set; }
+        public SkinningInfo SkinningInfo { get; set; } = new SkinningInfo();
 
         /// <summary>
         /// The Bones in the model.  The CompiledBones chunk will have a unique RootBone.
@@ -74,6 +74,7 @@ namespace Gamer.Format.Cry.Core
         public uint NumChunks { get; internal set; }
 
         Dictionary<int, ChunkNode> _nodeMap { get; set; }
+
         /// <summary>
         /// Node map for this model only.
         /// </summary>
@@ -83,7 +84,7 @@ namespace Gamer.Format.Cry.Core
             {
                 if (_nodeMap == null)
                 {
-                    _nodeMap = new Dictionary<int, ChunkNode>() { };
+                    _nodeMap = new Dictionary<int, ChunkNode>();
                     ChunkNode rootNode = null;
                     //Log("Mapping Model Nodes");
                     RootNode = rootNode = rootNode ?? RootNode;  // Each model will have it's own rootnode.
@@ -108,32 +109,14 @@ namespace Gamer.Format.Cry.Core
         public int NodeCount => ChunkMap.Values.Where(c => c.ChunkType == ChunkTypeEnum.Node).Count();
         public int BoneCount => ChunkMap.Values.Where(c => c.ChunkType == ChunkTypeEnum.CompiledBones).Count();
 
-        public Model()
-        {
-            ChunkMap = new Dictionary<int, Chunk> { };
-            ChunkHeaders = new List<ChunkHeader> { };
-            SkinningInfo = new SkinningInfo();
-        }
-
-        /// <summary>
-        /// Load the specified file as a Model, and return it
-        /// </summary>
-        /// <param name="fileName"></param>
-        /// <returns></returns>
-        public static Model FromFile((string, Stream) file) { var r = new Model(); r.Load(file); return r; }
-
         /// <summary>
         /// Load a cgf/cga/skin file
         /// </summary>
         /// <param name="fileName"></param>
-        public void Load((string, Stream) file)
+        public Model((string, Stream) file)
         {
-            var inputFile = new FileInfo(file.Item1);
-            Console.Title = $"Processing {inputFile.Name}...";
-            FileName = inputFile.Name;
-            if (!inputFile.Exists)
-                throw new FileNotFoundException();
-            // Open the file for reading.
+            FileName = Path.GetFileName(file.Item1);
+            Console.Title = $"Processing {FileName}...";
             var r = new BinaryReader(file.Item2);
             // Get the header.  This isn't essential for .cgam files, but we need this info to find the version and offset to the chunk table
             Read_FileHeader(r);
@@ -163,11 +146,11 @@ namespace Gamer.Format.Cry.Core
         {
             Log("*** Chunk Header Table***");
             Log("Chunk Type              Version   ID        Size      Offset    ");
-            foreach (ChunkHeader chkHdr in _chunks)
+            foreach (var chkHdr in _chunks)
                 Log($"{chkHdr.ChunkType,-24:X}{chkHdr.Version,-10:X}{chkHdr.ID,-10:X}{chkHdr.Size,-10:X}{chkHdr.Offset,-10:X}");
             Console.WriteLine("*** Chunk Header Table***");
             Console.WriteLine("Chunk Type              Version   ID        Size      Offset    ");
-            foreach (ChunkHeader chkHdr in _chunks)
+            foreach (var chkHdr in _chunks)
                 Console.WriteLine($"{chkHdr.ChunkType,-24:X}{chkHdr.Version,-10:X}{chkHdr.ID,-10:X}{chkHdr.Size,-10:X}{chkHdr.Offset,-10:X}");
         }
 

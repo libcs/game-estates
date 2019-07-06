@@ -129,15 +129,24 @@ namespace Gamer.Core.Format
 
     public struct DDSHeader_DXT10 //: DDS_HEADER_DXT10
     {
-        public int dxgiFormat;
+        public DXGIFormat dxgiFormat;
         public DDSDimension resourceDimension;
         public uint miscFlag; // see D3D11_RESOURCE_MISC_FLAG
         public uint arraySize;
         public uint miscFlags2; // see DDS_MISC_FLAGS2
 
+        public void Read(GenericReader r)
+        {
+            dxgiFormat = (DXGIFormat)r.ReadInt32();
+            resourceDimension = (DDSDimension)r.ReadUInt32();
+            miscFlag = r.ReadUInt32();
+            arraySize = r.ReadUInt32();
+            miscFlags2 = r.ReadUInt32();
+        }
+
         public void Write(BinaryWriter w)
         {
-            w.Write(dxgiFormat);
+            w.Write((int)dxgiFormat);
             w.Write((uint)resourceDimension);
             w.Write(miscFlag);
             w.Write(arraySize);
@@ -195,7 +204,7 @@ namespace Gamer.Core.Format
     }
 
     // https://msdn.microsoft.com/en-us/library/windows/desktop/bb173059(v=vs.85).aspx
-    public enum DXGIFormat : byte //: DXGI_FORMAT
+    public enum DXGIFormat : int //: DXGI_FORMAT
     {
         DXGI_FORMAT_UNKNOWN = 0,
         DXGI_FORMAT_R8_UNORM = 61,
@@ -228,8 +237,13 @@ namespace Gamer.Core.Format
                 // Deserialize the DDS file header.
                 var header = new DDSHeader();
                 header.Read(r);
+                if ("DX10".EqualsASCIIBytes(header.ddspf.dwFourCC))
+                {
+                    var header2 = new DDSHeader_DXT10();
+                    header2.Read(r);
+                }
                 // Figure out the texture format and load the texture data.
-                ExtractDDSTextureFormatAndData(header, r, out var hasMipmaps, out var ddsMipmapLevelCount, out var textureFormat, out int bytesPerPixel, out var textureData);
+                ExtractDDSTextureFormatAndData(header, r, out var hasMipmaps, out var ddsMipmapLevelCount, out var textureFormat, out var bytesPerPixel, out var textureData);
                 // Post-process the texture to generate missing mipmaps and possibly flip it vertically.
                 PostProcessDDSTexture((int)header.dwWidth, (int)header.dwHeight, bytesPerPixel, hasMipmaps, (int)ddsMipmapLevelCount, textureData, flipVertically);
                 return new Texture2DInfo((int)header.dwWidth, (int)header.dwHeight, textureFormat, hasMipmaps, textureData);
@@ -351,12 +365,10 @@ namespace Gamer.Core.Format
             // Read pixel alpha indices.
             var alphaIndices = new uint[16];
             var alphaIndexBytesRow0 = new byte[3];
-            r.Read(alphaIndexBytesRow0, 0, alphaIndexBytesRow0.Length);
-            Array.Reverse(alphaIndexBytesRow0); // Take care of little-endianness.
+            r.Read(alphaIndexBytesRow0, 0, alphaIndexBytesRow0.Length); Array.Reverse(alphaIndexBytesRow0); // Take care of little-endianness.
             var alphaIndexBytesRow1 = new byte[3];
-            r.Read(alphaIndexBytesRow1, 0, alphaIndexBytesRow1.Length);
-            Array.Reverse(alphaIndexBytesRow1); // Take care of little-endianness.
-            const uint bitsPerAlphaIndex = 3;
+            r.Read(alphaIndexBytesRow1, 0, alphaIndexBytesRow1.Length); Array.Reverse(alphaIndexBytesRow1); // Take care of little-endianness.
+            const uint bitsPerAlphaIndex = 3U;
             alphaIndices[0] = (uint)Utils.GetBits(21, bitsPerAlphaIndex, alphaIndexBytesRow0);
             alphaIndices[1] = (uint)Utils.GetBits(18, bitsPerAlphaIndex, alphaIndexBytesRow0);
             alphaIndices[2] = (uint)Utils.GetBits(15, bitsPerAlphaIndex, alphaIndexBytesRow0);
@@ -436,6 +448,8 @@ namespace Gamer.Core.Format
                     for (var rowIndex = 0; rowIndex < mipMapHeight; rowIndex += 4)
                         for (var columnIndex = 0; columnIndex < mipMapWidth; columnIndex += 4)
                         {
+                            if (r.Position == r.BaseStream.Length)
+                                return argb;
                             Color32[] colors = null;
                             switch (DXTVersion) // Doing a switch instead of using a delegate for speed.
                             {

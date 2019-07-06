@@ -112,7 +112,7 @@ namespace Gamer.Format.Cry.Core
                     ? Transform.GetRotation().Mult(ParentNode.RotSoFar)
                     : _model.RootNode.Transform.GetRotation();
 
-        public List<ChunkNode> AllChildNodes => __NumChildren == 0 ? (List<ChunkNode>)null : _model.NodeMap.Values.Where(a => a.ParentNodeID == ID).ToList();
+        public List<ChunkNode> AllChildNodes => __NumChildren == 0 ? null : _model.NodeMap.Values.Where(a => a.ParentNodeID == ID).ToList();
 
         /// <summary>
         /// Gets the transform of the vertex.  This will be both the rotation and translation of this vertex, plus all the parents.

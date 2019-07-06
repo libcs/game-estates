@@ -48,7 +48,7 @@ namespace Gamer.Format.Nif
             }
             else
             {
-                Log(_obj.Name + " has multiple roots.");
+                Log($"{_obj.Name} has multiple roots.");
                 var gameObject = new GameObject(_obj.Name);
                 foreach (var rootRef in _obj.Footer.Roots)
                 {

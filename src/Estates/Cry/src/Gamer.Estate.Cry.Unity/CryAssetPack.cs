@@ -2,6 +2,7 @@
 using Gamer.Estate.Cry.FilePack;
 using Gamer.Format.Cry;
 using Gamer.Proxy;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Gamer.Estate.Cry
@@ -12,7 +13,7 @@ namespace Gamer.Estate.Cry
         MaterialManager _materialManager;
         CryManager _cryManager;
 
-        public CryAssetPack(ProxySink client, PakFile file) : base(client, file)
+        public CryAssetPack(ProxySink client, IPakFile file) : base(client, file)
         {
             _textureManager = new TextureManager(this);
             _materialManager = new MaterialManager(_textureManager);
@@ -24,5 +25,8 @@ namespace Gamer.Estate.Cry
         public void PreloadTextureTask(string texturePath) => _textureManager.PreloadTextureTask(texturePath);
         public GameObject CreateObject(string filePath) => _cryManager.InstantiateObj(filePath);
         public void PreloadObjectTask(string filePath) => _cryManager.PreloadObjectTask(filePath);
+
+        // custom
+        public async Task<CryAssetPack> GetSocAssetPackAsync(string filePath) => new CryAssetPack(ProxySink.DefaultProxySink, await LoadSocPackAsync(filePath));
     }
 }

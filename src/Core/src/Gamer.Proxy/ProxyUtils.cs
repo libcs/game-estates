@@ -20,13 +20,13 @@ namespace Gamer.Proxy
             if (uri.IsFile)
             {
                 var path = uri.LocalPath;
-                proxySink = new ProxySink();
+                proxySink = ProxySink.DefaultProxySink;
                 filePaths = path.Contains('*') ? Directory.GetFiles(Path.GetDirectoryName(path), Path.GetFileName(path)) : File.Exists(path) ? new[] { path } : null;
             }
             else if (string.IsNullOrEmpty(uri.Host) || uri.Host == "serv")
             {
                 var path = uri.LocalPath.Substring(1);
-                proxySink = uri.Host != "serv" ? new ProxySink() : new ProxySinkServer(func);
+                proxySink = uri.Host != "serv" ? ProxySink.DefaultProxySink : new ProxySinkServer(func);
                 filePaths = fileManager(path, game) ?? throw new InvalidOperationException($"{game} not available");
             }
             else

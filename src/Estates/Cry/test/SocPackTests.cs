@@ -1,0 +1,59 @@
+//#define LONGTEST
+using Gamer.Estate.Cry.FilePack;
+using Gamer.Format.Cry;
+using System;
+using System.Threading.Tasks;
+using Xunit;
+using Xunit.Abstractions;
+
+namespace Gamer.Estate.Cry.Tests
+{
+    public class SocPackTests
+    {
+        public SocPackTests(ITestOutputHelper helper) => Core.Debug.LogFunc = x => helper.WriteLine(x.ToString());
+
+        [Theory]
+        [InlineData(@"D:\StarCitizen\Data\ObjectContainers\Ships\MISC\Prospector\base_ext_lg.socpak", @"base_ext_lg.soc")]
+        public async Task LoadSocPack(string socPath, string modelPath)
+        {
+            // given
+            using (var assetPack = new SocPakFile(socPath))
+            {
+                // when
+                var exist0 = assetPack.ContainsFile(modelPath);
+                var data0 = await assetPack.LoadFileDataAsync(modelPath);
+                // then
+                Assert.True(exist0);
+                Assert.NotNull(data0);
+            }
+        }
+
+        [Theory]
+        [InlineData("game:/#StarCitizen", @"Data\ObjectContainers\Ships\MISC\Prospector\base_ext_lg.socpak", @"base_ext_lg.soc")]
+        public async Task LoadAssetPack(string path, string socPath, string modelPath)
+        {
+            // given
+            using (var assetPack = await new Uri(path).GetCryAssetPackAsync() as CryAssetPack)
+            {
+                // when
+                var exist0 = assetPack.ContainsFile(socPath);
+                var data0 = await assetPack.LoadFileDataAsync(socPath);
+                // then
+                Assert.True(exist0);
+                Assert.NotNull(data0);
+
+                // given
+                using (var socPack = await assetPack.GetSocAssetPackAsync(socPath))
+                {
+                    var exist1 = socPack.ContainsFile(modelPath);
+                    var data1 = await socPack.LoadFileDataAsync(modelPath);
+                    var model1 = await socPack.LoadObjectInfoAsync(modelPath) as CryFile;
+                    // then
+                    Assert.True(exist1);
+                    Assert.NotNull(data1);
+                    Assert.NotNull(model1);
+                }
+            }
+        }
+    }
+}

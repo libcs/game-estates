@@ -14,9 +14,9 @@ namespace Gamer.Estate.Cry.FilePack
     {
         public void TestLoadFileData(int take)
         {
-            foreach (var file in _pakFile._files.Take(take))
+            foreach (var file in _pakFile.GetContainsSet().Take(take))
             {
-                Log(file.Path);
+                Log(file);
                 LoadFileDataAsync(file).Wait();
             }
         }
@@ -24,13 +24,31 @@ namespace Gamer.Estate.Cry.FilePack
         public Task<Texture2DInfo> LoadTextureInfoAsync(string texturePath)
         {
             var filePath = FindTexture(texturePath);
-            return filePath != null ? Task.Run(async () =>
-            {
-                var fileData = await LoadFileDataAsync(filePath);
-                var fileExtension = Path.GetExtension(filePath);
-                if (fileExtension.ToLowerInvariant() == ".dds") return DdsReader.LoadDDSTexture(new MemoryStream(fileData));
-                else throw new NotSupportedException($"Unsupported texture type: {fileExtension}");
-            }) : null;
+            return filePath != null
+                ? Task.Run(async () =>
+                {
+                    var ddnaFile = filePath.Contains("_ddna");
+                    var fileData = await LoadFileDataAsync(filePath);
+                    var fileExtension = Path.GetExtension(filePath);
+                    if (fileExtension.ToLowerInvariant() == ".dds")
+                    {
+                        var s = new MemoryStream();
+                        s.Write(fileData, 0, fileData.Length);
+                        for (var i = 7; i > 0; i--)
+                        {
+                            var subFilePath = $"{filePath}.{i}";
+                            if (ContainsFile(subFilePath))
+                            {
+                                fileData = await LoadFileDataAsync(subFilePath);
+                                s.Write(fileData, 0, fileData.Length);
+                            }
+                        }
+                        s.Position = 0;
+                        return DdsReader.LoadDDSTexture(s);
+                    }
+                    else throw new NotSupportedException($"Unsupported texture type: {fileExtension}");
+                })
+                : Task.FromResult<Texture2DInfo>(null);
         }
 
         public Task<object> LoadObjectInfoAsync(string filePath) => Task.Run(async () =>
@@ -52,12 +70,10 @@ namespace Gamer.Estate.Cry.FilePack
         /// </summary>
         string FindTexture(string texturePath)
         {
-            var textureName = Path.GetFileNameWithoutExtension(texturePath);
-            var textureNameInTexturesDir = $"textures/{textureName}";
-            var filePath = $"{textureNameInTexturesDir}.dds";
+            var filePath = Path.ChangeExtension(texturePath, ".dds");
             if (ContainsFile(filePath))
                 return filePath;
-            Log($"Could not find file \"{texturePath}\" in a BSA file.");
+            Log($"Could not find file \"{texturePath}\" in a PAK file.");
             return null;
         }
 

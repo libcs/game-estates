@@ -1,4 +1,5 @@
 //#define LONGTEST
+using Gamer.Format.Cry;
 using System;
 using System.Threading.Tasks;
 using Xunit;
@@ -20,6 +21,25 @@ namespace Gamer.Estate.Cry.Tests
                 // when
                 var exist0 = assetPack.ContainsFile(modelPath);
                 var data0 = await assetPack.LoadFileDataAsync(modelPath);
+                var model0 = await assetPack.LoadObjectInfoAsync(modelPath) as CryFile;
+                // then
+                Assert.True(exist0);
+                Assert.NotNull(data0);
+                Assert.NotNull(model0);
+            }
+        }
+
+        [Theory]
+        [InlineData("game:/#StarCitizen", @"Data\Objects\animals\fish\textures\fish_cleanerfish_cleanl_unique_uee_01_diff.dds")]
+        //[InlineData("game:/#StarCitizen", @"Data\Objects\animals\fish\textures\fish_cleanerfish_cleanl_unique_uee_01_ddna.dds")]
+        public async Task LoadTexture(string path, string modelPath)
+        {
+            // given
+            using (var assetPack = await new Uri(path).GetCryAssetPackAsync())
+            {
+                // when
+                var exist0 = assetPack.ContainsFile(modelPath);
+                var data0 = await assetPack.LoadTextureInfoAsync(modelPath);
                 // then
                 Assert.True(exist0);
                 Assert.NotNull(data0);

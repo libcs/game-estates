@@ -253,7 +253,7 @@ namespace Gamer.Estate.Tes.FilePack
                         ddsHeader.ddspf.dwFourCC = Encoding.ASCII.GetBytes("DX10");
                         ddsHeader.dwPitchOrLinearSize = (uint)file.Tex.Width * file.Tex.Height; // 8bpp
                         dx10 = true;
-                        dx10Header.dxgiFormat = (int)DXGIFormat.BC7_UNORM;
+                        dx10Header.dxgiFormat = DXGIFormat.BC7_UNORM;
                         break;
                     case DXGIFormat.DXGI_FORMAT_B8G8R8A8_UNORM:
                         ddsHeader.ddspf.dwFlags = DDSPixelFormats.RGB | DDSPixelFormats.AlphaPixels;

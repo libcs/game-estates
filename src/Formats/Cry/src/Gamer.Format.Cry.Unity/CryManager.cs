@@ -60,7 +60,6 @@ namespace Gamer.Format.Cry
             PreloadObjectTask(filePath);
             var file = (CryFile)_preloadTasks[filePath].Result();
             _preloadTasks.Remove(filePath);
-            Log("HERE1");
             // Start pre-loading all the NIF's textures.
             foreach (var texturePath in file.GetTexturePaths())
                 _materialManager.TextureManager.PreloadTextureTask(texturePath);

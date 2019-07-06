@@ -18,7 +18,8 @@ namespace Gamer.Estate.Cry.Loader
 
             AssetPack = assetUri.GetCryAssetPackAsync().Result();
 
-            MakeObject(@"Data\Objects\animals\fish\CleanerFish_clean_prop_animal_01.chr");
+            //MakeObject(@"Data\Objects\animals\fish\CleanerFish_clean_prop_animal_01.chr");
+            MakeObject(@"Data\Objects\animals\sandWorm\sandWorm.chr");
         }
 
         static GameObject MakeObject(string path) => AssetPack.CreateObject(path);

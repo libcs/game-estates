@@ -261,6 +261,12 @@
     <Reference Include="Gamer.Core.UnityOculus.Platform">
       <HintPath>C:/_GITHUB/libcs/gamer.io.net/src/Loaders/Unity/Assets/Plugins/Gamer.Core.UnityOculus.Platform.dll</HintPath>
     </Reference>
+    <Reference Include="Gamer.Estate.Cry">
+      <HintPath>C:/_GITHUB/libcs/gamer.io.net/src/Loaders/Unity/Assets/Plugins/Gamer.Estate.Cry.dll</HintPath>
+    </Reference>
+    <Reference Include="Gamer.Estate.Cry.Unity">
+      <HintPath>C:/_GITHUB/libcs/gamer.io.net/src/Loaders/Unity/Assets/Plugins/Gamer.Estate.Cry.Unity.dll</HintPath>
+    </Reference>
     <Reference Include="Gamer.Estate.Rsi">
       <HintPath>C:/_GITHUB/libcs/gamer.io.net/src/Loaders/Unity/Assets/Plugins/Gamer.Estate.Rsi.dll</HintPath>
     </Reference>

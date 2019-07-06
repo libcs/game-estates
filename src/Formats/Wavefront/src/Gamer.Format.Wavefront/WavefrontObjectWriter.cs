@@ -74,7 +74,7 @@ namespace Gamer.Format.Wavefront
                         Log($"Skipped shields node {node.Name}");
                         continue;
                     }
-                    // Don't render shields
+                    // Don't render proxy
                     if (SkipProxyNodes && node.Name.StartsWith("proxy"))
                     {
                         Log($"Skipped proxy node {node.Name}");
@@ -141,13 +141,14 @@ namespace Gamer.Format.Wavefront
 
             // Going to assume that there is only one VerticesData datastream for now.  Need to watch for this.   
             // Some 801 types have vertices and not VertsUVs.
-            var tmpMtlName = chunkNode._model.ChunkMap.GetValue(chunkNode.MatID, null) as ChunkMtlName;
-            var tmpMeshSubsets = tmpMesh._model.ChunkMap.GetValue(tmpMesh.MeshSubsets, null) as ChunkMeshSubsets; // Listed as Object ID for the Node
-            var tmpIndices = tmpMesh._model.ChunkMap.GetValue(tmpMesh.IndicesData, null) as ChunkDataStream;
-            var tmpVertices = tmpMesh._model.ChunkMap.GetValue(tmpMesh.VerticesData, null) as ChunkDataStream;
-            var tmpNormals = tmpMesh._model.ChunkMap.GetValue(tmpMesh.NormalsData, null) as ChunkDataStream;
-            var tmpUVs = tmpMesh._model.ChunkMap.GetValue(tmpMesh.UVsData, null) as ChunkDataStream;
-            var tmpVertsUVs = tmpMesh._model.ChunkMap.GetValue(tmpMesh.VertsUVsData, null) as ChunkDataStream;
+            var chunkMap = chunkNode._model.ChunkMap;
+            var tmpMtlName = chunkMap.GetValue(chunkNode.MatID, null) as ChunkMtlName;
+            var tmpMeshSubsets = chunkMap.GetValue(tmpMesh.MeshSubsets, null) as ChunkMeshSubsets; // Listed as Object ID for the Node
+            var tmpIndices = chunkMap.GetValue(tmpMesh.IndicesData, null) as ChunkDataStream;
+            var tmpVertices = chunkMap.GetValue(tmpMesh.VerticesData, null) as ChunkDataStream;
+            var tmpNormals = chunkMap.GetValue(tmpMesh.NormalsData, null) as ChunkDataStream;
+            var tmpUVs = chunkMap.GetValue(tmpMesh.UVsData, null) as ChunkDataStream;
+            var tmpVertsUVs = chunkMap.GetValue(tmpMesh.VertsUVsData, null) as ChunkDataStream;
 
             // We only use 3 things in obj files:  vertices, normals and UVs.  No need to process the Tangents.
 
@@ -206,10 +207,7 @@ namespace Gamer.Format.Wavefront
                 // WRITE NORMALS BLOCK (VN)
                 if (tmpMesh.NormalsData != 0)
                     for (var j = meshSubset.FirstVertex; j < meshSubset.NumVertices + meshSubset.FirstVertex; j++)
-                        w.WriteLine("vn {0:F7} {1:F7} {2:F7}",
-                            tmpNormals.Normals[j].x,
-                            tmpNormals.Normals[j].y,
-                            tmpNormals.Normals[j].z);
+                        w.WriteLine("vn {0:F7} {1:F7} {2:F7}", tmpNormals.Normals[j].x, tmpNormals.Normals[j].y, tmpNormals.Normals[j].z);
 
                 // WRITE GROUP (G)
                 // w.WriteLine("g {0}", this.GroupOverride ?? chunkNode.Name);

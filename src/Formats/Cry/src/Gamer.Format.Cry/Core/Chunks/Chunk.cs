@@ -9,7 +9,7 @@ namespace Gamer.Format.Cry.Core
 {
     public abstract class Chunk : IBinaryChunk
     {
-        private static Dictionary<Type, Dictionary<uint, Func<dynamic>>> _chunkFactoryCache = new Dictionary<Type, Dictionary<uint, Func<dynamic>>> { };
+        static Dictionary<Type, Dictionary<uint, Func<dynamic>>> _chunkFactoryCache = new Dictionary<Type, Dictionary<uint, Func<dynamic>>> { };
 
         public static Chunk New(ChunkTypeEnum chunkType, uint version)
         {
@@ -48,6 +48,8 @@ namespace Gamer.Format.Cry.Core
                 case ChunkTypeEnum.BoneNameList: return New<ChunkBoneNameList>(version);
                 case ChunkTypeEnum.MeshMorphTarget: return New<ChunkMeshMorphTargets>(version);
                 case ChunkTypeEnum.Mtl: //Log("Mtl Chunk here");  // Obsolete.  Not used
+                // Star Citizen new
+                case ChunkTypeEnum.XmlFileSC: return New<ChunkXmlFileSC>(version);
                 default: return new ChunkUnknown();
             }
         }

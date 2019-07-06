@@ -15,6 +15,7 @@ namespace Gamer.Proxy
     {
         public static readonly string UriSchemeGame = "game";
         public static readonly string UriSchemeGames = "games";
+        public static ProxySink DefaultProxySink = new ProxySink();
 
         readonly WebClient _wc = new WebClient();
 
@@ -66,7 +67,7 @@ namespace Gamer.Proxy
             public byte[] ToArray() => _s.ToArray();
         }
 
-        public ProxySink() => _wc.OpenReadCompleted += OnOpenReadCompleted;
+        internal ProxySink() => _wc.OpenReadCompleted += OnOpenReadCompleted;
 
         // When SSE (Server side event) occurs this fires
         void OnOpenReadCompleted(object sender, OpenReadCompletedEventArgs args)
