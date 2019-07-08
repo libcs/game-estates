@@ -7,7 +7,7 @@ namespace Gamer.Format.Cry.Core
         public override void Read(BinaryReader r)
         {
             base.Read(r);
-            var xml = CryXmlSerializer.ReadStream(r.BaseStream);
+            var xml = CryXmlSerializer.ReadStream(r.BaseStream, true);
         }
     }
 }

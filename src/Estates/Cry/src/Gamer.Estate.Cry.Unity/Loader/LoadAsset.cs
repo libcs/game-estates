@@ -18,8 +18,26 @@ namespace Gamer.Estate.Cry.Loader
 
             AssetPack = assetUri.GetCryAssetPackAsync().Result();
 
+            //MakeObject(@"Data\Objects\DFM\DFM_NewHorizonSpeedway\architecture\race_ring\holo_chevron.cgf");
+            //MakeObject(@"Data\Objects\DFM\DFM_NewHorizonSpeedway\architecture\race_ring\holo_chevron_set_curved_left.cgf");
+            //MakeObject(@"Data\Objects\DFM\DFM_NewHorizonSpeedway\architecture\race_ring\holo_chevron_set_curved_right.cgf");
+            //MakeObject(@"Data\Objects\DFM\DFM_NewHorizonSpeedway\architecture\race_ring\holo_finish.cgf");
+            //MakeObject(@"Data\Objects\DFM\DFM_NewHorizonSpeedway\architecture\race_ring\holo_lapindicator.cgf");
+            //MakeObject(@"Data\Objects\DFM\DFM_NewHorizonSpeedway\architecture\race_ring\holo_start.cgf");
+            //MakeObject(@"Data\Objects\DFM\DFM_NewHorizonSpeedway\architecture\race_ring\race_ring_holo_center.cgf");
+            //MakeObject(@"Data\Objects\DFM\DFM_NewHorizonSpeedway\architecture\race_ring\race_ring_holo_chevron.cgf");
+
+
+            MakeObject(@"Data\Objects\Spaceships\Ships\ARGO\MPUV_Utility_Vehicle\ARGO_MPUV_lod1.cga");
+            //MakeObject(@"Data\Objects\Spaceships\Ships\DRAK\Caterpillar\exteriors\DRAK_Caterpillar.cga");
+            //MakeObject(@"Data\Objects\Spaceships\Ships\DRAK\Caterpillar\exteriors\DRAK_Caterpillar_lod1.cga");
+            //MakeObject(@"Data\Objects\Spaceships\Ships\DRAK\Caterpillar\exteriors\DRAK_Caterpillar_lod5.cga");
+            //MakeObject(@"Data\Objects\Spaceships\Ships\MISC\Prospector\MISC_Prospector_lod1.cga");
+            //MakeObject(@"Data\Objects\Spaceships\Ships\MISC\Prospector\MISC_Prospector_lod5.cga");
             //MakeObject(@"Data\Objects\animals\fish\CleanerFish_clean_prop_animal_01.chr");
-            MakeObject(@"Data\Objects\animals\sandWorm\sandWorm.chr");
+            //MakeObject(@"Data\Objects\animals\sandWorm\sandWorm.chr");
+
+            //MakeObject(@"Data\Objects\test\Dummytest.cgf");
         }
 
         static GameObject MakeObject(string path) => AssetPack.CreateObject(path);

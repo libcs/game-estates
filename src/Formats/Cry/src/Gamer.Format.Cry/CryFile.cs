@@ -34,7 +34,7 @@ namespace Gamer.Format.Cry
             InputFile = fileName;
         }
 
-        public void LoadFromFile(string dataDir)
+        public void LoadFromFile()
         {
             var files = new List<(string, Stream)> { (InputFile, File.Open(InputFile, FileMode.Open)) };
             var mFilePath = Path.ChangeExtension(InputFile, $"{Path.GetExtension(InputFile)}m");
@@ -43,10 +43,10 @@ namespace Gamer.Format.Cry
                 Log($"Found geometry file {Path.GetFileName(mFilePath)}");
                 files.Add((mFilePath, File.Open(mFilePath, FileMode.Open))); // Add to list of files to process
             }
-            LoadAsync(files, dataDir, FindMaterialFromFile, path => Task.FromResult<(string, Stream)>((path, File.Open(path, FileMode.Open)))).Wait();
+            LoadAsync(files, FindMaterialFromFile, path => Task.FromResult<(string, Stream)>((path, File.Open(path, FileMode.Open)))).Wait();
         }
 
-        static string FindMaterialFromFile(string materialPath, string fileName, string cleanName, string dataDir)
+        static string FindMaterialFromFile(string materialPath, string fileName, string cleanName)
         {
             // First try relative to file being processed
             if (Path.GetExtension(materialPath) != ".mtl") materialPath = Path.ChangeExtension(materialPath, "mtl");
@@ -54,7 +54,7 @@ namespace Gamer.Format.Cry
             if (!File.Exists(materialPath)) materialPath = Path.Combine(Path.GetDirectoryName(fileName), Path.GetFileName(cleanName));
             if (Path.GetExtension(materialPath) != ".mtl") materialPath = Path.ChangeExtension(materialPath, "mtl");
             // Then try relative to the ObjectDir
-            if (!File.Exists(materialPath) && dataDir != null) materialPath = Path.Combine(dataDir, cleanName);
+            if (!File.Exists(materialPath)) materialPath = Path.Combine("Data", cleanName);
             if (Path.GetExtension(materialPath) != ".mtl") materialPath = Path.ChangeExtension(materialPath, "mtl");
             // Then try just the fileName.mtl
             if (!File.Exists(materialPath)) materialPath = fileName;
@@ -63,7 +63,7 @@ namespace Gamer.Format.Cry
             return File.Exists(materialPath) ? materialPath : null;
         }
 
-        public async Task LoadAsync(IEnumerable<(string, Stream)> files, string dataDir, Func<string, string, string, string, string> getMaterialPath, Func<string, Task<(string, Stream)>> getFileAsync)
+        public async Task LoadAsync(IEnumerable<(string, Stream)> files, Func<string, string, string, string> getMaterialPath, Func<string, Task<(string, Stream)>> getFileAsync)
         {
             Models = new List<Model> { };
             foreach (var file in files)
@@ -106,13 +106,12 @@ namespace Gamer.Format.Cry
                     // The mtlname has a path.  Most likely starts at the Objects directory.
                     var stringSeparators = new[] { "/", "\\" };
                     // if objectdir is provided, check objectdir + mtlchunk.name
-                    if (dataDir != null)
-                        materialFilePath = Path.Combine(dataDir, mtlChunk.Name);
-                    else // object dir not provided, but we have a path.  Just grab the last part of the name and check the dir of the cga file
-                    {
-                        var r = mtlChunk.Name.Split(stringSeparators, StringSplitOptions.None);
-                        materialFilePath = r[r.Length - 1];
-                    }
+                    materialFilePath = Path.Combine("Data", mtlChunk.Name);
+                    //else // object dir not provided, but we have a path.  Just grab the last part of the name and check the dir of the cga file
+                    //{
+                    //    var r = mtlChunk.Name.Split(stringSeparators, StringSplitOptions.None);
+                    //    materialFilePath = r[r.Length - 1];
+                    //}
                 }
                 else
                 {
@@ -122,13 +121,12 @@ namespace Gamer.Format.Cry
                             cleanName = cleanName.Replace(character.ToString(), string.Empty);
                     materialFilePath = Path.Combine(Path.GetDirectoryName(fileName), cleanName);
                 }
-                var materialPath = getMaterialPath(materialFilePath, fileName, cleanName, dataDir);
-                var materialFile = await getFileAsync(materialPath);
                 // Populate CryEngine_Core.Material
-                var material = Material.FromFile(materialFile);
+                var materialPath = getMaterialPath(materialFilePath, fileName, cleanName);
+                var material = materialPath != null ? Material.FromFile(await getFileAsync(materialPath)) : null;
                 if (material != null)
                 {
-                    Log($"Located material file {Path.GetFileName(materialFile.Item1)}");
+                    Log($"Located material file {Path.GetFileName(materialPath)}");
                     Materials = FlattenMaterials(material).Where(m => m.Textures != null).ToArray();
                     // only one material, so it's a material file with no submaterials.  Check and set the name
                     if (Materials.Length == 1)
@@ -244,7 +242,7 @@ namespace Gamer.Format.Cry
         {
             foreach (var texture in Materials.SelectMany(x => x.Textures))
                 if (!string.IsNullOrEmpty(texture.File))
-                    yield return $@"Data\{texture.File.Replace("/", "\\")}";
+                    yield return $@"Data\{texture.File}";
 
         }
     }

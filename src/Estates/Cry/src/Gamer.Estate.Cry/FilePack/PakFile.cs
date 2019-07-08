@@ -66,19 +66,19 @@ namespace Gamer.Estate.Cry.FilePack
         /// <summary>
         /// Determines whether the PAK archive contains a file.
         /// </summary>
-        public bool ContainsFile(string filePath) => _filesByPath.Contains(filePath);
+        public bool ContainsFile(string filePath) => _filesByPath.Contains(filePath.Replace("/", "\\"));
 
         /// <summary>
         /// Loads an archived file's data.
         /// </summary>
         public Task<byte[]> LoadFileDataAsync(string filePath)
         {
-            var files = _filesByPath[filePath].ToArray();
-            if (files.Length == 0)
-                throw new FileNotFoundException(filePath);
+            var files = _filesByPath[filePath.Replace("/", "\\")].ToArray();
             if (files.Length == 1)
                 return LoadFileDataAsync(files[0]);
             Debug.Log($"LoadFileDataAsync: {filePath} @ {files.Length}");
+            if (files.Length == 0)
+                throw new FileNotFoundException(filePath);
             throw new NotSupportedException();
         }
 

@@ -35,9 +35,11 @@ namespace Gamer.Format.Cry
     public static class CryXmlSerializer
     {
         public static XmlDocument ReadFile(string inFile, bool writeLog = false) => ReadStream(File.OpenRead(inFile), writeLog);
+        public static XmlDocument ReadBytes(byte[] bytes, bool writeLog = false) => ReadStream(new MemoryStream(bytes), writeLog);
 
         public static XmlDocument ReadStream(Stream inStream, bool writeLog = false)
         {
+            var startOffset = (int)inStream.Position;
             using (var r = new BinaryReader(inStream))
             {
                 var peek = r.PeekChar();
@@ -51,11 +53,11 @@ namespace Gamer.Format.Cry
                 var headerLength = r.BaseStream.Position;
                 var fileLength = r.ReadInt32();
 
-                var nodeTableOffset = r.ReadInt32();
+                var nodeTableOffset = r.ReadInt32() + startOffset;
                 var nodeTableCount = r.ReadInt32();
                 var nodeTableSize = 28;
 
-                var referenceTableOffset = r.ReadInt32();
+                var referenceTableOffset = r.ReadInt32() + startOffset;
                 var referenceTableCount = r.ReadInt32();
                 var referenceTableSize = 8;
 
@@ -63,7 +65,7 @@ namespace Gamer.Format.Cry
                 var count3 = r.ReadInt32();
                 var length3 = 4;
 
-                var contentOffset = r.ReadInt32();
+                var contentOffset = r.ReadInt32() + startOffset;
                 var contentLength = r.ReadInt32();
 
                 // NODE TABLE

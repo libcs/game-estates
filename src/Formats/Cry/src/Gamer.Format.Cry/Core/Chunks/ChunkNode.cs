@@ -63,7 +63,7 @@ namespace Gamer.Format.Cry.Core
         // Calculated Properties
 
         public Matrix4x4 LocalTransform = new Matrix4x4();            // Because Cryengine tends to store transform relative to world, we have to add all the transforms from the node to the root.  Calculated, row major.
-        public Vector3 LocalTranslation = new Vector3();            // To hold the local rotation vector
+        public Vector3 LocalTranslation = new Vector3();            // To hold the local translation vector
         public Matrix3x3 LocalRotation = new Matrix3x3();             // to hold the local rotation matrix
         public Vector3 LocalScale = new Vector3();                  // to hold the local scale matrix
 

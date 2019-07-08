@@ -5,9 +5,9 @@ namespace Gamer.Format.Cry
 {
     public static class CryUtils
     {
-        public static Vector3 CryVectorToUnityVector(Vector3 vector) { Utils.Swap(ref vector.y, ref vector.z); return vector; }
+        public static UnityEngine.Vector3 CryVectorToUnityVector(UnityEngine.Vector3 vector) { Utils.Swap(ref vector.y, ref vector.z); return vector; }
 
-        public static Vector3 CryPointToUnityPoint(Vector3 point) => CryVectorToUnityVector(point); // / ConvertUtils.MeterInUnits;
+        public static UnityEngine.Vector3 CryPointToUnityPoint(Vector3 point) => CryVectorToUnityVector(point.ToUnity()); // / ConvertUtils.MeterInUnits;
 
         public static Matrix4x4 CryRotationMatrixToUnityRotationMatrix(Matrix4x4 rotationMatrix) => new Matrix4x4
         {
@@ -33,7 +33,7 @@ namespace Gamer.Format.Cry
 
         public static Quaternion CryEulerAnglesToUnityQuaternion(Vector3 eulerAngles)
         {
-            var eulerAngles2 = CryVectorToUnityVector(eulerAngles);
+            var eulerAngles2 = CryVectorToUnityVector(eulerAngles.ToUnity());
             var xRot = Quaternion.AngleAxis(Mathf.Rad2Deg * eulerAngles2.x, UnityEngine.Vector3.right);
             var yRot = Quaternion.AngleAxis(Mathf.Rad2Deg * eulerAngles2.y, UnityEngine.Vector3.up);
             var zRot = Quaternion.AngleAxis(Mathf.Rad2Deg * eulerAngles2.z, UnityEngine.Vector3.forward);

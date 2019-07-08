@@ -45,7 +45,7 @@ namespace Gamer.Estate.Cry.FilePack
         /// <summary>
         /// Determines whether the PAK archive contains a file.
         /// </summary>
-        public bool ContainsFile(string filePath) => _filesByPath.ContainsKey(filePath);
+        public bool ContainsFile(string filePath) => _filesByPath.ContainsKey(filePath.Replace("/", "\\"));
 
         void ReadMetadata() => _filesByPath = _r.Entries.ToDictionary(x => x.FullName, StringComparer.OrdinalIgnoreCase);
 
@@ -54,11 +54,11 @@ namespace Gamer.Estate.Cry.FilePack
         /// </summary>
         public async Task<byte[]> LoadFileDataAsync(string filePath)
         {
-            var file = _filesByPath[filePath];
-            var r = new byte[file.Length];
+            var file = _filesByPath[filePath.Replace("/", "\\")];
+            var r = new MemoryStream();
             using (var s = file.Open())
-                await s.ReadAsync(r, 0, r.Length);
-            return r;
+                await s.CopyToAsync(r);
+            return r.ToArray();
         }
     }
 }

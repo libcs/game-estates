@@ -2,6 +2,7 @@
 using Gamer.Estate.Cry.FilePack;
 using Gamer.Format.Cry;
 using System;
+using System.IO;
 using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
@@ -22,6 +23,8 @@ namespace Gamer.Estate.Cry.Tests
                 // when
                 var exist0 = assetPack.ContainsFile(modelPath);
                 var data0 = await assetPack.LoadFileDataAsync(modelPath);
+                var file0 = new CryFile(Path.Combine(socPath.Replace(".socpak", ""), modelPath));
+                file0.LoadFromFile();
                 // then
                 Assert.True(exist0);
                 Assert.NotNull(data0);

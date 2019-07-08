@@ -23,7 +23,7 @@ namespace Gamer.Estate.Wavefront.Tests
         public void LoadModel(string path)
         {
             var cryFile = new CryFile(Path.Combine(AssetRoot, path));
-            cryFile.LoadFromFile(null);
+            cryFile.LoadFromFile();
             var objFile = new WavefrontObjectWriter(cryFile);
             objFile.Write(@"C:\T_\Models", false);
         }

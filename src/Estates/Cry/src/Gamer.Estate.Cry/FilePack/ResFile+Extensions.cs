@@ -61,7 +61,7 @@ namespace Gamer.Estate.Cry.FilePack
                 files.Add((mFilePath, new MemoryStream(await LoadFileDataAsync(mFilePath))));
             }
             var file = new CryFile(filePath);
-            await file.LoadAsync(files, null, FindMaterial, async path => (path, new MemoryStream(await LoadFileDataAsync(path))));
+            await file.LoadAsync(files, FindMaterial, async path => (path, new MemoryStream(await LoadFileDataAsync(path))));
             return (object)file;
         });
 
@@ -80,18 +80,21 @@ namespace Gamer.Estate.Cry.FilePack
         /// <summary>
         /// Finds the actual path of a material.
         /// </summary>
-        string FindMaterial(string materialPath, string fileName, string cleanName, string dataDir)
+        string FindMaterial(string materialPath, string fileName, string cleanName)
         {
             // First try relative to file being processed
             if (Path.GetExtension(materialPath) != ".mtl") materialPath = Path.ChangeExtension(materialPath, "mtl");
+            if (ContainsFile(materialPath)) return materialPath;
             // Then try just the last part of the chunk, relative to the file being processed
-            if (!ContainsFile(materialPath)) materialPath = Path.Combine(Path.GetDirectoryName(fileName), Path.GetFileName(cleanName));
+            materialPath = Path.Combine(Path.GetDirectoryName(fileName), Path.GetFileName(cleanName));
             if (Path.GetExtension(materialPath) != ".mtl") materialPath = Path.ChangeExtension(materialPath, "mtl");
+            if (ContainsFile(materialPath)) return materialPath;
             // Then try relative to the ObjectDir
-            if (!ContainsFile(materialPath) && dataDir != null) materialPath = Path.Combine(dataDir, cleanName);
+            materialPath = Path.Combine("Data", cleanName);
             if (Path.GetExtension(materialPath) != ".mtl") materialPath = Path.ChangeExtension(materialPath, "mtl");
+            if (ContainsFile(materialPath)) return materialPath;
             // Then try just the fileName.mtl
-            if (!ContainsFile(materialPath)) materialPath = fileName;
+            materialPath = fileName;
             if (Path.GetExtension(materialPath) != ".mtl") materialPath = Path.ChangeExtension(materialPath, "mtl");
             return ContainsFile(materialPath) ? materialPath : null;
         }

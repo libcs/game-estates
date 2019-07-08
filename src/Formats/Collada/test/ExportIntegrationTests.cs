@@ -22,7 +22,7 @@ namespace Gamer.Estate.Collada.Tests
         public void LoadModel(string path)
         {
             var cryFile = new CryFile(Path.Combine(AssetRoot, path));
-            cryFile.LoadFromFile(null);
+            cryFile.LoadFromFile();
             var daeFile = new ColladaObjectWriter(cryFile);
             daeFile.Write(@"C:\T_\Models", false);
         }
