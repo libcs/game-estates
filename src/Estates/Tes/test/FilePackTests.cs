@@ -97,7 +97,7 @@ namespace Gamer.Estate.Tes.Tests
         static void TestLoadCell(TesDataPack data, Vector3 position)
         {
             var cellId = GetCellId(position, 60);
-            var cell = data.FindCellRecord(cellId);
+            var cell = data.FindCELLRecord(cellId);
             var land = data.FindLANDRecord(cellId);
         }
 

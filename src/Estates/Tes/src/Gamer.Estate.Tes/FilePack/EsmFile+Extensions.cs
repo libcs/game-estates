@@ -74,7 +74,7 @@ namespace Gamer.Estate.Tes.FilePack
             return null;
         }
 
-        public CELLRecord FindCellRecord(Vector3Int cellId)
+        public CELLRecord FindCELLRecord(Vector3Int cellId)
         {
             if (Format == GameFormat.TES3)
             {

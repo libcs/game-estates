@@ -2,7 +2,6 @@
 using Gamer.Estate.Tes.Records;
 using Gamer.Proxy;
 using System;
-using System.Diagnostics;
 using System.IO;
 
 namespace Gamer.Estate.Tes.FilePack

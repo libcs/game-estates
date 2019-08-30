@@ -32,7 +32,7 @@ namespace Gamer.Estate.Tes
 
         public InRangeCellInfo StartCreatingCell(Vector3Int cellId)
         {
-            var cell = _dataPack.FindCellRecord(cellId);
+            var cell = _dataPack.FindCELLRecord(cellId);
             if (cell != null)
             {
                 var cellInfo = StartInstantiatingCell(cell);
