@@ -5,33 +5,33 @@ VisualStudioVersion = 15.0.28307.329
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "dependencies", "dependencies", "{83F5D796-8D90-4872-934D-34ABCAFDE642}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gamer.Core", "..\Core\src\Gamer.Core\Gamer.Core.csproj", "{3F64E6D9-1F5A-4057-B0D3-E06B674F1C78}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Game.Core", "..\Core\src\Game.Core\Game.Core.csproj", "{3F64E6D9-1F5A-4057-B0D3-E06B674F1C78}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gamer.Core.Unity", "..\Core\src\Gamer.Core.Unity\Gamer.Core.Unity.csproj", "{8DBC50CA-6901-45CC-8CFE-B8C22BF0230F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Game.Core.Unity", "..\Core\src\Game.Core.Unity\Game.Core.Unity.csproj", "{8DBC50CA-6901-45CC-8CFE-B8C22BF0230F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gamer.Format.Nif", "Nif\src\Gamer.Format.Nif\Gamer.Format.Nif.csproj", "{ED6638D3-6C89-480F-9E45-EE33DF6110EE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Game.Format.Nif", "Nif\src\Game.Format.Nif\Game.Format.Nif.csproj", "{ED6638D3-6C89-480F-9E45-EE33DF6110EE}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gamer.Format.Collada", "Collada\src\Gamer.Format.Collada\Gamer.Format.Collada.csproj", "{EF47AA87-3F39-44F0-ABDA-F14A0D0867D2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Game.Format.Collada", "Collada\src\Game.Format.Collada\Game.Format.Collada.csproj", "{EF47AA87-3F39-44F0-ABDA-F14A0D0867D2}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gamer.Format.Wavefront", "Wavefront\src\Gamer.Format.Wavefront\Gamer.Format.Wavefront.csproj", "{99EB4C8B-F961-4776-8857-215DE90535A5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Game.Format.Wavefront", "Wavefront\src\Game.Format.Wavefront\Game.Format.Wavefront.csproj", "{99EB4C8B-F961-4776-8857-215DE90535A5}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gamer.Format.Nif.Unity", "Nif\src\Gamer.Format.Nif.Unity\Gamer.Format.Nif.Unity.csproj", "{086BF31B-5386-4369-A671-B75E420D621E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Game.Format.Nif.Unity", "Nif\src\Game.Format.Nif.Unity\Game.Format.Nif.Unity.csproj", "{086BF31B-5386-4369-A671-B75E420D621E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gamer.Format.Cry", "Cry\src\Gamer.Format.Cry\Gamer.Format.Cry.csproj", "{52762E46-B6D0-4A6D-9A5D-C4DA91CC2239}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Game.Format.Cry", "Cry\src\Game.Format.Cry\Game.Format.Cry.csproj", "{52762E46-B6D0-4A6D-9A5D-C4DA91CC2239}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gamer.Format.Collada.Tests", "Collada\test\Gamer.Format.Collada.Tests.csproj", "{9A9E49A4-C288-4906-8455-B42BF21B2961}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Game.Format.Collada.Tests", "Collada\test\Game.Format.Collada.Tests.csproj", "{9A9E49A4-C288-4906-8455-B42BF21B2961}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gamer.Format.Cry.Tests", "Cry\test\Gamer.Format.Cry.Tests.csproj", "{F51F148B-5C50-4D4B-B2A4-27B24897B4F8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Game.Format.Cry.Tests", "Cry\test\Game.Format.Cry.Tests.csproj", "{F51F148B-5C50-4D4B-B2A4-27B24897B4F8}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gamer.Format.Nif.Tests", "Nif\test\Gamer.Format.Nif.Tests.csproj", "{E513D9C5-5D6D-4E9F-BB86-DE90F4EB9C2B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Game.Format.Nif.Tests", "Nif\test\Game.Format.Nif.Tests.csproj", "{E513D9C5-5D6D-4E9F-BB86-DE90F4EB9C2B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gamer.Format.Wavefront.Tests", "Wavefront\test\Gamer.Format.Wavefront.Tests.csproj", "{61B956F8-8404-4DD1-808D-6653F4B8E72A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Game.Format.Wavefront.Tests", "Wavefront\test\Game.Format.Wavefront.Tests.csproj", "{61B956F8-8404-4DD1-808D-6653F4B8E72A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gamer.Format.Cry.Unity", "Cry\src\Gamer.Format.Cry.Unity\Gamer.Format.Cry.Unity.csproj", "{C2628988-7D50-417F-A4E0-F592DCEC7ABB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Game.Format.Cry.Unity", "Cry\src\Game.Format.Cry.Unity\Game.Format.Cry.Unity.csproj", "{C2628988-7D50-417F-A4E0-F592DCEC7ABB}"
 EndProject
-Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "Gamer.Format.Nif.Niftools", "Nif\src\Gamer.Format.Nif.Niftools\Gamer.Format.Nif.Niftools.pyproj", "{7C73E29B-9EE3-4148-99AD-CD1667C57F6D}"
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "Game.Format.Nif.Niftools", "Nif\src\Game.Format.Nif.Niftools\Game.Format.Nif.Niftools.pyproj", "{7C73E29B-9EE3-4148-99AD-CD1667C57F6D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gamer.Format.Nif2", "Nif\src\Gamer.Format.Nif2\Gamer.Format.Nif2.csproj", "{2C08B30C-52D5-447D-922F-E0570E88B160}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Game.Format.Nif2", "Nif\src\Game.Format.Nif2\Game.Format.Nif2.csproj", "{2C08B30C-52D5-447D-922F-E0570E88B160}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

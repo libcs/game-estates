@@ -5,7 +5,7 @@ using UnityEngine;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Gamer.Estate.UltimaIX.Tests
+namespace Game.Estate.UltimaIX.Tests
 {
     public class FilePackTests
     {

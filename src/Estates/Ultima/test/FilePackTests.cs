@@ -2,9 +2,9 @@ using System;
 using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
-using static Gamer.Core.Debug;
+using static Game.Core.Debug;
 
-namespace Gamer.Estate.Ultima.Tests
+namespace Game.Estate.Ultima.Tests
 {
     public class FilePackTests
     {

@@ -1,11 +1,11 @@
 //#define LONGTEST
-using Gamer.Format.Cry;
+using Game.Format.Cry;
 using System;
 using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Gamer.Estate.Cry.Tests
+namespace Game.Estate.Cry.Tests
 {
     public class FilePackTests
     {

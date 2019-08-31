@@ -1,11 +1,11 @@
-using Gamer.Format.Collada;
-using Gamer.Format.Cry;
+using Game.Format.Collada;
+using Game.Format.Cry;
 using System.IO;
 using Xunit;
 using Xunit.Abstractions;
-using static Gamer.Core.Debug;
+using static Game.Core.Debug;
 
-namespace Gamer.Estate.Collada.Tests
+namespace Game.Estate.Collada.Tests
 {
     public class ExportIntegrationTests
     {

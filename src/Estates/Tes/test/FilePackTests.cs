@@ -1,6 +1,6 @@
 //#define LONGTEST
-using Gamer.Estate.Tes.Records;
-using Gamer.Format.Nif;
+using Game.Estate.Tes.Records;
+using Game.Format.Nif;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -8,7 +8,7 @@ using UnityEngine;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Gamer.Estate.Tes.Tests
+namespace Game.Estate.Tes.Tests
 {
     public class FilePackTests
     {

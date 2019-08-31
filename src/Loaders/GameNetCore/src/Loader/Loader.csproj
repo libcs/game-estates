@@ -13,8 +13,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\..\lib\GameNetCore\src.net\DefaultBuilder\Contoso.GameNetCore.csproj" />
-    <ProjectReference Include="..\..\..\..\Core\src\Gamer.Core\Gamer.Core.csproj" />
-    <ProjectReference Include="..\..\..\..\Estates\Tes\src\Gamer.Estate.Tes.Unity\Gamer.Estate.Tes.Unity.csproj" />
+    <ProjectReference Include="..\..\..\..\Core\src\Game.Core\Game.Core.csproj" />
+    <ProjectReference Include="..\..\..\..\Estates\Tes\src\Game.Estate.Tes.Unity\Game.Estate.Tes.Unity.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net471</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="**\*.swift" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\Core\src\Game.Core.Unity\Game.Core.Unity.csproj" />
+    <ProjectReference Include="..\..\..\..\Formats\Cry\src\Game.Format.Cry.Unity\Game.Format.Cry.Unity.csproj" />
+    <ProjectReference Include="..\Game.Estate.Cry\Game.Estate.Cry.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="UnityEngine">
+      <HintPath>..\..\..\..\..\lib\Unity\UnityEngine.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="copy &quot;$(TargetDir)Game.Estate.Cry*.*&quot; &quot;$(ProjectDir)..\..\..\..\Loaders\Unity\Assets\Plugins\&quot;&#xD;&#xA;copy &quot;$(TargetDir)Game.Format.Cry*.*&quot; &quot;$(ProjectDir)..\..\..\..\Loaders\Unity\Assets\Plugins\&quot;&#xD;&#xA;&#xD;&#xA;" />
+  </Target>
+
+</Project>

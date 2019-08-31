@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.329
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gamer.Core", "src\Gamer.Core\Gamer.Core.csproj", "{FC7EC764-41A9-4DAE-A74C-1A55EEC364D8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Game.Core", "src\Game.Core\Game.Core.csproj", "{FC7EC764-41A9-4DAE-A74C-1A55EEC364D8}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gamer.Core.Unity", "src\Gamer.Core.Unity\Gamer.Core.Unity.csproj", "{801960BC-8F78-4E5E-8BD9-976866515BFA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Game.Core.Unity", "src\Game.Core.Unity\Game.Core.Unity.csproj", "{801960BC-8F78-4E5E-8BD9-976866515BFA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gamer.Proxy", "src\Gamer.Proxy\Gamer.Proxy.csproj", "{B5B7DAAA-1523-449A-A451-118C9DB2E18A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Game.Proxy", "src\Game.Proxy\Game.Proxy.csproj", "{B5B7DAAA-1523-449A-A451-118C9DB2E18A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gamer.Proxy.Tests", "test\Gamer.Proxy.Tests\Gamer.Proxy.Tests.csproj", "{B7B18E38-30F2-4EC2-9391-C9D07F8FD322}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Game.Proxy.Tests", "test\Game.Proxy.Tests\Game.Proxy.Tests.csproj", "{B7B18E38-30F2-4EC2-9391-C9D07F8FD322}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

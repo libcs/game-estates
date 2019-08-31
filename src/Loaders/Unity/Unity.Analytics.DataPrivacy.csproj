@@ -242,35 +242,35 @@
     <Reference Include="SyntaxTree.VisualStudio.Unity.Bridge">
       <HintPath>C:/Program Files (x86)/Microsoft Visual Studio Tools for Unity/15.0/Editor/SyntaxTree.VisualStudio.Unity.Bridge.dll</HintPath>
     </Reference>
-    <Reference Include="Gamer.Core">
-      <HintPath>Assets/Plugins/Gamer.Core.dll</HintPath>
+    <Reference Include="Game.Core">
+      <HintPath>Assets/Plugins/Game.Core.dll</HintPath>
     </Reference>
-    <Reference Include="Gamer.Core.Unity">
-      <HintPath>Assets/Plugins/Gamer.Core.Unity.dll</HintPath>
+    <Reference Include="Game.Core.Unity">
+      <HintPath>Assets/Plugins/Game.Core.Unity.dll</HintPath>
     </Reference>
-    <Reference Include="Gamer.Core.UnityEngine">
-      <HintPath>Assets/Plugins/Gamer.Core.UnityEngine.dll</HintPath>
+    <Reference Include="Game.Core.UnityEngine">
+      <HintPath>Assets/Plugins/Game.Core.UnityEngine.dll</HintPath>
     </Reference>
-    <Reference Include="Gamer.Estate.Tes">
-      <HintPath>Assets/Plugins/Gamer.Estate.Tes.dll</HintPath>
+    <Reference Include="Game.Estate.Tes">
+      <HintPath>Assets/Plugins/Game.Estate.Tes.dll</HintPath>
     </Reference>
-    <Reference Include="Gamer.Estate.Tes.Unity">
-      <HintPath>Assets/Plugins/Gamer.Estate.Tes.Unity.dll</HintPath>
+    <Reference Include="Game.Estate.Tes.Unity">
+      <HintPath>Assets/Plugins/Game.Estate.Tes.Unity.dll</HintPath>
     </Reference>
-    <Reference Include="Gamer.Estate.Ultima">
-      <HintPath>Assets/Plugins/Gamer.Estate.Ultima.dll</HintPath>
+    <Reference Include="Game.Estate.Ultima">
+      <HintPath>Assets/Plugins/Game.Estate.Ultima.dll</HintPath>
     </Reference>
-    <Reference Include="Gamer.Estate.Ultima.Unity">
-      <HintPath>Assets/Plugins/Gamer.Estate.Ultima.Unity.dll</HintPath>
+    <Reference Include="Game.Estate.Ultima.Unity">
+      <HintPath>Assets/Plugins/Game.Estate.Ultima.Unity.dll</HintPath>
     </Reference>
-    <Reference Include="Gamer.Format.Nif">
-      <HintPath>Assets/Plugins/Gamer.Format.Nif.dll</HintPath>
+    <Reference Include="Game.Format.Nif">
+      <HintPath>Assets/Plugins/Game.Format.Nif.dll</HintPath>
     </Reference>
-    <Reference Include="Gamer.Format.Nif.Unity">
-      <HintPath>Assets/Plugins/Gamer.Format.Nif.Unity.dll</HintPath>
+    <Reference Include="Game.Format.Nif.Unity">
+      <HintPath>Assets/Plugins/Game.Format.Nif.Unity.dll</HintPath>
     </Reference>
-    <Reference Include="Gamer.Proxy">
-      <HintPath>Assets/Plugins/Gamer.Proxy.dll</HintPath>
+    <Reference Include="Game.Proxy">
+      <HintPath>Assets/Plugins/Game.Proxy.dll</HintPath>
     </Reference>
     <Reference Include="ICSharpCode.SharpZipLib">
       <HintPath>Assets/Plugins/ICSharpCode.SharpZipLib.dll</HintPath>

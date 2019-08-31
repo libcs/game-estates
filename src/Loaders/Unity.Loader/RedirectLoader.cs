@@ -1,15 +1,15 @@
 ﻿// CRY
-using Redirect = Gamer.Estate.Cry.Loader.LoadAsset;
+using Redirect = Game.Estate.Cry.Loader.LoadAsset;
 
 // TES
-//using Redirect = Gamer.Estate.Tes.Loader.LoadAsset;
-//using Redirect = Gamer.Estate.Tes.Loader.LoadData;
-//using Redirect = Gamer.Estate.Tes.Loader.LoadEngine;
+//using Redirect = Game.Estate.Tes.Loader.LoadAsset;
+//using Redirect = Game.Estate.Tes.Loader.LoadData;
+//using Redirect = Game.Estate.Tes.Loader.LoadEngine;
 
 // ULTIMA
-//using Redirect = Gamer.Estate.Ultima.Loader.LoadAsset;
-//using Redirect = Gamer.Estate.Ultima.Loader.LoadData;
-//using Redirect = Gamer.Estate.Ultima.Loader.LoadEngine;
+//using Redirect = Game.Estate.Ultima.Loader.LoadAsset;
+//using Redirect = Game.Estate.Ultima.Loader.LoadData;
+//using Redirect = Game.Estate.Ultima.Loader.LoadEngine;
 
 public class RedirectLoader : UnityEngine.MonoBehaviour
 {

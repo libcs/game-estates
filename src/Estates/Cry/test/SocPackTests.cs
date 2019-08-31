@@ -1,13 +1,13 @@
 //#define LONGTEST
-using Gamer.Estate.Cry.FilePack;
-using Gamer.Format.Cry;
+using Game.Estate.Cry.FilePack;
+using Game.Format.Cry;
 using System;
 using System.IO;
 using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Gamer.Estate.Cry.Tests
+namespace Game.Estate.Cry.Tests
 {
     public class SocPackTests
     {

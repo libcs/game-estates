@@ -13,9 +13,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Estates\Cry\src\Gamer.Estate.Cry.Unity\Gamer.Estate.Cry.Unity.csproj" />
-    <ProjectReference Include="..\..\Estates\Tes\src\Gamer.Estate.Tes.Unity\Gamer.Estate.Tes.Unity.csproj" />
-    <ProjectReference Include="..\..\Estates\Ultima\src\Gamer.Estate.Ultima.Unity\Gamer.Estate.Ultima.Unity.csproj" />
+    <ProjectReference Include="..\..\Estates\Cry\src\Game.Estate.Cry.Unity\Game.Estate.Cry.Unity.csproj" />
+    <ProjectReference Include="..\..\Estates\Tes\src\Game.Estate.Tes.Unity\Game.Estate.Tes.Unity.csproj" />
+    <ProjectReference Include="..\..\Estates\Ultima\src\Game.Estate.Ultima.Unity\Game.Estate.Ultima.Unity.csproj" />
   </ItemGroup>
 
   <ItemGroup>

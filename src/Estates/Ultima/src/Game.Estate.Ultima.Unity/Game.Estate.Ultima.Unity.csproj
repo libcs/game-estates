@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net471</TargetFramework>
+  </PropertyGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="copy &quot;$(TargetDir)Game.Estate.Ultima*.*&quot; &quot;$(ProjectDir)..\..\..\..\Loaders\Unity\Assets\Plugins\&quot;" />
+  </Target>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\Core\src\Game.Core.UnityEngine\Game.Core.UnityEngine.csproj" />
+    <ProjectReference Include="..\..\..\..\Core\src\Game.Core.Unity\Game.Core.Unity.csproj" />
+    <ProjectReference Include="..\Game.Estate.Ultima\Game.Estate.Ultima.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="UnityEngine">
+      <HintPath>..\..\..\..\..\lib\Unity\UnityEngine.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

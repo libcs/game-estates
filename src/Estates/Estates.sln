@@ -5,39 +5,39 @@ VisualStudioVersion = 15.0.28307.329
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "dependencies", "dependencies", "{83F5D796-8D90-4872-934D-34ABCAFDE642}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gamer.Estate.Tes", "Tes\src\Gamer.Estate.Tes\Gamer.Estate.Tes.csproj", "{ED04C2CD-E2B6-4AFB-812B-29BB765E4B8B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Game.Estate.Tes", "Tes\src\Game.Estate.Tes\Game.Estate.Tes.csproj", "{ED04C2CD-E2B6-4AFB-812B-29BB765E4B8B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gamer.Estate.Tes.Unity", "Tes\src\Gamer.Estate.Tes.Unity\Gamer.Estate.Tes.Unity.csproj", "{76AA09E7-59C8-4B61-810F-92477696211B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Game.Estate.Tes.Unity", "Tes\src\Game.Estate.Tes.Unity\Game.Estate.Tes.Unity.csproj", "{76AA09E7-59C8-4B61-810F-92477696211B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gamer.Core", "..\Core\src\Gamer.Core\Gamer.Core.csproj", "{3F64E6D9-1F5A-4057-B0D3-E06B674F1C78}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Game.Core", "..\Core\src\Game.Core\Game.Core.csproj", "{3F64E6D9-1F5A-4057-B0D3-E06B674F1C78}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gamer.Core.Unity", "..\Core\src\Gamer.Core.Unity\Gamer.Core.Unity.csproj", "{8DBC50CA-6901-45CC-8CFE-B8C22BF0230F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Game.Core.Unity", "..\Core\src\Game.Core.Unity\Game.Core.Unity.csproj", "{8DBC50CA-6901-45CC-8CFE-B8C22BF0230F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gamer.Estate.Ultima", "Ultima\src\Gamer.Estate.Ultima\Gamer.Estate.Ultima.csproj", "{6D18B2E8-E738-43C7-87C7-DE476DAF4721}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Game.Estate.Ultima", "Ultima\src\Game.Estate.Ultima\Game.Estate.Ultima.csproj", "{6D18B2E8-E738-43C7-87C7-DE476DAF4721}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gamer.Estate.Ultima.Unity", "Ultima\src\Gamer.Estate.Ultima.Unity\Gamer.Estate.Ultima.Unity.csproj", "{67E48FC6-0EA6-427D-B3C7-9678F604FAD7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Game.Estate.Ultima.Unity", "Ultima\src\Game.Estate.Ultima.Unity\Game.Estate.Ultima.Unity.csproj", "{67E48FC6-0EA6-427D-B3C7-9678F604FAD7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gamer.Estate.Tes.Tests", "Tes\test\Gamer.Estate.Tes.Tests.csproj", "{6A408794-1C6D-4DDD-BB0F-668C956D45FA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Game.Estate.Tes.Tests", "Tes\test\Game.Estate.Tes.Tests.csproj", "{6A408794-1C6D-4DDD-BB0F-668C956D45FA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gamer.Estate.Ultima.Tests", "Ultima\test\Gamer.Estate.Ultima.Tests.csproj", "{78C77425-B7C8-4F62-BD5F-3AFD95DC1321}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Game.Estate.Ultima.Tests", "Ultima\test\Game.Estate.Ultima.Tests.csproj", "{78C77425-B7C8-4F62-BD5F-3AFD95DC1321}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gamer.Format.Nif", "..\Formats\Nif\src\Gamer.Format.Nif\Gamer.Format.Nif.csproj", "{975DA1EB-F890-4BFA-8E88-1A532F5D4807}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Game.Format.Nif", "..\Formats\Nif\src\Game.Format.Nif\Game.Format.Nif.csproj", "{975DA1EB-F890-4BFA-8E88-1A532F5D4807}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gamer.Format.Nif.Unity", "..\Formats\Nif\src\Gamer.Format.Nif.Unity\Gamer.Format.Nif.Unity.csproj", "{09930D4B-CF89-40F9-AB52-EC41E2FF4FA7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Game.Format.Nif.Unity", "..\Formats\Nif\src\Game.Format.Nif.Unity\Game.Format.Nif.Unity.csproj", "{09930D4B-CF89-40F9-AB52-EC41E2FF4FA7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gamer.Estate.Cry", "Cry\src\Gamer.Estate.Cry\Gamer.Estate.Cry.csproj", "{33460A29-A745-4107-9AEB-E5679AFFAF51}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Game.Estate.Cry", "Cry\src\Game.Estate.Cry\Game.Estate.Cry.csproj", "{33460A29-A745-4107-9AEB-E5679AFFAF51}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gamer.Estate.Cry.Unity", "Cry\src\Gamer.Estate.Cry.Unity\Gamer.Estate.Cry.Unity.csproj", "{DC9E8630-F6EA-4821-8D9E-B5D94F90D868}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Game.Estate.Cry.Unity", "Cry\src\Game.Estate.Cry.Unity\Game.Estate.Cry.Unity.csproj", "{DC9E8630-F6EA-4821-8D9E-B5D94F90D868}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gamer.Estate.Cry.Tests", "Cry\test\Gamer.Estate.Cry.Tests.csproj", "{ACED9E02-5B45-4B8D-A1A0-378C99D9D2CF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Game.Estate.Cry.Tests", "Cry\test\Game.Estate.Cry.Tests.csproj", "{ACED9E02-5B45-4B8D-A1A0-378C99D9D2CF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gamer.Format.Cry", "..\Formats\Cry\src\Gamer.Format.Cry\Gamer.Format.Cry.csproj", "{693759AB-1CDD-4E5C-9989-2362D562D904}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Game.Format.Cry", "..\Formats\Cry\src\Game.Format.Cry\Game.Format.Cry.csproj", "{693759AB-1CDD-4E5C-9989-2362D562D904}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gamer.Format.Cry.Unity", "..\Formats\Cry\src\Gamer.Format.Cry.Unity\Gamer.Format.Cry.Unity.csproj", "{E9124A68-BD44-4308-94BF-543B84FC97E2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Game.Format.Cry.Unity", "..\Formats\Cry\src\Game.Format.Cry.Unity\Game.Format.Cry.Unity.csproj", "{E9124A68-BD44-4308-94BF-543B84FC97E2}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gamer.Proxy", "..\Core\src\Gamer.Proxy\Gamer.Proxy.csproj", "{58443953-4782-43A5-AA45-82D2630BE7B6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Game.Proxy", "..\Core\src\Game.Proxy\Game.Proxy.csproj", "{58443953-4782-43A5-AA45-82D2630BE7B6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gamer.Core.UnityEngine", "..\Core\src\Gamer.Core.UnityEngine\Gamer.Core.UnityEngine.csproj", "{62953BEF-5BBA-44CC-B4D5-902695EA303A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Game.Core.UnityEngine", "..\Core\src\Game.Core.UnityEngine\Game.Core.UnityEngine.csproj", "{62953BEF-5BBA-44CC-B4D5-902695EA303A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

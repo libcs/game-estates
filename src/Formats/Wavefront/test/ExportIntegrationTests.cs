@@ -1,11 +1,11 @@
-using Gamer.Format.Wavefront;
-using Gamer.Format.Cry;
+using Game.Format.Wavefront;
+using Game.Format.Cry;
 using System.IO;
 using Xunit;
 using Xunit.Abstractions;
-using static Gamer.Core.Debug;
+using static Game.Core.Debug;
 
-namespace Gamer.Estate.Wavefront.Tests
+namespace Game.Estate.Wavefront.Tests
 {
     public class ExportIntegrationTests
     {

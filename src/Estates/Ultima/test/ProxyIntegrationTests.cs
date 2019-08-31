@@ -1,15 +1,15 @@
-using Gamer.Proxy;
-using Gamer.Proxy.Server;
+using Game.Core.Netstream;
+using Game.Core.Netstream.Server;
 using System;
 using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Gamer.Estate.Ultima.Tests
+namespace Game.Estate.Ultima.Tests
 {
     public class TestsFixture : IDisposable
     {
-        public readonly ProxyTarget Target = new ProxyTarget
+        public readonly StreamTarget Target = new StreamTarget
         {
             Host = "127.0.0.1",
             Port = HttpServer.FindFreeTcpPort(),
@@ -19,10 +19,10 @@ namespace Gamer.Estate.Ultima.Tests
         public void Dispose() => Target.Dispose();
     }
 
-    public class ProxyIntegrationTests : IClassFixture<TestsFixture>
+    public class StreamIntegrationTests : IClassFixture<TestsFixture>
     {
         readonly TestsFixture _fixture;
-        public ProxyIntegrationTests(TestsFixture fixture, ITestOutputHelper helper) { _fixture = fixture; Core.Debug.LogFunc = x => helper.WriteLine(x.ToString()); }
+        public StreamIntegrationTests(TestsFixture fixture, ITestOutputHelper helper) { _fixture = fixture; Core.Debug.LogFunc = x => helper.WriteLine(x.ToString()); }
 
         [Theory]
         [InlineData("game://localhost:{0}/#Zero", "xxx")]

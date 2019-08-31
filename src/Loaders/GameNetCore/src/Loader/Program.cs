@@ -1,6 +1,6 @@
 ﻿using Contoso.GameNetCore;
 using Contoso.GameNetCore.Hosting;
-using Test = Gamer.Asset.Tes.Loader.LoadObject;
+using Test = Game.Asset.Tes.Loader.LoadObject;
 
 namespace Loader
 {

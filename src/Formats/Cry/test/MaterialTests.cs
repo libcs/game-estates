@@ -1,10 +1,10 @@
-using Gamer.Format.Cry.Core;
+using Game.Format.Cry.Core;
 using System.IO;
 using Xunit;
 using Xunit.Abstractions;
-using static Gamer.Core.Debug;
+using static Game.Core.Debug;
 
-namespace Gamer.Estate.Cry.Tests
+namespace Game.Estate.Cry.Tests
 {
     public class MaterialTests
     {

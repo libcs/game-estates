@@ -7,17 +7,17 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Loader", "src\Loader\Loader
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "dependencies", "dependencies", "{9F754EF4-83F6-4EEC-8DBE-60CC3A24022C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gamer.Core", "..\..\Core\src\Gamer.Core\Gamer.Core.csproj", "{5CBF218E-D0FF-4874-A3EE-6617E9D6AA3C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Game.Core", "..\..\Core\src\Game.Core\Game.Core.csproj", "{5CBF218E-D0FF-4874-A3EE-6617E9D6AA3C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gamer.Estate.Tes.Unity", "..\..\Estates\Tes\src\Gamer.Estate.Tes.Unity\Gamer.Estate.Tes.Unity.csproj", "{FADE7F55-448D-4CDF-96FB-5EA77C3E32C1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Game.Estate.Tes.Unity", "..\..\Estates\Tes\src\Game.Estate.Tes.Unity\Game.Estate.Tes.Unity.csproj", "{FADE7F55-448D-4CDF-96FB-5EA77C3E32C1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gamer.Estate.Tes", "..\..\Estates\Tes\src\Gamer.Estate.Tes\Gamer.Estate.Tes.csproj", "{2AEE07C5-9FF2-49CB-925A-416E1683B442}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Game.Estate.Tes", "..\..\Estates\Tes\src\Game.Estate.Tes\Game.Estate.Tes.csproj", "{2AEE07C5-9FF2-49CB-925A-416E1683B442}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gamer.Core.Unity", "..\..\Core\src\Gamer.Core.Unity\Gamer.Core.Unity.csproj", "{65B857C7-3B7D-4CB5-9049-DCD9C994A425}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Game.Core.Unity", "..\..\Core\src\Game.Core.Unity\Game.Core.Unity.csproj", "{65B857C7-3B7D-4CB5-9049-DCD9C994A425}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gamer.Estate.Nif", "..\..\Estates\Nif\src\Gamer.Estate.Nif\Gamer.Estate.Nif.csproj", "{6814434C-4580-4F07-B53B-6B3674E36709}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Game.Estate.Nif", "..\..\Estates\Nif\src\Game.Estate.Nif\Game.Estate.Nif.csproj", "{6814434C-4580-4F07-B53B-6B3674E36709}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gamer.Estate.Nif.Unity", "..\..\Estates\Nif\src\Gamer.Estate.Nif.Unity\Gamer.Estate.Nif.Unity.csproj", "{CBAF9861-108D-49AA-9E5C-BB023ABE997C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Game.Estate.Nif.Unity", "..\..\Estates\Nif\src\Game.Estate.Nif.Unity\Game.Estate.Nif.Unity.csproj", "{CBAF9861-108D-49AA-9E5C-BB023ABE997C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

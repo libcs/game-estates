@@ -243,62 +243,62 @@
     <Reference Include="nunit.framework">
       <HintPath>C:/Program Files/Unity/Hub/Editor/2019.1.2f1/Editor/Data/UnityExtensions/Unity/TestRunner/net35/unity-custom/nunit.framework.dll</HintPath>
     </Reference>
-    <Reference Include="Gamer.Core">
-      <HintPath>C:/_GITHUB/libcs/gamer.io.net/src/Loaders/Unity/Assets/Plugins/Gamer.Core.dll</HintPath>
+    <Reference Include="Game.Core">
+      <HintPath>C:/_GITHUB/libcs/gamer.io.net/src/Loaders/Unity/Assets/Plugins/Game.Core.dll</HintPath>
     </Reference>
-    <Reference Include="Gamer.Core.Unity">
-      <HintPath>C:/_GITHUB/libcs/gamer.io.net/src/Loaders/Unity/Assets/Plugins/Gamer.Core.Unity.dll</HintPath>
+    <Reference Include="Game.Core.Unity">
+      <HintPath>C:/_GITHUB/libcs/gamer.io.net/src/Loaders/Unity/Assets/Plugins/Game.Core.Unity.dll</HintPath>
     </Reference>
-    <Reference Include="Gamer.Core.UnityEngine">
-      <HintPath>C:/_GITHUB/libcs/gamer.io.net/src/Loaders/Unity/Assets/Plugins/Gamer.Core.UnityEngine.dll</HintPath>
+    <Reference Include="Game.Core.UnityEngine">
+      <HintPath>C:/_GITHUB/libcs/gamer.io.net/src/Loaders/Unity/Assets/Plugins/Game.Core.UnityEngine.dll</HintPath>
     </Reference>
-    <Reference Include="Gamer.Core.UnityOculus">
-      <HintPath>C:/_GITHUB/libcs/gamer.io.net/src/Loaders/Unity/Assets/Plugins/Gamer.Core.UnityOculus.dll</HintPath>
+    <Reference Include="Game.Core.UnityOculus">
+      <HintPath>C:/_GITHUB/libcs/gamer.io.net/src/Loaders/Unity/Assets/Plugins/Game.Core.UnityOculus.dll</HintPath>
     </Reference>
-    <Reference Include="Gamer.Core.UnityOculus.Framework">
-      <HintPath>C:/_GITHUB/libcs/gamer.io.net/src/Loaders/Unity/Assets/Plugins/Gamer.Core.UnityOculus.Framework.dll</HintPath>
+    <Reference Include="Game.Core.UnityOculus.Framework">
+      <HintPath>C:/_GITHUB/libcs/gamer.io.net/src/Loaders/Unity/Assets/Plugins/Game.Core.UnityOculus.Framework.dll</HintPath>
     </Reference>
-    <Reference Include="Gamer.Core.UnityOculus.Platform">
-      <HintPath>C:/_GITHUB/libcs/gamer.io.net/src/Loaders/Unity/Assets/Plugins/Gamer.Core.UnityOculus.Platform.dll</HintPath>
+    <Reference Include="Game.Core.UnityOculus.Platform">
+      <HintPath>C:/_GITHUB/libcs/gamer.io.net/src/Loaders/Unity/Assets/Plugins/Game.Core.UnityOculus.Platform.dll</HintPath>
     </Reference>
-    <Reference Include="Gamer.Estate.Cry">
-      <HintPath>C:/_GITHUB/libcs/gamer.io.net/src/Loaders/Unity/Assets/Plugins/Gamer.Estate.Cry.dll</HintPath>
+    <Reference Include="Game.Estate.Cry">
+      <HintPath>C:/_GITHUB/libcs/gamer.io.net/src/Loaders/Unity/Assets/Plugins/Game.Estate.Cry.dll</HintPath>
     </Reference>
-    <Reference Include="Gamer.Estate.Cry.Unity">
-      <HintPath>C:/_GITHUB/libcs/gamer.io.net/src/Loaders/Unity/Assets/Plugins/Gamer.Estate.Cry.Unity.dll</HintPath>
+    <Reference Include="Game.Estate.Cry.Unity">
+      <HintPath>C:/_GITHUB/libcs/gamer.io.net/src/Loaders/Unity/Assets/Plugins/Game.Estate.Cry.Unity.dll</HintPath>
     </Reference>
-    <Reference Include="Gamer.Estate.Rsi">
-      <HintPath>C:/_GITHUB/libcs/gamer.io.net/src/Loaders/Unity/Assets/Plugins/Gamer.Estate.Rsi.dll</HintPath>
+    <Reference Include="Game.Estate.Rsi">
+      <HintPath>C:/_GITHUB/libcs/gamer.io.net/src/Loaders/Unity/Assets/Plugins/Game.Estate.Rsi.dll</HintPath>
     </Reference>
-    <Reference Include="Gamer.Estate.Rsi.Unity">
-      <HintPath>C:/_GITHUB/libcs/gamer.io.net/src/Loaders/Unity/Assets/Plugins/Gamer.Estate.Rsi.Unity.dll</HintPath>
+    <Reference Include="Game.Estate.Rsi.Unity">
+      <HintPath>C:/_GITHUB/libcs/gamer.io.net/src/Loaders/Unity/Assets/Plugins/Game.Estate.Rsi.Unity.dll</HintPath>
     </Reference>
-    <Reference Include="Gamer.Estate.Tes">
-      <HintPath>C:/_GITHUB/libcs/gamer.io.net/src/Loaders/Unity/Assets/Plugins/Gamer.Estate.Tes.dll</HintPath>
+    <Reference Include="Game.Estate.Tes">
+      <HintPath>C:/_GITHUB/libcs/gamer.io.net/src/Loaders/Unity/Assets/Plugins/Game.Estate.Tes.dll</HintPath>
     </Reference>
-    <Reference Include="Gamer.Estate.Tes.Unity">
-      <HintPath>C:/_GITHUB/libcs/gamer.io.net/src/Loaders/Unity/Assets/Plugins/Gamer.Estate.Tes.Unity.dll</HintPath>
+    <Reference Include="Game.Estate.Tes.Unity">
+      <HintPath>C:/_GITHUB/libcs/gamer.io.net/src/Loaders/Unity/Assets/Plugins/Game.Estate.Tes.Unity.dll</HintPath>
     </Reference>
-    <Reference Include="Gamer.Estate.Ultima">
-      <HintPath>C:/_GITHUB/libcs/gamer.io.net/src/Loaders/Unity/Assets/Plugins/Gamer.Estate.Ultima.dll</HintPath>
+    <Reference Include="Game.Estate.Ultima">
+      <HintPath>C:/_GITHUB/libcs/gamer.io.net/src/Loaders/Unity/Assets/Plugins/Game.Estate.Ultima.dll</HintPath>
     </Reference>
-    <Reference Include="Gamer.Estate.Ultima.Unity">
-      <HintPath>C:/_GITHUB/libcs/gamer.io.net/src/Loaders/Unity/Assets/Plugins/Gamer.Estate.Ultima.Unity.dll</HintPath>
+    <Reference Include="Game.Estate.Ultima.Unity">
+      <HintPath>C:/_GITHUB/libcs/gamer.io.net/src/Loaders/Unity/Assets/Plugins/Game.Estate.Ultima.Unity.dll</HintPath>
     </Reference>
-    <Reference Include="Gamer.Format.Cry">
-      <HintPath>C:/_GITHUB/libcs/gamer.io.net/src/Loaders/Unity/Assets/Plugins/Gamer.Format.Cry.dll</HintPath>
+    <Reference Include="Game.Format.Cry">
+      <HintPath>C:/_GITHUB/libcs/gamer.io.net/src/Loaders/Unity/Assets/Plugins/Game.Format.Cry.dll</HintPath>
     </Reference>
-    <Reference Include="Gamer.Format.Cry.Unity">
-      <HintPath>C:/_GITHUB/libcs/gamer.io.net/src/Loaders/Unity/Assets/Plugins/Gamer.Format.Cry.Unity.dll</HintPath>
+    <Reference Include="Game.Format.Cry.Unity">
+      <HintPath>C:/_GITHUB/libcs/gamer.io.net/src/Loaders/Unity/Assets/Plugins/Game.Format.Cry.Unity.dll</HintPath>
     </Reference>
-    <Reference Include="Gamer.Format.Nif">
-      <HintPath>C:/_GITHUB/libcs/gamer.io.net/src/Loaders/Unity/Assets/Plugins/Gamer.Format.Nif.dll</HintPath>
+    <Reference Include="Game.Format.Nif">
+      <HintPath>C:/_GITHUB/libcs/gamer.io.net/src/Loaders/Unity/Assets/Plugins/Game.Format.Nif.dll</HintPath>
     </Reference>
-    <Reference Include="Gamer.Format.Nif.Unity">
-      <HintPath>C:/_GITHUB/libcs/gamer.io.net/src/Loaders/Unity/Assets/Plugins/Gamer.Format.Nif.Unity.dll</HintPath>
+    <Reference Include="Game.Format.Nif.Unity">
+      <HintPath>C:/_GITHUB/libcs/gamer.io.net/src/Loaders/Unity/Assets/Plugins/Game.Format.Nif.Unity.dll</HintPath>
     </Reference>
-    <Reference Include="Gamer.Proxy">
-      <HintPath>C:/_GITHUB/libcs/gamer.io.net/src/Loaders/Unity/Assets/Plugins/Gamer.Proxy.dll</HintPath>
+    <Reference Include="Game.Proxy">
+      <HintPath>C:/_GITHUB/libcs/gamer.io.net/src/Loaders/Unity/Assets/Plugins/Game.Proxy.dll</HintPath>
     </Reference>
     <Reference Include="ICSharpCode.SharpZipLib">
       <HintPath>C:/_GITHUB/libcs/gamer.io.net/src/Loaders/Unity/Assets/Plugins/ICSharpCode.SharpZipLib.dll</HintPath>
