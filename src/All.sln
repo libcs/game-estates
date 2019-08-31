@@ -85,6 +85,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Game.Estate.UltimaIX.Tests"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Game.Unity.H3ml", "Core\src\Game.Unity.H3ml\Game.Unity.H3ml.csproj", "{9E0E6770-C574-43D4-96E3-59E557B24D4D}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Lib", "Lib", "{5250599B-BA33-4A70-B065-4A819347F984}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "H3ml.Asset", "..\..\..\smorey2\h3ml\Asset\H3ml.Asset\H3ml.Asset.csproj", "{39EDCAEE-B770-455A-A3E2-D1567EF2022D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -211,6 +215,10 @@ Global
 		{9E0E6770-C574-43D4-96E3-59E557B24D4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9E0E6770-C574-43D4-96E3-59E557B24D4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9E0E6770-C574-43D4-96E3-59E557B24D4D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{39EDCAEE-B770-455A-A3E2-D1567EF2022D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{39EDCAEE-B770-455A-A3E2-D1567EF2022D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{39EDCAEE-B770-455A-A3E2-D1567EF2022D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{39EDCAEE-B770-455A-A3E2-D1567EF2022D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -253,6 +261,7 @@ Global
 		{94D64D2F-31C4-4AC1-8D5F-73A12A1444FF} = {2ACF6E8B-9353-4570-BD67-E0123A36080D}
 		{175BE931-D900-49D7-8611-49A72E7CAEBB} = {2ACF6E8B-9353-4570-BD67-E0123A36080D}
 		{9E0E6770-C574-43D4-96E3-59E557B24D4D} = {D62024D3-476E-4A68-8A24-1B14491536B4}
+		{39EDCAEE-B770-455A-A3E2-D1567EF2022D} = {5250599B-BA33-4A70-B065-4A819347F984}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7ACB76E5-A8E8-4292-994C-E0779E009E43}
