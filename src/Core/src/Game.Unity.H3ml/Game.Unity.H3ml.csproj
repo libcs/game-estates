@@ -5,7 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\..\..\smorey2\h3ml\Asset\H3ml.Asset\H3ml.Asset.csproj" />
     <ProjectReference Include="..\Game.Core.Unity\Game.Core.Unity.csproj" />
   </ItemGroup>
 

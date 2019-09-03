@@ -32,7 +32,7 @@ Makefile
 *.make
 
 # Misc
-*.7z
+# *.7z
 *.zip
 *.tar.gz
 
@@ -42,6 +42,7 @@ Makefile
 
 # Directories we don't ever want to commit
 _build
+_bundle
 bin
 obj
 temp

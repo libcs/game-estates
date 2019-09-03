@@ -1,10 +1,10 @@
 ﻿// CRY
-using Redirect = Game.Estate.Cry.Loader.LoadAsset;
+//using Redirect = Game.Estate.Cry.Loader.LoadAsset;
 
 // TES
 //using Redirect = Game.Estate.Tes.Loader.LoadAsset;
 //using Redirect = Game.Estate.Tes.Loader.LoadData;
-//using Redirect = Game.Estate.Tes.Loader.LoadEngine;
+using Redirect = Game.Estate.Tes.Loader.LoadEngine;
 
 // ULTIMA
 //using Redirect = Game.Estate.Ultima.Loader.LoadAsset;
