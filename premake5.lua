@@ -10,14 +10,13 @@ if os.ishost "windows" then
         end
     }
 
-    -- Windows
     newaction
     {
-        trigger     = "bundle",
-        description = "Bundle dotnet dlls",
+        trigger     = "bundleBuild",
+        description = "Bundle build folder with dlls",
         execute = function ()
             os.rmdir "_bundle"
-userprofile = os.getenv("USERPROFILE")
+            userprofile = os.getenv("USERPROFILE")
             os.execute ( "mkdir _bundle & pushd _bundle \z
 && copy \""..userprofile.."\\.nuget\\packages\\mathnet.numerics\\4.7.0\\lib\\netstandard2.0\\*.dll\" . \z
 && copy \""..userprofile.."\\.nuget\\packages\\zstdnet\\1.3.3\\build\\x64\\*.dll\" . \z
@@ -34,7 +33,16 @@ userprofile = os.getenv("USERPROFILE")
 && copy \""..userprofile.."\\.nuget\\packages\\system.buffers\\4.5.0\\lib\\netstandard2.0\\*.dll\" . \z
 && popd" )
 os.execute "copy _bundle\\libzstd.dll lib\\UnityBundle\\"
-os.execute "pushd _bundle \z
+        end
+    }
+
+    newaction
+    {
+        trigger     = "bundle",
+        description = "Bundle dotnet dlls",
+        execute = function ()
+            -- os.execute "premake5 bundleBuild"
+            os.execute "pushd _bundle \z
 && ..\\tools\\ILRepack.exe /out:\"..\\lib\\UnityBundle\\UnityBundle.dll\" \z
 \"Newtonsoft.Json.dll\" \z
 \"Microsoft.Extensions.Caching.Abstractions.dll\" \z
