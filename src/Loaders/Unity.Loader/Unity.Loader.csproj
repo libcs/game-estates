@@ -15,6 +15,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Estates\Cry\src\Game.Estate.Cry.Unity\Game.Estate.Cry.Unity.csproj" />
     <ProjectReference Include="..\..\Estates\Tes\src\Game.Estate.Tes.Unity\Game.Estate.Tes.Unity.csproj" />
+    <ProjectReference Include="..\..\Estates\UltimaIX\src\Game.Estate.UltimaIX.Unity\Game.Estate.UltimaIX.Unity.csproj" />
     <ProjectReference Include="..\..\Estates\Ultima\src\Game.Estate.Ultima.Unity\Game.Estate.Ultima.Unity.csproj" />
   </ItemGroup>
 

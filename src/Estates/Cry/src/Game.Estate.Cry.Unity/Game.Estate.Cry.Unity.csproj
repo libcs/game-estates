@@ -9,7 +9,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\Core\src\Game.Core.Unity\Game.Core.Unity.csproj" />
+    <ProjectReference Include="..\..\..\..\Core\src\Game.Unity\Game.Unity.csproj" />
     <ProjectReference Include="..\..\..\..\Formats\Cry\src\Game.Format.Cry.Unity\Game.Format.Cry.Unity.csproj" />
     <ProjectReference Include="..\Game.Estate.Cry\Game.Estate.Cry.csproj" />
   </ItemGroup>

@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="copy &quot;$(TargetDir)Game.Core*.*&quot; &quot;$(ProjectDir)..\..\..\Loaders\Unity\Assets\Plugins\&quot;&#xD;&#xA;" />
+    <Exec Command="copy &quot;$(TargetDir)Game.Unity.Engine.*&quot; &quot;$(ProjectDir)..\..\..\Loaders\Unity\Assets\Plugins\&quot;&#xD;&#xA;" />
   </Target>
 
   <ItemGroup>
@@ -13,12 +13,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Game.Core\Game.Core.csproj" />
+    <ProjectReference Include="..\Game.Unity\Game.Unity.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Reference Include="UnityEngine">
       <HintPath>..\..\..\..\lib\Unity\UnityEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UI">
+      <HintPath>..\..\..\..\lib\Unity\UnityExtensions\UnityEngine.UI.dll</HintPath>
     </Reference>
   </ItemGroup>
 

@@ -16,8 +16,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\Core\src\Game.Core.UnityEngine\Game.Core.UnityEngine.csproj" />
-    <ProjectReference Include="..\..\..\..\Core\src\Game.Core.Unity\Game.Core.Unity.csproj" />
+    <ProjectReference Include="..\..\..\..\Core\src\Game.Unity.Engine\Game.Unity.Engine.csproj" />
+    <ProjectReference Include="..\..\..\..\Core\src\Game.Unity\Game.Unity.csproj" />
     <ProjectReference Include="..\..\..\..\Formats\Nif\src\Game.Format.Nif.Unity\Game.Format.Nif.Unity.csproj" />
     <ProjectReference Include="..\Game.Estate.Tes\Game.Estate.Tes.csproj" />
   </ItemGroup>

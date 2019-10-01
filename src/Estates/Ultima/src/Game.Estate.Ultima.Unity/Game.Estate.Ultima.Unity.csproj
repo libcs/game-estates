@@ -9,8 +9,8 @@
   </Target>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\Core\src\Game.Core.UnityEngine\Game.Core.UnityEngine.csproj" />
-    <ProjectReference Include="..\..\..\..\Core\src\Game.Core.Unity\Game.Core.Unity.csproj" />
+    <ProjectReference Include="..\..\..\..\Core\src\Game.Unity.Engine\Game.Unity.Engine.csproj" />
+    <ProjectReference Include="..\..\..\..\Core\src\Game.Unity\Game.Unity.csproj" />
     <ProjectReference Include="..\Game.Estate.Ultima\Game.Estate.Ultima.csproj" />
   </ItemGroup>
 

@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Game.Core", "Core\src\Game.
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tes", "Tes", "{27EB840C-502D-4BC4-87C0-918363740029}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Game.Core.Unity", "Core\src\Game.Core.Unity\Game.Core.Unity.csproj", "{C0723FCE-BAA0-44EB-9921-41DE38866957}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Game.Unity", "Core\src\Game.Unity\Game.Unity.csproj", "{C0723FCE-BAA0-44EB-9921-41DE38866957}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Game.Estate.Tes.Unity", "Estates\Tes\src\Game.Estate.Tes.Unity\Game.Estate.Tes.Unity.csproj", "{5EF0077B-68DA-4D4F-96DB-C24DF65C4D14}"
 EndProject
@@ -51,9 +51,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Game.Format.Wavefront", "Fo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Game.Format.Cry.Unity", "Formats\Cry\src\Game.Format.Cry.Unity\Game.Format.Cry.Unity.csproj", "{722EC89C-F8C0-466D-B208-FB06C48B1590}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Game.Core.NetstreamService", "Core\src\Game.Core.NetstreamService\Game.Core.NetstreamService.csproj", "{12D9EF47-5C35-4B34-A677-D904212B1764}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Game.Core.StreamService", "Core\src\Game.Core.StreamService\Game.Core.StreamService.csproj", "{12D9EF47-5C35-4B34-A677-D904212B1764}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Game.Core.UnityEngine", "Core\src\Game.Core.UnityEngine\Game.Core.UnityEngine.csproj", "{FD71A289-0680-43E3-AD9E-065BA0C1B3FF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Game.Unity.Engine", "Core\src\Game.Unity.Engine\Game.Unity.Engine.csproj", "{FD71A289-0680-43E3-AD9E-065BA0C1B3FF}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Unity.Loader", "Loaders\Unity.Loader\Unity.Loader.csproj", "{11F5EE29-05BE-4476-B33E-67B9CDAAD6EB}"
 EndProject
@@ -73,7 +73,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Game.Format.Wavefront.Tests
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Game.Core.Tests", "Core\test\Game.Core.Tests\Game.Core.Tests.csproj", "{E8395C0C-0E97-4BAC-B30A-F1118B1858C6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Game.Core.UnityOculus", "Core\src\Game.Core.UnityOculus\Game.Core.UnityOculus.csproj", "{D88AEC35-9C3D-4E98-98F8-5059CF195D2D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Game.Unity.Oculus", "Core\src\Game.Unity.Oculus\Game.Unity.Oculus.csproj", "{D88AEC35-9C3D-4E98-98F8-5059CF195D2D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UltimaIX", "UltimaIX", "{2ACF6E8B-9353-4570-BD67-E0123A36080D}"
 EndProject
@@ -82,8 +82,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Game.Estate.UltimaIX.Unity", "Estates\UltimaIX\src\Game.Estate.UltimaIX.Unity\Game.Estate.UltimaIX.Unity.csproj", "{94D64D2F-31C4-4AC1-8D5F-73A12A1444FF}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Game.Estate.UltimaIX.Tests", "Estates\UltimaIX\test\Game.Estate.UltimaIX.Tests.csproj", "{175BE931-D900-49D7-8611-49A72E7CAEBB}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Game.Unity.H3ml", "Core\src\Game.Unity.H3ml\Game.Unity.H3ml.csproj", "{9E0E6770-C574-43D4-96E3-59E557B24D4D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -207,10 +205,6 @@ Global
 		{175BE931-D900-49D7-8611-49A72E7CAEBB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{175BE931-D900-49D7-8611-49A72E7CAEBB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{175BE931-D900-49D7-8611-49A72E7CAEBB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9E0E6770-C574-43D4-96E3-59E557B24D4D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9E0E6770-C574-43D4-96E3-59E557B24D4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9E0E6770-C574-43D4-96E3-59E557B24D4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9E0E6770-C574-43D4-96E3-59E557B24D4D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -252,7 +246,6 @@ Global
 		{CD08C409-69C2-44B5-915A-EC3E90BB4C7C} = {2ACF6E8B-9353-4570-BD67-E0123A36080D}
 		{94D64D2F-31C4-4AC1-8D5F-73A12A1444FF} = {2ACF6E8B-9353-4570-BD67-E0123A36080D}
 		{175BE931-D900-49D7-8611-49A72E7CAEBB} = {2ACF6E8B-9353-4570-BD67-E0123A36080D}
-		{9E0E6770-C574-43D4-96E3-59E557B24D4D} = {D62024D3-476E-4A68-8A24-1B14491536B4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7ACB76E5-A8E8-4292-994C-E0779E009E43}

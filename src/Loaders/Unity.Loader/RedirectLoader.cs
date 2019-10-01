@@ -4,12 +4,17 @@
 // TES
 //using Redirect = Game.Estate.Tes.Loader.LoadAsset;
 //using Redirect = Game.Estate.Tes.Loader.LoadData;
-using Redirect = Game.Estate.Tes.Loader.LoadEngine;
+//using Redirect = Game.Estate.Tes.Loader.LoadEngine;
 
 // ULTIMA
 //using Redirect = Game.Estate.Ultima.Loader.LoadAsset;
 //using Redirect = Game.Estate.Ultima.Loader.LoadData;
 //using Redirect = Game.Estate.Ultima.Loader.LoadEngine;
+
+// ULTIMAIX
+using Redirect = Game.Estate.UltimaIX.Loader.LoadAsset;
+//using Redirect = Game.Estate.UltimaIX.Loader.LoadData;
+//using Redirect = Game.Estate.UltimaIX.Loader.LoadEngine;
 
 public class RedirectLoader : UnityEngine.MonoBehaviour
 {

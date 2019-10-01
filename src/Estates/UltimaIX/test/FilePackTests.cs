@@ -1,4 +1,3 @@
-//#define LONGTEST
 using System;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -12,7 +11,7 @@ namespace Game.Estate.UltimaIX.Tests
         public FilePackTests(ITestOutputHelper helper) => Core.Debug.LogFunc = x => helper.WriteLine(x.ToString());
 
         [Theory]
-        [InlineData("game:/static/activity.flx#UltimaIX", @"1")]
+        [InlineData("game:/static/activity.flx#UltimaIX", "1")]
         public async Task LoadAssetPack(string path, string modelPath)
         {
             // given
@@ -29,22 +28,24 @@ namespace Game.Estate.UltimaIX.Tests
             }
         }
 
-        //[Theory]
-        //[InlineData("game:/#StarCitizen", @"Data\Objects\animals\fish\textures\fish_cleanerfish_cleanl_unique_uee_01_diff.dds")]
-        ////[InlineData("game:/#StarCitizen", @"Data\Objects\animals\fish\textures\fish_cleanerfish_cleanl_unique_uee_01_ddna.dds")]
-        //public async Task LoadTexture(string path, string modelPath)
-        //{
-        //    // given
-        //    using (var assetPack = await new Uri(path).GetCryAssetPackAsync())
-        //    {
-        //        // when
-        //        var exist0 = assetPack.ContainsFile(modelPath);
-        //        var data0 = await assetPack.LoadTextureInfoAsync(modelPath);
-        //        // then
-        //        Assert.True(exist0);
-        //        Assert.NotNull(data0);
-        //    }
-        //}
+        [Theory]
+        [InlineData("game:/static/Texture8.9#UltimaIX", "0")]
+        [InlineData("game:/static/Texture8.14#UltimaIX", "0")]
+        [InlineData("game:/static/Texture16.9#UltimaIX", "0")]
+        [InlineData("game:/static/Texture16.14#UltimaIX", "0")]
+        public async Task LoadTexture(string path, string modelPath)
+        {
+            // given
+            using (var assetPack = await new Uri(path).GetUltimaIXAssetPackAsync())
+            {
+                // when
+                var exist0 = assetPack.ContainsFile(modelPath);
+                var data0 = await assetPack.LoadTextureInfoAsync(modelPath);
+                // then
+                Assert.True(exist0);
+                Assert.NotNull(data0);
+            }
+        }
 
         [Theory]
         [InlineData("game:/#UltimaIX")]

@@ -277,6 +277,96 @@
     <Reference Include="UnityEngine.SpatialTracking">
       <HintPath>C:/Program Files/Unity/Hub/Editor/2018.4.0f1/Editor/Data/UnityExtensions/Unity/UnitySpatialTracking/RuntimeEditor/UnityEngine.SpatialTracking.dll</HintPath>
     </Reference>
+    <Reference Include="Game.Core">
+      <HintPath>C:/_GITHUB/libcs/game-estates/src/Loaders/Unity/Assets/Plugins/Game.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Game.Core.Unity">
+      <HintPath>C:/_GITHUB/libcs/game-estates/src/Loaders/Unity/Assets/Plugins/Game.Core.Unity.dll</HintPath>
+    </Reference>
+    <Reference Include="Game.Core.UnityEngine">
+      <HintPath>C:/_GITHUB/libcs/game-estates/src/Loaders/Unity/Assets/Plugins/Game.Core.UnityEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="Game.Core.UnityOculus">
+      <HintPath>C:/_GITHUB/libcs/game-estates/src/Loaders/Unity/Assets/Plugins/Game.Core.UnityOculus.dll</HintPath>
+    </Reference>
+    <Reference Include="Game.Estate.Cry">
+      <HintPath>C:/_GITHUB/libcs/game-estates/src/Loaders/Unity/Assets/Plugins/Game.Estate.Cry.dll</HintPath>
+    </Reference>
+    <Reference Include="Game.Estate.Cry.Unity">
+      <HintPath>C:/_GITHUB/libcs/game-estates/src/Loaders/Unity/Assets/Plugins/Game.Estate.Cry.Unity.dll</HintPath>
+    </Reference>
+    <Reference Include="Game.Estate.Tes">
+      <HintPath>C:/_GITHUB/libcs/game-estates/src/Loaders/Unity/Assets/Plugins/Game.Estate.Tes.dll</HintPath>
+    </Reference>
+    <Reference Include="Game.Estate.Tes.Unity">
+      <HintPath>C:/_GITHUB/libcs/game-estates/src/Loaders/Unity/Assets/Plugins/Game.Estate.Tes.Unity.dll</HintPath>
+    </Reference>
+    <Reference Include="Game.Estate.Ultima">
+      <HintPath>C:/_GITHUB/libcs/game-estates/src/Loaders/Unity/Assets/Plugins/Game.Estate.Ultima.dll</HintPath>
+    </Reference>
+    <Reference Include="Game.Estate.Ultima.Unity">
+      <HintPath>C:/_GITHUB/libcs/game-estates/src/Loaders/Unity/Assets/Plugins/Game.Estate.Ultima.Unity.dll</HintPath>
+    </Reference>
+    <Reference Include="Game.Estate.UltimaIX">
+      <HintPath>C:/_GITHUB/libcs/game-estates/src/Loaders/Unity/Assets/Plugins/Game.Estate.UltimaIX.dll</HintPath>
+    </Reference>
+    <Reference Include="Game.Estate.UltimaIX.Unity">
+      <HintPath>C:/_GITHUB/libcs/game-estates/src/Loaders/Unity/Assets/Plugins/Game.Estate.UltimaIX.Unity.dll</HintPath>
+    </Reference>
+    <Reference Include="Game.Format.Cry">
+      <HintPath>C:/_GITHUB/libcs/game-estates/src/Loaders/Unity/Assets/Plugins/Game.Format.Cry.dll</HintPath>
+    </Reference>
+    <Reference Include="Game.Format.Cry.Unity">
+      <HintPath>C:/_GITHUB/libcs/game-estates/src/Loaders/Unity/Assets/Plugins/Game.Format.Cry.Unity.dll</HintPath>
+    </Reference>
+    <Reference Include="Game.Format.Nif">
+      <HintPath>C:/_GITHUB/libcs/game-estates/src/Loaders/Unity/Assets/Plugins/Game.Format.Nif.dll</HintPath>
+    </Reference>
+    <Reference Include="Game.Format.Nif.Unity">
+      <HintPath>C:/_GITHUB/libcs/game-estates/src/Loaders/Unity/Assets/Plugins/Game.Format.Nif.Unity.dll</HintPath>
+    </Reference>
+    <Reference Include="ICSharpCode.SharpZipLib">
+      <HintPath>C:/_GITHUB/libcs/game-estates/src/Loaders/Unity/Assets/Plugins/ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
+    <Reference Include="MathNet.Numerics">
+      <HintPath>C:/_GITHUB/libcs/game-estates/src/Loaders/Unity/Assets/Plugins/MathNet.Numerics.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Caching.Abstractions">
+      <HintPath>C:/_GITHUB/libcs/game-estates/src/Loaders/Unity/Assets/Plugins/Microsoft.Extensions.Caching.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Caching.Memory">
+      <HintPath>C:/_GITHUB/libcs/game-estates/src/Loaders/Unity/Assets/Plugins/Microsoft.Extensions.Caching.Memory.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.DependencyInjection.Abstractions">
+      <HintPath>C:/_GITHUB/libcs/game-estates/src/Loaders/Unity/Assets/Plugins/Microsoft.Extensions.DependencyInjection.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Logging.Abstractions">
+      <HintPath>C:/_GITHUB/libcs/game-estates/src/Loaders/Unity/Assets/Plugins/Microsoft.Extensions.Logging.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Options">
+      <HintPath>C:/_GITHUB/libcs/game-estates/src/Loaders/Unity/Assets/Plugins/Microsoft.Extensions.Options.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Primitives">
+      <HintPath>C:/_GITHUB/libcs/game-estates/src/Loaders/Unity/Assets/Plugins/Microsoft.Extensions.Primitives.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>C:/_GITHUB/libcs/game-estates/src/Loaders/Unity/Assets/Plugins/Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Buffers">
+      <HintPath>C:/_GITHUB/libcs/game-estates/src/Loaders/Unity/Assets/Plugins/System.Buffers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Memory">
+      <HintPath>C:/_GITHUB/libcs/game-estates/src/Loaders/Unity/Assets/Plugins/System.Memory.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe">
+      <HintPath>C:/_GITHUB/libcs/game-estates/src/Loaders/Unity/Assets/Plugins/System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Loader">
+      <HintPath>C:/_GITHUB/libcs/game-estates/src/Loaders/Unity/Assets/Plugins/Unity.Loader.dll</HintPath>
+    </Reference>
+    <Reference Include="ZstdNet">
+      <HintPath>C:/_GITHUB/libcs/game-estates/src/Loaders/Unity/Assets/Plugins/ZstdNet.dll</HintPath>
+    </Reference>
     <Reference Include="Unity.Analytics.Editor">
       <HintPath>C:/_GITHUB/libcs/game-estates/src/Loaders/Unity/Library/PackageCache/com.unity.analytics@3.2.2/Unity.Analytics.Editor.dll</HintPath>
     </Reference>
@@ -285,6 +375,15 @@
     </Reference>
     <Reference Include="Unity.Analytics.Tracker">
       <HintPath>C:/_GITHUB/libcs/game-estates/src/Loaders/Unity/Library/PackageCache/com.unity.analytics@3.2.2/Unity.Analytics.Tracker.dll</HintPath>
+    </Reference>
+    <Reference Include="Game.Unity.Oculus">
+      <HintPath>C:/_GITHUB/libcs/game-estates/src/Loaders/Unity/Assets/Plugins/Game.Unity.Oculus.dll</HintPath>
+    </Reference>
+    <Reference Include="Game.Unity">
+      <HintPath>C:/_GITHUB/libcs/game-estates/src/Loaders/Unity/Assets/Plugins/Game.Unity.dll</HintPath>
+    </Reference>
+    <Reference Include="Game.Unity.Engine">
+      <HintPath>C:/_GITHUB/libcs/game-estates/src/Loaders/Unity/Assets/Plugins/Game.Unity.Engine.dll</HintPath>
     </Reference>
     <Reference Include="netstandard">
       <HintPath>C:/Program Files/Unity/Hub/Editor/2018.4.0f1/Editor/Data/NetStandard/ref/2.0.0/netstandard.dll</HintPath>

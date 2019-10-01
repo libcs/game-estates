@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using static Game.Core.Debug;
 
 //http://wiki.ultimacodex.com/wiki/Ultima_IX_Internal_Formats#FLX_Format
+//http://hacki.bootstrike.com/english/articles_orig_maps.htm
 namespace Game.Estate.UltimaIX.FilePack
 {
     public partial class RecordGroup
