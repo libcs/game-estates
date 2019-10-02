@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Game.Estate.UltimaIX.FilePack
 {
-    public interface IFlxFile : IDisposable
+    public interface IIdxFile : IDisposable
     {
         void Close();
         HashSet<string> GetContainsSet();
@@ -14,29 +14,24 @@ namespace Game.Estate.UltimaIX.FilePack
         Task<byte[]> LoadFileDataAsync(string filePath);
     }
 
-    //http://wiki.ultimacodex.com/wiki/Ultima_IX_Internal_Formats#FLX_Format
-    public partial class FlxFile : IFlxFile
+    //http://wiki.ultimacodex.com/wiki/Ultima_IX_Internal_Formats
+    public partial class IdxFile : IIdxFile
     {
-        public class FileMetadata
-        {
-            public long Position;
-            public int Size;
-        }
-
         public override string ToString() => $"{Path.GetFileName(FilePath)}";
         GenericReader _r;
-        internal FileMetadata[] _files;
         public string FilePath;
+        int _size;
+        int _files;
 
         public bool IsAtEof => _r.Position >= _r.BaseStream.Length;
 
-        public FlxFile(string filePath)
+        public IdxFile(string filePath, int size)
         {
             if (filePath == null)
                 return;
             FilePath = filePath;
             _r = new BinaryFileReader(File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.Read));
-            ReadMetadata();
+            ReadMetadata(size);
         }
 
         public void Dispose()
@@ -44,7 +39,7 @@ namespace Game.Estate.UltimaIX.FilePack
             Close();
             GC.SuppressFinalize(this);
         }
-        ~FlxFile() => Close();
+        ~IdxFile() => Close();
 
         public void Close()
         {
@@ -56,20 +51,20 @@ namespace Game.Estate.UltimaIX.FilePack
         /// Gets the contains set.
         /// </summary>
         /// <returns></returns>
-        public HashSet<string> GetContainsSet() => new HashSet<string>() { };
+        public HashSet<string> GetContainsSet() => new HashSet<string>() { "*" };
 
         /// <summary>
         /// Determines whether the archive contains a file.
         /// </summary>
-        public bool ContainsFile(string filePath) => int.TryParse(filePath, out var file) && file < _files.Length && _files[file] != null;
+        public bool ContainsFile(string filePath) => int.TryParse(filePath, out var file) && file < _files;
 
         /// <summary>
         /// Loads an archived file's data.
         /// </summary>
         public Task<byte[]> LoadFileDataAsync(string filePath)
         {
-            if (int.TryParse(filePath, out var file) && file < _files.Length)
-                return LoadFileDataAsync(_files[file]);
+            if (int.TryParse(filePath, out var file) && file < _files)
+                return LoadFileDataAsync(file);
             Debug.Log($"LoadFileDataAsync: {filePath} @ {_files}");
             throw new FileNotFoundException(filePath);
         }
@@ -77,35 +72,21 @@ namespace Game.Estate.UltimaIX.FilePack
         /// <summary>
         /// Loads an archived file's data.
         /// </summary>
-        internal Task<byte[]> LoadFileDataAsync(FileMetadata file)
+        internal Task<byte[]> LoadFileDataAsync(int file)
         {
-            if (file == null || file.Size == 0)
-                return Task.FromResult<byte[]>(null);
-            var buf = new byte[file.Size];
+            var buf = new byte[_size];
             lock (_r)
             {
-                _r.Position = file.Position;
+                _r.Position = _size * file;
                 _r.Read(buf, 0, buf.Length);
             }
             return Task.FromResult(buf);
         }
 
-        void ReadMetadata()
+        void ReadMetadata(int size)
         {
-            _r.BaseStream.Seek(0x50, SeekOrigin.Begin);
-            _files = new FileMetadata[_r.ReadInt32()];
-            _r.BaseStream.Seek(0x80, SeekOrigin.Begin);
-            var chunk = new byte[8];
-            for (var i = 0; i < _files.Length; i++)
-            {
-                _r.Read(chunk, 0, 8);
-                var metadata = new FileMetadata
-                {
-                    Position = BitConverter.ToInt32(chunk, 0),
-                    Size = BitConverter.ToInt32(chunk, 4),
-                };
-                _files[i] = metadata.Size != 0 ? metadata : null;
-            }
+            _size = size;
+            _files = (int)(_r.BaseStream.Length / _size);
         }
     }
 }

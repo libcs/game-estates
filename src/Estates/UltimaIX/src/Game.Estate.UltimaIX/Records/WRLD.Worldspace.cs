@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace Game.Estate.UltimaIX.Records
 {
+    //http://hacki.bootstrike.com/english/articles_orig_maps.htm
     public class WRLDRecord : Record
     {
         static Dictionary<int, string> abc = new Dictionary<int, string>

@@ -12,7 +12,7 @@ namespace Game.Estate.UltimaIX
         MaterialManager _materialManager;
         //UltimaIXManager _ultimaIXManager;
 
-        public UltimaIXAssetPack(StreamSink client, IFlxFile file) : base(client, file)
+        public UltimaIXAssetPack(StreamSink client, IFlxFile flxFile, IIdxFile idxFile) : base(client, flxFile, idxFile)
         {
             _textureManager = new TextureManager(this);
             _materialManager = new MaterialManager(_textureManager);

@@ -325,6 +325,15 @@
     <Reference Include="Game.Format.Nif.Unity">
       <HintPath>C:/_GITHUB/libcs/game-estates/src/Loaders/Unity/Assets/Plugins/Game.Format.Nif.Unity.dll</HintPath>
     </Reference>
+    <Reference Include="Game.Unity">
+      <HintPath>C:/_GITHUB/libcs/game-estates/src/Loaders/Unity/Assets/Plugins/Game.Unity.dll</HintPath>
+    </Reference>
+    <Reference Include="Game.Unity.Engine">
+      <HintPath>C:/_GITHUB/libcs/game-estates/src/Loaders/Unity/Assets/Plugins/Game.Unity.Engine.dll</HintPath>
+    </Reference>
+    <Reference Include="Game.Unity.Oculus">
+      <HintPath>C:/_GITHUB/libcs/game-estates/src/Loaders/Unity/Assets/Plugins/Game.Unity.Oculus.dll</HintPath>
+    </Reference>
     <Reference Include="ICSharpCode.SharpZipLib">
       <HintPath>C:/_GITHUB/libcs/game-estates/src/Loaders/Unity/Assets/Plugins/ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
@@ -375,15 +384,6 @@
     </Reference>
     <Reference Include="Unity.Analytics.Tracker">
       <HintPath>C:/_GITHUB/libcs/game-estates/src/Loaders/Unity/Library/PackageCache/com.unity.analytics@3.2.2/Unity.Analytics.Tracker.dll</HintPath>
-    </Reference>
-    <Reference Include="Game.Unity.Oculus">
-      <HintPath>C:/_GITHUB/libcs/game-estates/src/Loaders/Unity/Assets/Plugins/Game.Unity.Oculus.dll</HintPath>
-    </Reference>
-    <Reference Include="Game.Unity">
-      <HintPath>C:/_GITHUB/libcs/game-estates/src/Loaders/Unity/Assets/Plugins/Game.Unity.dll</HintPath>
-    </Reference>
-    <Reference Include="Game.Unity.Engine">
-      <HintPath>C:/_GITHUB/libcs/game-estates/src/Loaders/Unity/Assets/Plugins/Game.Unity.Engine.dll</HintPath>
     </Reference>
     <Reference Include="netstandard">
       <HintPath>C:/Program Files/Unity/Hub/Editor/2018.4.0f1/Editor/Data/NetStandard/ref/2.0.0/netstandard.dll</HintPath>

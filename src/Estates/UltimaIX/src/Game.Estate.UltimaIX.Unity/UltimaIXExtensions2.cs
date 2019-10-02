@@ -11,7 +11,8 @@ namespace Game.Estate.UltimaIX
         {
             uri.ToUltimaIXGame(func, out var streamSink, out var filePaths);
             var flxFile = new FlxFile(filePaths[0]);
-            return Task.FromResult((IAssetUnityPack)new UltimaIXAssetPack(streamSink, flxFile));
+            var idxFile = (IdxFile)null; // new IdxFile(filePaths[0], 1);
+            return Task.FromResult((IAssetUnityPack)new UltimaIXAssetPack(streamSink, flxFile, idxFile));
         }
     }
 }

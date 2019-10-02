@@ -29,10 +29,10 @@ namespace Game.Estate.UltimaIX.Tests
         }
 
         [Theory]
-        [InlineData("game:/static/Texture8.9#UltimaIX", "0")]
-        [InlineData("game:/static/Texture8.14#UltimaIX", "0")]
-        [InlineData("game:/static/Texture16.9#UltimaIX", "0")]
-        [InlineData("game:/static/Texture16.14#UltimaIX", "0")]
+        [InlineData("game:/static/Texture8.9#UltimaIX", "1087")] // 1087,1211,1360
+        //[InlineData("game:/static/Texture8.14#UltimaIX", "0")]
+        [InlineData("game:/static/Texture16.9#UltimaIX", "1087")]
+        //[InlineData("game:/static/Texture16.14#UltimaIX", "0")]
         public async Task LoadTexture(string path, string modelPath)
         {
             // given

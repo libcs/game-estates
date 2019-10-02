@@ -1,10 +1,9 @@
 ﻿using Game.Core;
-using Game.Core.Format;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using UnityEngine;
 using static Game.Core.Debug;
 
 namespace Game.Estate.UltimaIX.FilePack
@@ -22,46 +21,27 @@ namespace Game.Estate.UltimaIX.FilePack
 
         public Task<Texture2DInfo> LoadTextureInfoAsync(string texturePath)
         {
+            var flxPath = ((FlxFile)_flxFile).FilePath;
+            var bits = flxPath.Contains("Texture8") ? 8 : flxPath.Contains("Texture16") ? 16 : 0;
+            if (bits == 0)
+                throw new InvalidOperationException("Texture8 or Texture16");
             var filePath = FindTexture(texturePath);
             return filePath != null
                 ? Task.Run(async () =>
                 {
                     var fileData = await LoadFileDataAsync(filePath);
-                    var fileExtension = Path.GetExtension(filePath);
-                    if (fileExtension.ToLowerInvariant() == ".dds")
-                    {
-                        var s = new MemoryStream();
-                        s.Write(fileData, 0, fileData.Length);
-                        for (var i = 7; i > 0; i--)
-                        {
-                            var subFilePath = $"{filePath}.{i}";
-                            if (ContainsFile(subFilePath))
-                            {
-                                fileData = await LoadFileDataAsync(subFilePath);
-                                s.Write(fileData, 0, fileData.Length);
-                            }
-                        }
-                        s.Position = 0;
-                        return DdsReader.LoadDDSTexture(s);
-                    }
-                    else throw new NotSupportedException($"Unsupported texture type: {fileExtension}");
+                    if (fileData != null) return LoadRawTexture(new MemoryStream(fileData), bits);
+                    else throw new NotSupportedException($"Unsupported texture type: {filePath}");
                 })
                 : Task.FromResult<Texture2DInfo>(null);
         }
 
         public Task<object> LoadObjectInfoAsync(string filePath) => Task.Run(async () =>
         {
-            var files = new List<(string, Stream)> { (filePath, new MemoryStream(await LoadFileDataAsync(filePath))) };
-            var mFilePath = Path.ChangeExtension(filePath, $"{Path.GetExtension(filePath)}m");
-            if (ContainsFile(mFilePath))
-            {
-                Log($"Found geometry file {Path.GetFileName(mFilePath)}");
-                files.Add((mFilePath, new MemoryStream(await LoadFileDataAsync(mFilePath))));
-            }
-            return (object)null;
-            //var file = new UltimaIXFile(filePath);
-            //await file.LoadAsync(files, FindMaterial, async path => (path, new MemoryStream(await LoadFileDataAsync(path))));
-            //return (object)file;
+            var fileData = await LoadFileDataAsync(filePath);
+            var file = new SiFile(filePath);
+            file.Deserialize(new BinaryFileReader(new MemoryStream(fileData)));
+            return (object)file;
         });
 
         /// <summary>
@@ -69,33 +49,61 @@ namespace Game.Estate.UltimaIX.FilePack
         /// </summary>
         string FindTexture(string texturePath)
         {
-            var filePath = Path.ChangeExtension(texturePath, ".dds");
-            if (ContainsFile(filePath))
-                return filePath;
-            Log($"Could not find file \"{texturePath}\" in a PAK file.");
+            if (ContainsFile(texturePath))
+                return texturePath;
+            Log($"Could not find file \"{texturePath}\" in a FLX file.");
             return null;
         }
 
-        /// <summary>
-        /// Finds the actual path of a material.
-        /// </summary>
-        string FindMaterial(string materialPath, string fileName, string cleanName)
+        static Texture2DInfo LoadRawTexture(Stream inputStream, int bits)
         {
-            // First try relative to file being processed
-            if (Path.GetExtension(materialPath) != ".mtl") materialPath = Path.ChangeExtension(materialPath, "mtl");
-            if (ContainsFile(materialPath)) return materialPath;
-            // Then try just the last part of the chunk, relative to the file being processed
-            materialPath = Path.Combine(Path.GetDirectoryName(fileName), Path.GetFileName(cleanName));
-            if (Path.GetExtension(materialPath) != ".mtl") materialPath = Path.ChangeExtension(materialPath, "mtl");
-            if (ContainsFile(materialPath)) return materialPath;
-            // Then try relative to the ObjectDir
-            materialPath = Path.Combine("Data", cleanName);
-            if (Path.GetExtension(materialPath) != ".mtl") materialPath = Path.ChangeExtension(materialPath, "mtl");
-            if (ContainsFile(materialPath)) return materialPath;
-            // Then try just the fileName.mtl
-            materialPath = fileName;
-            if (Path.GetExtension(materialPath) != ".mtl") materialPath = Path.ChangeExtension(materialPath, "mtl");
-            return ContainsFile(materialPath) ? materialPath : null;
+            if (bits == 16)
+                using (var r = new BinaryFileReader(inputStream))
+                {
+                    var width = r.ReadInt32();
+                    var height = r.ReadInt32();
+                    r.Skip(8);
+                    var rawData = r.ReadBytes(width * height * 2);
+                    return new Texture2DInfo(width, height, TextureFormat.RGB565, false, rawData);
+                }
+            else if (bits == 8)
+                using (var r = new BinaryFileReader(inputStream))
+                {
+                    var pal = GetPallet8();
+                    var width = r.ReadInt32();
+                    var height = r.ReadInt32();
+                    r.Skip(8);
+                    var data = r.ReadBytes(width * height);
+                    var b = new MemoryStream();
+                    for (var i = 0; i < height; i++)
+                        for (var j = 0; j < width; j++)
+                            b.Write(pal[data[j * width + i]], 0, 4);
+                    var rawData = b.ToArray();
+                    return new Texture2DInfo(width, height, TextureFormat.ARGB32, false, rawData);
+                }
+            else throw new ArgumentOutOfRangeException(nameof(bits), $"{bits}");
+        }
+
+        static byte[][] _pallet8;
+        static byte[][] GetPallet8()
+        {
+            if (_pallet8 != null) return _pallet8;
+            var assembly = typeof(ResFile).Assembly;
+            lock (assembly)
+            {
+                if (_pallet8 != null) return _pallet8;
+                var pallet8 = new byte[256][];
+                using (var bs = assembly.GetManifestResourceStream("Game.Estate.UltimaIX.FilePack.ankh.pal"))
+                using (var br = new BinaryReader(bs))
+                    for (var i = 0; i < pallet8.Length; i++)
+                    {
+                        var color = BitConverter.GetBytes(br.ReadUInt32());
+                        //var r = color[2]; var g = color[1]; var b = color[0];
+                        //color[0] = 0; color[1] = r; color[2] = g; color[3] = b;
+                        pallet8[i] = color;
+                    }
+                return _pallet8 = pallet8;
+            }
         }
     }
 }

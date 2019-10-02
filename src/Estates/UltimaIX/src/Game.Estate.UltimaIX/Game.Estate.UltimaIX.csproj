@@ -12,6 +12,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="FilePack\ankh.pal" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="FilePack\ankh.pal" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.Win32.Registry" Version="4.5.0" />
   </ItemGroup>
 
