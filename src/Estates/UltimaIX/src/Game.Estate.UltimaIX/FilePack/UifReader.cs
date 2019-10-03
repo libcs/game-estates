@@ -75,7 +75,7 @@ namespace Game.Estate.UltimaIX.FilePack
             LodThreshold0 = r.ReadUInt32();
             LodThreshold1 = r.ReadUInt32();
             LodThreshold2 = r.ReadUInt32();
-            LodThreshold2 = r.ReadUInt32();
+            LodThreshold3 = r.ReadUInt32();
             CenterOfMass = r.ReadVector3();
             MassOrVolume = r.ReadSingle();
             InertiaMatrix = r.ReadRowMajorMatrix3x3();
@@ -101,8 +101,11 @@ namespace Game.Estate.UltimaIX.FilePack
         public float OrientationZ; // Rotation Z
         public SiMeshLod MeshLod;
 
+        public System.IO.Stream _bs; public long _bsp; public long Pos => _bs.Position - _bsp;
+
         public SiMesh(GenericReader r)
         {
+            _bs = r.BaseStream; _bsp = _bs.Position;
             LimbId = r.ReadUInt32();
             ParentId = r.ReadUInt32();
             ScaleX = r.ReadUInt32();
@@ -146,8 +149,11 @@ namespace Game.Estate.UltimaIX.FilePack
         public Vector3[] Vertices;
         public SiMaterial[] Materials;
 
+        public System.IO.Stream _bs; public long _bsp; public long Pos => _bs.Position - _bsp;
+
         public SiMeshLod(GenericReader r)
         {
+            _bs = r.BaseStream; _bsp = _bs.Position;
             MeshSize = r.ReadUInt32();
             Flags = r.ReadUInt32();
             Unused1 = r.ReadUInt32();
@@ -202,8 +208,11 @@ namespace Game.Estate.UltimaIX.FilePack
         public uint Color; // Color of the face in RGBA order, each element being between 0 (black/transparent) and 255 (bright/opaque).
         public uint[] CollisionRelated = new uint[2]; // for collision system (index list [so only values from 0, 1, or 2] that contains the index of the vertex that is closest to each of the faces [order is: left,right,front,back,bottom,top]
 
+        public System.IO.Stream _bs; public long _bsp; public long Pos => _bs.Position - _bsp;
+
         public SiFace(GenericReader r)
         {
+            _bs = r.BaseStream; _bsp = _bs.Position;
             Points = new SiPoint(r);
             Flags = r.ReadUInt32();
             Flags2 = r.ReadUInt32();
@@ -223,8 +232,11 @@ namespace Game.Estate.UltimaIX.FilePack
         public Vector3 Normal; // Not always a unit vector.
         public Vector2 UVCoordinates; // UV coordinates.
 
+        public System.IO.Stream _bs; public long _bsp; public long Pos => _bs.Position - _bsp;
+
         public SiPoint(GenericReader r)
         {
+            _bs = r.BaseStream; _bsp = _bs.Position;
             Point = r.ReadUInt32();
             PointOffset = r.ReadUInt32();
             Normal = r.ReadVector3();
@@ -250,8 +262,11 @@ namespace Game.Estate.UltimaIX.FilePack
         public byte PlaybackDirection; // 0 - forward, 1 - backward
         public uint AnimationTimerRelated; // Animation timer value
 
+        public System.IO.Stream _bs; public long _bsp; public long Pos => _bs.Position - _bsp;
+
         public SiMaterial(GenericReader r)
         {
+            _bs = r.BaseStream; _bsp = _bs.Position;
             TextureId = r.ReadUInt16();
             Flags = r.ReadUInt16();
             SubtextureCount = r.ReadUInt16();

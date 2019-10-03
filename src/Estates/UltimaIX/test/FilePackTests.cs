@@ -11,7 +11,7 @@ namespace Game.Estate.UltimaIX.Tests
         public FilePackTests(ITestOutputHelper helper) => Core.Debug.LogFunc = x => helper.WriteLine(x.ToString());
 
         [Theory]
-        [InlineData("game:/static/activity.flx#UltimaIX", "1")]
+        [InlineData("game:/static/sappear.flx#UltimaIX", "0")]
         public async Task LoadAssetPack(string path, string modelPath)
         {
             // given
