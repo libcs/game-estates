@@ -2,7 +2,7 @@ using Game.Format.Cry;
 using System.IO;
 using Xunit;
 using Xunit.Abstractions;
-using static Game.Core.Debug;
+using static Game.Core.CoreDebug;
 
 namespace Game.Estate.Cry.Tests
 {

@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using System.Net;
 using System.Text;
-using static Game.Core.Debug;
+using static Game.Core.CoreDebug;
 
 namespace Game.Core
 {

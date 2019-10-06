@@ -3,7 +3,7 @@ using System;
 using System.Collections;
 using System.IO;
 using System.Text;
-using static Game.Core.Debug;
+using static Game.Core.CoreDebug;
 
 namespace Game.Estate.Ultima.Resources
 {

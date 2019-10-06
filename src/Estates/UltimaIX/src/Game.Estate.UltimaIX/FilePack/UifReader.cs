@@ -2,44 +2,47 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using static Game.Core.Debug;
+using static Game.Core.CoreDebug;
 
 namespace Game.Estate.UltimaIX.FilePack
 {
     // ---- SAPPEAR --- //
+
+    //public class SiFile
+    //{
+    //    public SiFile(string name) => Name = name;
+
+    //    public string Name;
+    //    public SiHeader Header;
+    //    public SiMesh[] Meshes;
+
+    //    public void Deserialize(GenericReader r)
+    //    {
+    //        Header = new SiHeader(r);
+    //        Meshes = new SiMesh[Header.MeshOffset.Length];
+    //        for (var i = 0; i < Header.MeshOffset.Length; i++)
+    //        {
+    //            r.Position = Header.MeshOffset[i];
+    //            Meshes[i] = new SiMesh(r);
+    //        }
+    //        //Footer = new NiFooter();
+    //        //Footer.Deserialize(r);
+    //    }
+
+    //    //public IEnumerable<string> GetTexturePaths()
+    //    //{
+    //    //    foreach (var niObject in Blocks)
+    //    //        if (niObject is NiSourceTexture niSourceTexture)
+    //    //            if (!string.IsNullOrEmpty(niSourceTexture.FileName))
+    //    //                yield return niSourceTexture.FileName;
+    //    //}
+    //}
 
     public class SiFile
     {
         public SiFile(string name) => Name = name;
 
         public string Name;
-        public SiHeader Header;
-        public SiMesh[] Meshes;
-
-        public void Deserialize(GenericReader r)
-        {
-            Header = new SiHeader(r);
-            Meshes = new SiMesh[Header.MeshMap.Length];
-            for (var i = 0; i < Header.MeshMap.Length; i++)
-            {
-                r.Position = Header.MeshMap[i];
-                Meshes[i] = new SiMesh(r);
-            }
-            //Footer = new NiFooter();
-            //Footer.Deserialize(r);
-        }
-
-        //public IEnumerable<string> GetTexturePaths()
-        //{
-        //    foreach (var niObject in Blocks)
-        //        if (niObject is NiSourceTexture niSourceTexture)
-        //            if (!string.IsNullOrEmpty(niSourceTexture.FileName))
-        //                yield return niSourceTexture.FileName;
-        //}
-    }
-
-    public class SiHeader
-    {
         public uint MeshCount;
         public uint LodCount;
         public Vector3 CylinderBaseCentre;
@@ -58,9 +61,10 @@ namespace Game.Estate.UltimaIX.FilePack
         public float MassOrVolume;
         public Matrix4x4 InertiaMatrix;
         public float InertiaRelated;
-        public uint[] MeshMap;
+        //public uint[] MeshOffset;
+        public SiMesh[] Meshes;
 
-        public SiHeader(GenericReader r)
+        public void Deserialize(GenericReader r)
         {
             MeshCount = r.ReadUInt32();
             LodCount = r.ReadUInt32();
@@ -81,9 +85,13 @@ namespace Game.Estate.UltimaIX.FilePack
             InertiaMatrix = r.ReadRowMajorMatrix3x3();
             InertiaRelated = r.ReadSingle();
             //
-            MeshMap = new uint[MeshCount * LodCount];
-            for (var i = 0; i < MeshMap.Length; i++)
-                MeshMap[i] = r.ReadUInt32();
+            var meshCount = (int)(MeshCount * LodCount);
+            var meshOffset = r.ReadTArray<uint>(meshCount * 4, meshCount);
+            for (var i = 0; i < meshOffset.Length; i++)
+            {
+                r.Position = meshOffset[i];
+                Meshes[i] = new SiMesh(r);
+            }
         }
     }
 

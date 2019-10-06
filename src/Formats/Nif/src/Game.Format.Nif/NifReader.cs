@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using static Game.Core.Debug;
+using static Game.Core.CoreDebug;
 
 namespace Game.Format.Nif
 {

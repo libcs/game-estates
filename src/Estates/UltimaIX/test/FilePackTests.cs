@@ -8,10 +8,10 @@ namespace Game.Estate.UltimaIX.Tests
 {
     public class FilePackTests
     {
-        public FilePackTests(ITestOutputHelper helper) => Core.Debug.LogFunc = x => helper.WriteLine(x.ToString());
+        public FilePackTests(ITestOutputHelper helper) => Core.CoreDebug.LogFunc = x => helper.WriteLine(x.ToString());
 
         [Theory]
-        [InlineData("game:/static/sappear.flx#UltimaIX", "0")]
+        [InlineData("game:/static/sappear.flx#UltimaIX", "sappear/50")]
         public async Task LoadAssetPack(string path, string modelPath)
         {
             // given
@@ -29,10 +29,12 @@ namespace Game.Estate.UltimaIX.Tests
         }
 
         [Theory]
-        [InlineData("game:/static/Texture8.9#UltimaIX", "1087")] // 1087,1211,1360
-        //[InlineData("game:/static/Texture8.14#UltimaIX", "0")]
-        [InlineData("game:/static/Texture16.9#UltimaIX", "1087")]
-        //[InlineData("game:/static/Texture16.14#UltimaIX", "0")]
+        //[InlineData("game:/#UltimaIX", "bitmap/0")]
+        [InlineData("game:/static/bitmap16.flx#UltimaIX", "bitmap/1139")]
+        //[InlineData("game:/static/Texture8.9#UltimaIX", "texture/1087")] // 1087,1211,1360
+        //[InlineData("game:/static/Texture8.14#UltimaIX", "texture/0")]
+        //[InlineData("game:/static/Texture16.9#UltimaIX", "texture/1087")]
+        //[InlineData("game:/static/Texture16.14#UltimaIX", "texture/0")]
         public async Task LoadTexture(string path, string modelPath)
         {
             // given

@@ -22,7 +22,7 @@ namespace Game.Estate.Ultima.Tests
     public class StreamIntegrationTests : IClassFixture<TestsFixture>
     {
         readonly TestsFixture _fixture;
-        public StreamIntegrationTests(TestsFixture fixture, ITestOutputHelper helper) { _fixture = fixture; Core.Debug.LogFunc = x => helper.WriteLine(x.ToString()); }
+        public StreamIntegrationTests(TestsFixture fixture, ITestOutputHelper helper) { _fixture = fixture; Core.CoreDebug.LogFunc = x => helper.WriteLine(x.ToString()); }
 
         [Theory]
         [InlineData("game://localhost:{0}/#Zero", "xxx")]

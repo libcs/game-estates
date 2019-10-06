@@ -2,7 +2,7 @@
 using System;
 using UnityEngine;
 using Game.Estate.Cry;
-using static Game.Core.Debug;
+using static Game.Core.CoreDebug;
 
 namespace Game.Estate.Cry.Loader
 {

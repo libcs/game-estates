@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using static Game.Core.Debug;
+using static Game.Core.CoreDebug;
 
 namespace Game.Format.Cry.Core
 {

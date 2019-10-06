@@ -76,7 +76,7 @@ namespace Game.Estate.Cry.FilePack
             var files = _filesByPath[filePath.Replace("/", "\\")].ToArray();
             if (files.Length == 1)
                 return LoadFileDataAsync(files[0]);
-            Debug.Log($"LoadFileDataAsync: {filePath} @ {files.Length}");
+            CoreDebug.Log($"LoadFileDataAsync: {filePath} @ {files.Length}");
             if (files.Length == 0)
                 throw new FileNotFoundException(filePath);
             throw new NotSupportedException();

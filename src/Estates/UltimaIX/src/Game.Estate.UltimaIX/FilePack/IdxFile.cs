@@ -65,7 +65,7 @@ namespace Game.Estate.UltimaIX.FilePack
         {
             if (int.TryParse(filePath, out var file) && file < _files)
                 return LoadFileDataAsync(file);
-            Debug.Log($"LoadFileDataAsync: {filePath} @ {_files}");
+            CoreDebug.Log($"LoadFileDataAsync: {filePath} @ {_files}");
             throw new FileNotFoundException(filePath);
         }
 

@@ -4,6 +4,8 @@ namespace Game.Core
 {
     public static class UnityExtensions
     {
+        public static Vector3 ToUnityVector(this Vector3 vector) { Utils.Swap(ref vector.y, ref vector.z); return vector; }
+
         public static void FromMatrix(this Transform transform, Matrix4x4 matrix)
         {
             transform.localScale = matrix.ExtractScale();

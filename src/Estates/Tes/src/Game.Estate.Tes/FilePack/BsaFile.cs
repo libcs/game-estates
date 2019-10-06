@@ -105,7 +105,7 @@ namespace Game.Estate.Tes.FilePack
         bool _hasNamePrefix; // Whether Fallout 3 names are prefixed with an extra string
         FileMetadata[] _files;
         ILookup<ulong, FileMetadata> _filesByHash;
-        public string FilePath;
+        public readonly string FilePath;
 
         public bool IsAtEof => _r.Position >= _r.BaseStream.Length;
 

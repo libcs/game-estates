@@ -1,5 +1,5 @@
 ﻿using Game.Core;
-using static Game.Core.Debug;
+using static Game.Core.CoreDebug;
 
 namespace Game.Estate.Ultima.Resources
 {

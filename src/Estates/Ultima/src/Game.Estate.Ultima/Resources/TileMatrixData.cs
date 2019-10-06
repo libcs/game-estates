@@ -1,7 +1,7 @@
 ﻿using Game.Core;
 using System;
 using System.IO;
-using static Game.Core.Debug;
+using static Game.Core.CoreDebug;
 
 namespace Game.Estate.Ultima.Resources
 {

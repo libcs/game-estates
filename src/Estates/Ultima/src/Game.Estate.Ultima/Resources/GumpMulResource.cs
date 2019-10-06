@@ -1,7 +1,7 @@
 ﻿using Game.Core;
 using Game.Estate.Ultima.Resources.IO;
 using UnityEngine;
-using static Game.Core.Debug;
+using static Game.Core.CoreDebug;
 
 namespace Game.Estate.Ultima.Resources
 {

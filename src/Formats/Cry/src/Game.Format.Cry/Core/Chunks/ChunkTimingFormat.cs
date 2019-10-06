@@ -1,4 +1,4 @@
-﻿using static Game.Core.Debug;
+﻿using static Game.Core.CoreDebug;
 
 namespace Game.Format.Cry.Core
 {

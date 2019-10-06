@@ -24,7 +24,7 @@ namespace Game.Estate.Tes.Tests
     public class StreamIntegrationTests : IClassFixture<TestsFixture>
     {
         readonly TestsFixture _fixture;
-        public StreamIntegrationTests(TestsFixture fixture, ITestOutputHelper helper) { _fixture = fixture; Core.Debug.LogFunc = x => helper.WriteLine(x.ToString()); }
+        public StreamIntegrationTests(TestsFixture fixture, ITestOutputHelper helper) { _fixture = fixture; Core.CoreDebug.LogFunc = x => helper.WriteLine(x.ToString()); }
 
         [Theory]
         //[InlineData("game://localhost:{0}/Morrowind.bsa#Morrowind", "meshes/i/in_dae_room_l_floor_01.nif")]

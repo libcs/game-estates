@@ -10,6 +10,7 @@ namespace Game.Estate.UltimaIX
 
         static readonly object[] _knownRegkeys = {
             @"GOG.com\GOGULTIMA9", UltimaIXGame.UltimaIX,
+            @"GOG.com\Games\1207659093", UltimaIXGame.UltimaIX,
         };
 
         static Dictionary<UltimaIXGame, string> _fileDirectories = new Dictionary<UltimaIXGame, string>();

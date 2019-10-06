@@ -2,6 +2,7 @@
 using System.IO;
 using System.Text;
 using UnityEngine;
+using static Game.Core.CoreDebug;
 
 namespace Game.Core
 {
@@ -107,6 +108,49 @@ namespace Game.Core
                 ms.Position = 0;
                 return ms.ToArray();
             }
+        }
+
+        public unsafe Texture2DInfo FromRGBA555()
+        {
+            var W = Width; var H = Height;
+            var pixels = new byte[W * H * 4];
+            fixed (byte* pPixels = pixels, pData = RawData)
+            {
+                var rPixels = (uint*)pPixels;
+                var rData = (ushort*)pData;
+                for (var i = 0; i < W * H; ++i)
+                {
+                    var d555 = *rData++;
+                    var a = (byte)Math.Min(((d555 & 0x8000) >> 15) * 0x1F, byte.MaxValue);
+                    var b = (byte)Math.Min(((d555 & 0x7C00) >> 10) * 8, byte.MaxValue);
+                    var g = (byte)Math.Min(((d555 & 0x03E0) >> 5) * 8, byte.MaxValue);
+                    var r = (byte)Math.Min(((d555 & 0x001F) >> 0) * 8, byte.MaxValue);
+                    uint color;
+                    if (Format == TextureFormat.RGBA32)
+                        color =
+                            ((uint)(a << 24) & 0xFF000000) |
+                            ((uint)(b << 16) & 0x00FF0000) |
+                            ((uint)(g << 8) & 0x0000FF00) |
+                            ((uint)(r << 0) & 0x000000FF);
+                    else
+                        throw new ArgumentOutOfRangeException(nameof(Format), Format.ToString());
+                    *rPixels++ = color;
+                }
+            }
+            RawData = pixels;
+            return this;
+        }
+
+        public Texture2DInfo From8BitPallet(byte[][] pallet, TextureFormat palletFormat)
+        {
+            Log("From8BitPallet");
+            if (Format != palletFormat)
+                throw new InvalidOperationException();
+            var b = new MemoryStream();
+            for (var y = 0; y < RawData.Length; y++)
+                b.Write(pallet[RawData[y]], 0, 4);
+            RawData = b.ToArray();
+            return this;
         }
 
         #region Transform

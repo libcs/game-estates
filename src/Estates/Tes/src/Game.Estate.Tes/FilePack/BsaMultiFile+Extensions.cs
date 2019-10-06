@@ -4,7 +4,7 @@ using Game.Format.Nif;
 using System;
 using System.IO;
 using System.Threading.Tasks;
-using static Game.Core.Debug;
+using static Game.Core.CoreDebug;
 
 namespace Game.Estate.Tes.FilePack
 {

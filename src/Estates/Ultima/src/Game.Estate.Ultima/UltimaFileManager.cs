@@ -2,7 +2,7 @@
 using System;
 using System.IO;
 using System.Text;
-using static Game.Core.Debug;
+using static Game.Core.CoreDebug;
 using static Microsoft.Win32.Registry;
 
 namespace Game.Estate.Ultima

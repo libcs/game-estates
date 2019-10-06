@@ -1,7 +1,7 @@
 ﻿using Game.Core;
 using System.Collections.Generic;
 using UnityEngine;
-using static Game.Core.Debug;
+using static Game.Core.CoreDebug;
 
 namespace Game.Estate.Tes.Records
 {

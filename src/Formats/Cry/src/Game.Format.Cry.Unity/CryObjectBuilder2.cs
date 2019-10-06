@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using static Game.Core.Debug;
+using static Game.Core.CoreDebug;
 using UVector3 = UnityEngine.Vector3;
 
 namespace Game.Format.Cry

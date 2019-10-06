@@ -7,7 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static Game.Core.Debug;
+using static Game.Core.CoreDebug;
 
 //http://wiki.ultimacodex.com/wiki/Ultima_IX_Internal_Formats#FLX_Format
 //https://github.com/cthielen/u9tools

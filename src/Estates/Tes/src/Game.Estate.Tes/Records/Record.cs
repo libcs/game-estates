@@ -2,7 +2,7 @@
 using Game.Core.Records;
 using Game.Estate.Tes.FilePack;
 using System;
-using static Game.Core.Debug;
+using static Game.Core.CoreDebug;
 
 namespace Game.Estate.Tes.Records
 {

@@ -11,7 +11,7 @@ using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Schema;
 using System.Xml.Serialization;
-using static Game.Core.Debug;
+using static Game.Core.CoreDebug;
 
 namespace Game.Format.Collada
 {

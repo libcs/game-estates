@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using Unity.Collections.LowLevel.Unsafe;
 using UnityEngine;
-using static Game.Core.Debug;
+using static Game.Core.CoreDebug;
 
 namespace Game.Core
 {
@@ -118,7 +118,7 @@ namespace Game.Core
             return list.ToArray();
         }
         public override T ReadT<T>(int length) => UnsafeUtils.MarshalT<T>(ReadBytes(length), length);
-        public override T[] ReadTArray<T>(int length, int count) => UnsafeUtils.MarshalTArray<T>(ReadBytes(length), length, count);
+        public override T[] ReadTArray<T>(int length, int count) => UnsafeUtils.MarshalTArray<T>(ReadBytes(length), count);
 
         //
 

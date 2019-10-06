@@ -9,7 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static Game.Core.Debug;
+using static Game.Core.CoreDebug;
 
 // TES3
 //http://en.uesp.net/wiki/Tes3Mod:File_Format

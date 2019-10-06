@@ -2,9 +2,9 @@
 
 namespace Game.Core
 {
-    public class Debug
+    public class CoreDebug
     {
-        static Debug()
+        static CoreDebug()
         {
             var platform = UnsafeUtils.Platform;
         }

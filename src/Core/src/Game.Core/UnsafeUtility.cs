@@ -23,18 +23,18 @@ namespace Game.Core
                 Platform = task.Result;
                 //Debug.Log(Platform);
                 Memcpy = (dest, src, count) => { UnsafeUtility.MemCpy((void*)dest, (void*)src, count); return IntPtr.Zero; };
-                Debug.AssertFunc = x => UnityEngine.Debug.Assert(x);
-                Debug.LogFunc = a => UnityEngine.Debug.Log(a);
-                Debug.LogFormatFunc = (a, b) => UnityEngine.Debug.LogFormat(a, b);
+                CoreDebug.AssertFunc = x => UnityEngine.Debug.Assert(x);
+                CoreDebug.LogFunc = a => UnityEngine.Debug.Log(a);
+                CoreDebug.LogFormatFunc = (a, b) => UnityEngine.Debug.LogFormat(a, b);
                 return;
             }
             catch
             {
                 Platform = string.Empty;
                 Memcpy = memcpy;
-                Debug.AssertFunc = x => System.Diagnostics.Debug.Assert(x);
-                Debug.LogFunc = a => System.Diagnostics.Debug.Print(a);
-                Debug.LogFormatFunc = (a, b) => System.Diagnostics.Debug.Print(a, b);
+                CoreDebug.AssertFunc = x => System.Diagnostics.Debug.Assert(x);
+                CoreDebug.LogFunc = a => System.Diagnostics.Debug.Print(a);
+                CoreDebug.LogFormatFunc = (a, b) => System.Diagnostics.Debug.Print(a, b);
             }
         }
 
@@ -65,7 +65,7 @@ namespace Game.Core
             //}
         }
 
-        public static unsafe T[] MarshalTArray<T>(byte[] bytes, int length, int count)
+        public static unsafe T[] MarshalTArray<T>(byte[] bytes, int count)
         {
             fixed (byte* src = bytes)
             {

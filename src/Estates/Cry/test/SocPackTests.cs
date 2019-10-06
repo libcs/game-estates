@@ -11,7 +11,7 @@ namespace Game.Estate.Cry.Tests
 {
     public class SocPackTests
     {
-        public SocPackTests(ITestOutputHelper helper) => Core.Debug.LogFunc = x => helper.WriteLine(x.ToString());
+        public SocPackTests(ITestOutputHelper helper) => Core.CoreDebug.LogFunc = x => helper.WriteLine(x.ToString());
 
         [Theory]
         [InlineData(@"D:\StarCitizen\Data\ObjectContainers\Ships\MISC\Prospector\base_ext_lg.socpak", @"base_ext_lg.soc")]

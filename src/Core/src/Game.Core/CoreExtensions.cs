@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using System.IO;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -65,5 +66,8 @@ namespace Game.Core
             static System.Random _random = new System.Random();
             public static int RandomValue(int low, int high) => _random.Next(low, high + 1);
         }
+
+        public static T ReadT<T>(this BinaryReader source, int length) => UnsafeUtils.MarshalT<T>(source.ReadBytes(length), length);
+        public static T[] ReadTArray<T>(this BinaryReader source, int length, int count) => UnsafeUtils.MarshalTArray<T>(source.ReadBytes(length), count);
     }
 }

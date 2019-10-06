@@ -2,7 +2,7 @@
 using Game.Format.Cry.Core;
 using System.IO;
 using System.Reflection;
-using static Game.Core.Debug;
+using static Game.Core.CoreDebug;
 
 namespace Game.Format.Wavefront
 {

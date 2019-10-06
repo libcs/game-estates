@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-using static Game.Core.Debug;
+using static Game.Core.CoreDebug;
 
 namespace Game.Core
 {

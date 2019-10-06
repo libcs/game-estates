@@ -9,7 +9,7 @@ namespace Game.Estate.Cry.Tests
 {
     public class FilePackTests
     {
-        public FilePackTests(ITestOutputHelper helper) => Core.Debug.LogFunc = x => helper.WriteLine(x.ToString());
+        public FilePackTests(ITestOutputHelper helper) => Core.CoreDebug.LogFunc = x => helper.WriteLine(x.ToString());
 
         [Theory]
         [InlineData("game:/#StarCitizen", @"Data\Objects\animals\fish\CleanerFish_clean_prop_animal_01.chr")]

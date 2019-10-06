@@ -1,23 +1,30 @@
-﻿using Game.Core.Netstream;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Game.Estate.UltimaIX.FilePack
 {
+    //http://wiki.ultimacodex.com/wiki/Ultima_IX_Internal_Formats#FLX_Format
+    //http://jfregnault.free.fr/Ultima9/Ultima9.htm
+    //https://sites.google.com/site/burtonradons/eee/platforms/single-games/ultima-ix/file-formats
+    //https://sites.google.com/site/burtonradons/eee/platforms/single-games/ultima-ix/file-formats/texture
     public partial class ResFile : IDisposable
     {
-        readonly StreamSink _streamSink;
         readonly IFlxFile _flxFile;
         readonly IIdxFile _idxFile;
+        public readonly string FilePath;
+        readonly string _prefix;
+        readonly int _prefixLength;
 
-        public ResFile(StreamSink streamSink, IFlxFile flxFile, IIdxFile idxFile)
+        public ResFile(string filePath)
         {
-            _streamSink = streamSink;
-            if (streamSink is StreamSinkClient)
+            if (filePath == null)
                 return;
-            _flxFile = flxFile;
-            _idxFile = idxFile;
+            FilePath = filePath;
+            _prefix = GetPrefix(filePath);
+            _prefixLength = _prefix.Length;
+            _flxFile = new FlxFile(filePath);
+            _idxFile = null;
         }
 
         public void Dispose()
@@ -29,26 +36,35 @@ namespace Game.Estate.UltimaIX.FilePack
 
         public void Close() { _flxFile?.Close(); _idxFile?.Close(); }
 
+        static string GetPrefix(string filePath)
+            => filePath.Contains("sappear.flx") ? "sappear/"
+            : filePath.Contains("bitmap") ? "bitmap/"
+            : filePath.Contains("Texture") ? "texture/"
+            : throw new ArgumentOutOfRangeException(nameof(filePath), filePath);
+
         /// <summary>
         /// Gets the contains set.
         /// </summary>
         /// <returns></returns>
-        public HashSet<string> GetContainsSet() => _streamSink.GetContainsSet(() => _flxFile != null
-            ? _flxFile.GetContainsSet()
-            : _idxFile.GetContainsSet());
+        public HashSet<string> GetContainsSet() =>
+            _flxFile != null ? _flxFile.GetContainsSet()
+            : _idxFile != null ? _idxFile.GetContainsSet()
+            : throw new InvalidOperationException("Unknown type");
 
         /// <summary>
-        /// Determines whether the PAK archive contains a file.
+        /// Determines whether the archive contains a file.
         /// </summary>
-        public bool ContainsFile(string filePath) => _streamSink.ContainsFile(filePath, () => _flxFile != null
-            ? _flxFile.ContainsFile(filePath)
-            : _idxFile.ContainsFile(filePath));
+        public bool ContainsFile(string filePath) => !filePath.StartsWith(_prefix) ? false
+            : _flxFile != null ? _flxFile.ContainsFile(filePath.Substring(_prefixLength))
+            : _idxFile != null ? _idxFile.ContainsFile(filePath.Substring(_prefixLength))
+            : throw new InvalidOperationException("Unknown type");
 
         /// <summary>
         /// Loads an archived file's data.
         /// </summary>
-        public Task<byte[]> LoadFileDataAsync(string filePath) => _streamSink.LoadFileDataAsync(filePath, () => _flxFile != null
-            ? _flxFile.LoadFileDataAsync(filePath)
-            : _idxFile.LoadFileDataAsync(filePath));
+        public Task<byte[]> LoadFileDataAsync(string filePath) => !filePath.StartsWith(_prefix) ? Task.FromResult<byte[]>(null)
+            : _flxFile != null ? _flxFile.LoadFileDataAsync(filePath.Substring(_prefixLength))
+            : _idxFile != null ? _idxFile.LoadFileDataAsync(filePath.Substring(_prefixLength))
+            : throw new InvalidOperationException("Unknown type");
     }
 }

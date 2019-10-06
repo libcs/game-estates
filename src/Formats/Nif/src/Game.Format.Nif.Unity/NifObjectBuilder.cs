@@ -1,7 +1,7 @@
 ﻿using Game.Core;
 using System;
 using UnityEngine;
-using static Game.Core.Debug;
+using static Game.Core.CoreDebug;
 
 namespace Game.Format.Nif
 {

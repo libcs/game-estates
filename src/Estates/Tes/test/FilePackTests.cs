@@ -12,7 +12,7 @@ namespace Game.Estate.Tes.Tests
 {
     public class FilePackTests
     {
-        public FilePackTests(ITestOutputHelper helper) => Core.Debug.LogFunc = x => helper.WriteLine(x.ToString());
+        public FilePackTests(ITestOutputHelper helper) => Core.CoreDebug.LogFunc = x => helper.WriteLine(x.ToString());
 
         [Theory]
         [InlineData("game:/Morrowind.bsa#Morrowind", "textures/Tx_BC_moss.dds")]
@@ -105,7 +105,7 @@ namespace Game.Estate.Tes.Tests
         {
             foreach (var record in data.GroupByLabel["CELL"].Records.Cast<CELLRecord>())
                 if (!string.IsNullOrEmpty(record.EDID.Value))
-                    Core.Debug.Log(record.EDID.Value);
+                    Core.CoreDebug.Log(record.EDID.Value);
         }
     }
 }

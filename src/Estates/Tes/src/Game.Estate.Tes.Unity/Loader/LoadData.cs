@@ -4,7 +4,7 @@ using Game.Format.Nif;
 using System;
 using System.Linq;
 using UnityEngine;
-using static Game.Core.Debug;
+using static Game.Core.CoreDebug;
 
 namespace Game.Estate.Tes.Loader
 {

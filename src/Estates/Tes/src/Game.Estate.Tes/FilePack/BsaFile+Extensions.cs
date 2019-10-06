@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Linq;
-using static Game.Core.Debug;
+using static Game.Core.CoreDebug;
 
 namespace Game.Estate.Tes.FilePack
 {

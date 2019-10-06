@@ -1,5 +1,5 @@
 ﻿using System.IO;
-using static Game.Core.Debug;
+using static Game.Core.CoreDebug;
 using static Microsoft.Win32.Registry;
 
 namespace Game.Estate.Cry
