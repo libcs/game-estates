@@ -22,7 +22,7 @@ namespace Game.Estate.UltimaIX.FilePack
                     var fileData = await LoadFileDataAsync(filePath);
                     if (fileData == null) throw new NotSupportedException($"File not found: {filePath}");
                     else if (texturePath.StartsWith("bitmap/")) return FlxFile.LoadRawBitmap(new MemoryStream(fileData)).Frames[0];
-                    else if (texturePath.StartsWith("texture/")) return FlxFile.LoadRawMinimapTile(new MemoryStream(fileData), bitsPerPixel);
+                    else if (texturePath.StartsWith("texture/")) return FlxFile.LoadRawTexture(new MemoryStream(fileData), bitsPerPixel);
                     else throw new NotSupportedException($"Unsupported texture type: {filePath}");
                 })
                 : Task.FromResult<Texture2DInfo>(null);

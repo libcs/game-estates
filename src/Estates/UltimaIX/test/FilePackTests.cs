@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Threading.Tasks;
 using UnityEngine;
 using Xunit;
@@ -25,6 +26,22 @@ namespace Game.Estate.UltimaIX.Tests
                 Assert.True(exist0);
                 Assert.NotNull(data0);
                 //Assert.NotNull(model0);
+            }
+        }
+
+        [Theory]
+        [InlineData("game:/static/bitmap16.flx#UltimaIX", "bitmap/0")]
+        [InlineData("game:/static/bitmap16.flx#UltimaIX", "bitmap/1")]
+        [InlineData("game:/static/bitmap16.flx#UltimaIX", "bitmap/2")]
+        //[InlineData("game:/static/Texture8.9#UltimaIX", "texture/1087")]
+        //[InlineData("game:/static/Texture16.9#UltimaIX", "texture/1087")]
+        public async Task SaveAssetPackTexture(string path, string modelPath)
+        {
+            // given
+            using (var assetPack = await new Uri(path).GetUltimaIXAssetPackAsync())
+            {
+                var tex0 = await assetPack.LoadTextureInfoAsync(modelPath);
+                tex0.SaveBitmap(Path.Combine("C:\\T_", Path.ChangeExtension(modelPath, ".bmp")));
             }
         }
 

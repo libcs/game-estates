@@ -97,8 +97,7 @@ namespace Game.Estate.UltimaIX.FilePack
             _files = _r.ReadTArray<FileMetadata>(fileCount * 8, fileCount);
         }
 
-
-        #region Texture
+        #region Bitmap
 
         public class Bitmap
         {
@@ -157,11 +156,11 @@ namespace Game.Estate.UltimaIX.FilePack
                     var offsets = r.ReadTArray<uint>(frameHeight * 0x04, frameHeight); // Offset to the data for each row relative to the start of the resource.
                     if (offsets[0] == 0xCDCDCDCD) //: unknownFrame
                         continue;
-                    r.Position = frameOffsets[i].Offset;
+                    r.Position = frameOffsets[i].Offset + offsets[0];
                     var rawData = r.ReadBytes(frameDataSize * bitsPerPixel);
                     frames[i] = bitsPerPixel == 1
                         ? new Texture2DInfo((int)frame.width, (int)frame.height, UnityEngine.TextureFormat.BGRA32, false, rawData).From8BitPallet(GetGlobal8BitPallet(), UnityEngine.TextureFormat.BGRA32)
-                        : new Texture2DInfo((int)frame.width, (int)frame.height, UnityEngine.TextureFormat.RGBA32, false, rawData).FromRGBA555();
+                        : new Texture2DInfo((int)frame.width, (int)frame.height, UnityEngine.TextureFormat.RGBA32, false, rawData).FromABGR555();
                 }
                 return new Bitmap
                 {
@@ -173,9 +172,9 @@ namespace Game.Estate.UltimaIX.FilePack
 
         #endregion
 
-        #region Minimap
+        #region Texture
 
-        internal static Texture2DInfo LoadRawMinimapTile(Stream inputStream, int bitsPerPixel)
+        internal static Texture2DInfo LoadRawTexture(Stream inputStream, int bitsPerPixel)
         {
             using (var r = new BinaryFileReader(inputStream))
             {
@@ -185,7 +184,7 @@ namespace Game.Estate.UltimaIX.FilePack
                 var rawData = r.ReadBytes(width * height * bitsPerPixel);
                 return bitsPerPixel == 1
                     ? new Texture2DInfo(width, height, UnityEngine.TextureFormat.BGRA32, false, rawData).From8BitPallet(GetGlobal8BitPallet(), UnityEngine.TextureFormat.BGRA32)
-                    : new Texture2DInfo(width, height, UnityEngine.TextureFormat.RGBA32, false, rawData).FromRGBA555();
+                    : new Texture2DInfo(width, height, UnityEngine.TextureFormat.RGBA32, false, rawData).FromABGR555();
             }
         }
 

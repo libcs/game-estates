@@ -35,6 +35,18 @@ namespace Game.Estate.Tes.Tests
         }
 
         [Theory]
+        [InlineData("game:/Morrowind.bsa#Morrowind", "textures/Tx_BC_moss.dds")]
+        public async Task SaveAssetPackTexture(string path, string modelPath)
+        {
+            // given
+            using (var assetPack = await new Uri(path).GetTesAssetPackAsync())
+            {
+                var tex0 = await assetPack.LoadTextureInfoAsync(modelPath);
+                tex0.SaveBitmap("C:\\T_\\image21.bmp");
+            }
+        }
+
+        [Theory]
 #if LONGTEST
         [InlineData("game:/Morrowind.bsa#Morrowind")]
         [InlineData("game:/Oblivion*#Oblivion")]

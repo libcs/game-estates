@@ -2,6 +2,9 @@
 using System.IO;
 using System.Text;
 using UnityEngine;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.Runtime.InteropServices;
 using static Game.Core.CoreDebug;
 
 namespace Game.Core
@@ -73,6 +76,56 @@ namespace Game.Core
             return tex;
         }
 
+        public unsafe void SaveBitmap(string filePath)
+        {
+            var rawData = new byte[Width * Height * 4];
+            if (Format == TextureFormat.BGRA32)
+                Buffer.BlockCopy(RawData, 0, rawData, 0, rawData.Length);
+            else if (Format == TextureFormat.ARGB32)
+                fixed (byte* pPixels = rawData, pData = RawData)
+                {
+                    var rPixels = (uint*)pPixels;
+                    var rData = (uint*)pData;
+                    for (var i = 0; i < Width * Height; ++i)
+                    {
+                        var d = *rData++;
+                        var b = (byte)(d >> 24);
+                        var g = (byte)(d >> 16);
+                        var r = (byte)(d >> 8);
+                        var a = (byte)d;
+                        var color =
+                            ((uint)(a << 24) & 0xFF000000) |
+                            ((uint)(r << 16) & 0x00FF0000) |
+                            ((uint)(g << 8) & 0x0000FF00) |
+                            ((uint)(b << 0) & 0x000000FF);
+                        *rPixels++ = color;
+                    }
+                }
+            else if (Format == TextureFormat.RGBA32)
+                fixed (byte* pPixels = rawData, pData = RawData)
+                {
+                    var rPixels = (uint*)pPixels;
+                    var rData = (uint*)pData;
+                    for (var i = 0; i < Width * Height; ++i)
+                    {
+                        var d = *rData++;
+                        var a = (byte)(d >> 24);
+                        var b = (byte)(d >> 16);
+                        var g = (byte)(d >> 8);
+                        var r = (byte)d;
+                        var color =
+                            ((uint)(a << 24) & 0xFF000000) |
+                            ((uint)(r << 16) & 0x00FF0000) |
+                            ((uint)(g << 8) & 0x0000FF00) |
+                            ((uint)(b << 0) & 0x000000FF);
+                        *rPixels++ = color;
+                    }
+                }
+            else throw new ArgumentOutOfRangeException(nameof(Format), Format.ToString());
+            using (var bmp = new Bitmap(Width, Height, Width * 4, PixelFormat.Format32bppRgb, Marshal.UnsafeAddrOfPinnedArrayElement(rawData, 0)))
+                bmp.Save(filePath);
+        }
+
         public void LoadImage(byte[] data)
         {
             using (var ms = new MemoryStream(data))
@@ -110,7 +163,7 @@ namespace Game.Core
             }
         }
 
-        public unsafe Texture2DInfo FromRGBA555()
+        public unsafe Texture2DInfo FromABGR555()
         {
             var W = Width; var H = Height;
             var pixels = new byte[W * H * 4];
@@ -121,10 +174,19 @@ namespace Game.Core
                 for (var i = 0; i < W * H; ++i)
                 {
                     var d555 = *rData++;
-                    var a = (byte)Math.Min(((d555 & 0x8000) >> 15) * 0x1F, byte.MaxValue);
-                    var b = (byte)Math.Min(((d555 & 0x7C00) >> 10) * 8, byte.MaxValue);
-                    var g = (byte)Math.Min(((d555 & 0x03E0) >> 5) * 8, byte.MaxValue);
-                    var r = (byte)Math.Min(((d555 & 0x001F) >> 0) * 8, byte.MaxValue);
+                    //var a = 0;// (byte)Math.Min(((d555 & 0x8000) >> 15) * 0x1F, byte.MaxValue);
+                    //var r = (byte)Math.Min(((d555 & 0x7C00) >> 10) * 8, byte.MaxValue);
+                    //var g = (byte)Math.Min(((d555 & 0x03E0) >> 5) * 8, byte.MaxValue);
+                    //var b = (byte)Math.Min(((d555 & 0x001F) >> 0) * 8, byte.MaxValue);
+
+                    //1111 1000 0000 0000 = F800
+                    //0000 0111 1100 0000 = 07C0
+                    //0000 0000 0011 1110 = 003E
+                    //0000 0000 0000 0001 = 0001
+                    var r = (byte)Math.Min(((d555 & 0xF800) >> 11) * 8, byte.MaxValue);
+                    var g = (byte)Math.Min(((d555 & 0x07C0) >> 6) * 8, byte.MaxValue);
+                    var b = (byte)Math.Min(((d555 & 0x003E) >> 1) * 8, byte.MaxValue);
+                    var a = (byte)Math.Min((d555 & 0x0001) * 0x1F, byte.MaxValue);
                     uint color;
                     if (Format == TextureFormat.RGBA32)
                         color =
@@ -132,8 +194,13 @@ namespace Game.Core
                             ((uint)(b << 16) & 0x00FF0000) |
                             ((uint)(g << 8) & 0x0000FF00) |
                             ((uint)(r << 0) & 0x000000FF);
-                    else
-                        throw new ArgumentOutOfRangeException(nameof(Format), Format.ToString());
+                    else if (Format == TextureFormat.ARGB32)
+                        color =
+                            ((uint)(b << 24) & 0xFF000000) |
+                            ((uint)(g << 16) & 0x00FF0000) |
+                            ((uint)(r << 8) & 0x0000FF00) |
+                            ((uint)(a << 0) & 0x000000FF);
+                    else throw new ArgumentOutOfRangeException(nameof(Format), Format.ToString());
                     *rPixels++ = color;
                 }
             }
