@@ -14,7 +14,6 @@ namespace Game.Estate.UltimaIX.FilePack
             //var bitsPerPixel = flxPath.Contains("Texture8") ? 1 : flxPath.Contains("Texture16") ? 2 : 0;
             //if (bitsPerPixel == 0)
             //    throw new InvalidOperationException("Texture8 or Texture16");
-            var bitsPerPixel = 1;
             var filePath = FindTexture(texturePath);
             return filePath != null
                 ? Task.Run(async () =>
@@ -22,7 +21,7 @@ namespace Game.Estate.UltimaIX.FilePack
                     var fileData = await LoadFileDataAsync(filePath);
                     if (fileData == null) throw new NotSupportedException($"File not found: {filePath}");
                     else if (texturePath.StartsWith("bitmap/")) return FlxFile.LoadRawBitmap(new MemoryStream(fileData)).Frames[0];
-                    else if (texturePath.StartsWith("texture/")) return FlxFile.LoadRawTexture(new MemoryStream(fileData), bitsPerPixel);
+                    else if (texturePath.StartsWith("texture/")) return FlxFile.LoadRawTexture(new MemoryStream(fileData));
                     else throw new NotSupportedException($"Unsupported texture type: {filePath}");
                 })
                 : Task.FromResult<Texture2DInfo>(null);

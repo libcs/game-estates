@@ -159,7 +159,7 @@ namespace Game.Estate.UltimaIX.FilePack
                     r.Position = frameOffsets[i].Offset + offsets[0];
                     var rawData = r.ReadBytes(frameDataSize * bitsPerPixel);
                     frames[i] = bitsPerPixel == 1
-                        ? new Texture2DInfo((int)frame.width, (int)frame.height, UnityEngine.TextureFormat.BGRA32, false, rawData).From8BitPallet(GetGlobal8BitPallet(), UnityEngine.TextureFormat.BGRA32)
+                        ? new Texture2DInfo((int)frame.width, (int)frame.height, UnityEngine.TextureFormat.RGBA32, false, rawData).From8BitPallet(GetGlobal8BitPallet(), UnityEngine.TextureFormat.RGBA32)
                         : new Texture2DInfo((int)frame.width, (int)frame.height, UnityEngine.TextureFormat.RGBA32, false, rawData).FromABGR555();
                 }
                 return new Bitmap
@@ -174,16 +174,20 @@ namespace Game.Estate.UltimaIX.FilePack
 
         #region Texture
 
-        internal static Texture2DInfo LoadRawTexture(Stream inputStream, int bitsPerPixel)
+        internal static Texture2DInfo LoadRawTexture(Stream inputStream)
         {
             using (var r = new BinaryFileReader(inputStream))
             {
                 var width = r.ReadInt32();
                 var height = r.ReadInt32();
-                r.Skip(8);
+                var frameLength = r.BaseStream.Length;
+                var sizeOfFrame = 20;
+                var frameDataSize = height * width;
+                var bitsPerPixel = (int)((frameLength - sizeOfFrame) / frameDataSize);
+                r.Position = frameLength - (width * height * bitsPerPixel);
                 var rawData = r.ReadBytes(width * height * bitsPerPixel);
                 return bitsPerPixel == 1
-                    ? new Texture2DInfo(width, height, UnityEngine.TextureFormat.BGRA32, false, rawData).From8BitPallet(GetGlobal8BitPallet(), UnityEngine.TextureFormat.BGRA32)
+                    ? new Texture2DInfo(width, height, UnityEngine.TextureFormat.RGBA32, false, rawData).From8BitPallet(GetGlobal8BitPallet(), UnityEngine.TextureFormat.RGBA32)
                     : new Texture2DInfo(width, height, UnityEngine.TextureFormat.RGBA32, false, rawData).FromABGR555();
             }
         }
@@ -200,7 +204,19 @@ namespace Game.Estate.UltimaIX.FilePack
                 using (var bs = assembly.GetManifestResourceStream("Game.Estate.UltimaIX.FilePack.ankh.pal"))
                 using (var br = new BinaryReader(bs))
                     for (var i = 0; i < pallet8.Length; i++)
-                        pallet8[i] = BitConverter.GetBytes(br.ReadUInt32());
+                    {
+                        var d888 = br.ReadUInt32();
+                        //var a = (byte)((d888 & 0xFF000000) >> 24);
+                        //var b = (byte)((d888 & 0x00FF0000) >> 16);
+                        //var g = (byte)((d888 & 0x0000FF00) >> 8);
+                        //var r = (byte)(d888 & 0x000000FF);
+                        //var color =
+                        //    ((uint)(a << 24) & 0xFF000000) |
+                        //    ((uint)(b << 16) & 0x00FF0000) |
+                        //    ((uint)(g << 8) & 0x0000FF00) |
+                        //    ((uint)(r << 0) & 0x000000FF);
+                        pallet8[i] = BitConverter.GetBytes(d888);
+                    }
                 return _global8BitPallet = pallet8;
             }
         }

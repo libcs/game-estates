@@ -30,11 +30,16 @@ namespace Game.Estate.UltimaIX.Tests
         }
 
         [Theory]
-        [InlineData("game:/static/bitmap16.flx#UltimaIX", "bitmap/0")]
-        [InlineData("game:/static/bitmap16.flx#UltimaIX", "bitmap/1")]
-        [InlineData("game:/static/bitmap16.flx#UltimaIX", "bitmap/2")]
+        //[InlineData("game:/static/bitmap16.flx#UltimaIX", "bitmap/0")]
+        //[InlineData("game:/static/bitmap16.flx#UltimaIX", "bitmap/1")]
+        //[InlineData("game:/static/bitmap16.flx#UltimaIX", "bitmap/2")]
+        //[InlineData("game:/static/bitmap16.flx#UltimaIX", "bitmap/1139")]
         //[InlineData("game:/static/Texture8.9#UltimaIX", "texture/1087")]
-        //[InlineData("game:/static/Texture16.9#UltimaIX", "texture/1087")]
+        //[InlineData("game:/static/Texture8.9#UltimaIX", "texture/1211")]
+        //[InlineData("game:/static/Texture8.9#UltimaIX", "texture/1360")]
+        [InlineData("game:/static/texture16.9#UltimaIX", "texture/1087")]
+        [InlineData("game:/static/texture16.9#UltimaIX", "texture/1211")]
+        [InlineData("game:/static/texture16.9#UltimaIX", "texture/1360")]
         public async Task SaveAssetPackTexture(string path, string modelPath)
         {
             // given
@@ -50,8 +55,8 @@ namespace Game.Estate.UltimaIX.Tests
         [InlineData("game:/static/bitmap16.flx#UltimaIX", "bitmap/1139")]
         //[InlineData("game:/static/Texture8.9#UltimaIX", "texture/1087")] // 1087,1211,1360
         //[InlineData("game:/static/Texture8.14#UltimaIX", "texture/0")]
-        //[InlineData("game:/static/Texture16.9#UltimaIX", "texture/1087")]
-        //[InlineData("game:/static/Texture16.14#UltimaIX", "texture/0")]
+        //[InlineData("game:/static/texture16.9#UltimaIX", "texture/1087")]
+        //[InlineData("game:/static/texture16.14#UltimaIX", "texture/0")]
         public async Task LoadTexture(string path, string modelPath)
         {
             // given

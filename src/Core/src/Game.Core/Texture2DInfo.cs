@@ -178,15 +178,11 @@ namespace Game.Core
                     //var r = (byte)Math.Min(((d555 & 0x7C00) >> 10) * 8, byte.MaxValue);
                     //var g = (byte)Math.Min(((d555 & 0x03E0) >> 5) * 8, byte.MaxValue);
                     //var b = (byte)Math.Min(((d555 & 0x001F) >> 0) * 8, byte.MaxValue);
-
-                    //1111 1000 0000 0000 = F800
-                    //0000 0111 1100 0000 = 07C0
-                    //0000 0000 0011 1110 = 003E
-                    //0000 0000 0000 0001 = 0001
-                    var r = (byte)Math.Min(((d555 & 0xF800) >> 11) * 8, byte.MaxValue);
-                    var g = (byte)Math.Min(((d555 & 0x07C0) >> 6) * 8, byte.MaxValue);
-                    var b = (byte)Math.Min(((d555 & 0x003E) >> 1) * 8, byte.MaxValue);
-                    var a = (byte)Math.Min((d555 & 0x0001) * 0x1F, byte.MaxValue);
+                    
+                    var r = (byte)Math.Min(((d555 & 0xF800) >> 11) * 8, byte.MaxValue);     // 1111 1000 0000 0000 = F800
+                    var g = (byte)Math.Min(((d555 & 0x07C0) >> 6) * 8, byte.MaxValue);      // 0000 0111 1100 0000 = 07C0
+                    var b = (byte)Math.Min(((d555 & 0x003E) >> 1) * 8, byte.MaxValue);      // 0000 0000 0011 1110 = 003E
+                    var a = (byte)Math.Min((d555 & 0x0001) * 0x1F, byte.MaxValue);          // 0000 0000 0000 0001 = 0001
                     uint color;
                     if (Format == TextureFormat.RGBA32)
                         color =
@@ -210,7 +206,6 @@ namespace Game.Core
 
         public Texture2DInfo From8BitPallet(byte[][] pallet, TextureFormat palletFormat)
         {
-            Log("From8BitPallet");
             if (Format != palletFormat)
                 throw new InvalidOperationException();
             var b = new MemoryStream();

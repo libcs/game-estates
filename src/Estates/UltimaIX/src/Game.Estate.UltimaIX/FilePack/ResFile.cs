@@ -39,7 +39,7 @@ namespace Game.Estate.UltimaIX.FilePack
         static string GetPrefix(string filePath)
             => filePath.Contains("sappear.flx") ? "sappear/"
             : filePath.Contains("bitmap") ? "bitmap/"
-            : filePath.Contains("Texture") ? "texture/"
+            : filePath.Contains("texture") || filePath.Contains("Texture") ? "texture/"
             : throw new ArgumentOutOfRangeException(nameof(filePath), filePath);
 
         /// <summary>
