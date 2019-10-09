@@ -14,11 +14,14 @@ namespace Game.Estate.UltimaIX.Loader
 
         public static void Start()
         {
-            var assetUri = new Uri("game:/static/bitmap16.flx#UltimaIX");
+            var assetUri = new Uri("game:/#UltimaIX");
+            //var assetUri = new Uri("game:/static/bitmap16.flx#UltimaIX");
             //var assetUri = new Uri("game:/static/Texture8.9#UltimaIX");
             //var assetUri = new Uri("game:/static/Texture16.9#UltimaIX");
 
             AssetPack = assetUri.GetUltimaIXAssetPackAsync().Result();
+
+            MakeObject("sappear/50");
 
             //MakeTexture($"bitmap/1056", 0);
 

@@ -21,11 +21,11 @@ namespace Game.Estate.UltimaIX.Tests
                 // when
                 var exist0 = assetPack.ContainsFile(modelPath);
                 var data0 = await assetPack.LoadFileDataAsync(modelPath);
-                var model0 = await assetPack.LoadObjectInfoAsync(modelPath) as object; // UltimaIXFile;
+                var model0 = await assetPack.LoadObjectInfoAsync(modelPath) as object;
                 // then
                 Assert.True(exist0);
                 Assert.NotNull(data0);
-                //Assert.NotNull(model0);
+                Assert.NotNull(model0);
             }
         }
 

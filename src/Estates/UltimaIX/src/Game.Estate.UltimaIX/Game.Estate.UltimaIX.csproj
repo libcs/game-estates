@@ -5,10 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Format\**" />
-    <EmbeddedResource Remove="Format\**" />
     <None Remove="**\*.swift" />
-    <None Remove="Format\**" />
   </ItemGroup>
 
   <ItemGroup>

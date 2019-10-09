@@ -1,4 +1,5 @@
 ﻿using Game.Core;
+using Game.Estate.UltimaIX.Format;
 using System;
 using System.IO;
 using System.Threading.Tasks;
@@ -10,10 +11,6 @@ namespace Game.Estate.UltimaIX.FilePack
     {
         public Task<Texture2DInfo> LoadTextureInfoAsync(string texturePath)
         {
-            //var flxPath = FilePath;
-            //var bitsPerPixel = flxPath.Contains("Texture8") ? 1 : flxPath.Contains("Texture16") ? 2 : 0;
-            //if (bitsPerPixel == 0)
-            //    throw new InvalidOperationException("Texture8 or Texture16");
             var filePath = FindTexture(texturePath);
             return filePath != null
                 ? Task.Run(async () =>
@@ -30,8 +27,7 @@ namespace Game.Estate.UltimaIX.FilePack
         public Task<object> LoadObjectInfoAsync(string filePath) => Task.Run(async () =>
         {
             var fileData = await LoadFileDataAsync(filePath);
-            var file = new SiFile(filePath);
-            file.Deserialize(new BinaryFileReader(new MemoryStream(fileData)));
+            var file = new SiFile(filePath, new BinaryFileReader(new MemoryStream(fileData)));
             return (object)file;
         });
 
