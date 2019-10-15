@@ -11,7 +11,7 @@ namespace Game.Estate.UltimaIX
 {
     public class UltimaIXDataPack : DatFile, IDataPack
     {
-        public UltimaIXDataPack(StreamSink streamSink, string filePath, UltimaIXGame game) : base(streamSink, !string.IsNullOrEmpty(filePath) && File.Exists(filePath) ? filePath : null, game) { }
+        public UltimaIXDataPack(StreamSink streamSink, string filePath, UltimaIXGame game) : base(streamSink, !string.IsNullOrEmpty(filePath) && Directory.Exists(filePath) ? filePath : null, game) { }
 
         public Task<byte[]> LoadDataLabelAsync(string label)
         {

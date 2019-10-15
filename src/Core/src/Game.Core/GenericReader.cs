@@ -10,7 +10,7 @@ using static Game.Core.CoreDebug;
 
 namespace Game.Core
 {
-    public enum ASCIIFormat { Raw, PossiblyNullTerminated, ZeroPadded }
+    public enum ASCIIFormat { Raw, PossiblyNullTerminated, ZeroPadded, ZeroTerminated }
 
     public abstract class GenericReader : BinaryReader
     {
@@ -92,6 +92,7 @@ namespace Game.Core
         {
             Assert(length >= 0);
             var bytes = ReadBytes(length);
+            int zeroIdx;
             switch (format)
             {
                 case ASCIIFormat.Raw: return Encoding.ASCII.GetString(bytes);
@@ -99,8 +100,11 @@ namespace Game.Core
                     var bytesIdx = bytes.Last() != 0 ? bytes.Length : bytes.Length - 1;
                     return Encoding.ASCII.GetString(bytes, 0, bytesIdx);
                 case ASCIIFormat.ZeroPadded:
-                    var zeroIdx = bytes.Length - 1; for (; zeroIdx >= 0 && bytes[zeroIdx] == 0; zeroIdx--) { }
+                    for (zeroIdx = bytes.Length - 1; zeroIdx >= 0 && bytes[zeroIdx] == 0; zeroIdx--) { }
                     return Encoding.ASCII.GetString(bytes, 0, zeroIdx + 1);
+                case ASCIIFormat.ZeroTerminated:
+                    for (zeroIdx = 0; zeroIdx <= bytes.Length && bytes[zeroIdx] != 0; zeroIdx++) { }
+                    return Encoding.ASCII.GetString(bytes, 0, zeroIdx);
                 default: throw new ArgumentOutOfRangeException(nameof(format), format.ToString());
             }
         }
