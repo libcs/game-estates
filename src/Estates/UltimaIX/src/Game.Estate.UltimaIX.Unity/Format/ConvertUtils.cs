@@ -1,4 +1,4 @@
-﻿namespace Game.Format.Cry
+﻿namespace Game.Estate.UltimaIX.Format
 {
     public static class ConvertUtils
     {

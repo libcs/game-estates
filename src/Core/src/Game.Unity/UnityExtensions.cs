@@ -4,8 +4,40 @@ namespace Game.Core
 {
     public static class UnityExtensions
     {
-        public static Vector3 ToUnityVector(this Vector3 vector) { Utils.Swap(ref vector.y, ref vector.z); return vector; }
+        // NifUtils
+        public static Vector3 ToUnityVector(this Vector3 source) { Utils.Swap(ref source.y, ref source.z); return source; }
+        public static Vector3 ToUnityVector(this Vector3 source, float meterInUnits) => source.ToUnityVector() / meterInUnits;
+        public static Matrix4x4 ToUnityRotationMatrix(this Matrix4x4 rotationMatrix) => new Matrix4x4
+        {
+            m00 = rotationMatrix.m00,
+            m01 = rotationMatrix.m02,
+            m02 = rotationMatrix.m01,
+            m03 = 0,
+            m10 = rotationMatrix.m20,
+            m11 = rotationMatrix.m22,
+            m12 = rotationMatrix.m21,
+            m13 = 0,
+            m20 = rotationMatrix.m10,
+            m21 = rotationMatrix.m12,
+            m22 = rotationMatrix.m11,
+            m23 = 0,
+            m30 = 0,
+            m31 = 0,
+            m32 = 0,
+            m33 = 1
+        };
+        public static Quaternion ToUnityQuaternionAsRotationMatrix(this Matrix4x4 rotationMatrix) => ToQuaternionAsRotationMatrix(rotationMatrix.ToUnityRotationMatrix());
+        public static Quaternion ToQuaternionAsRotationMatrix(this Matrix4x4 rotationMatrix) => Quaternion.LookRotation(rotationMatrix.GetColumn(2), rotationMatrix.GetColumn(1));
+        public static Quaternion ToUnityQuaternionAsEulerAngles(this Vector3 eulerAngles)
+        {
+            eulerAngles = eulerAngles.ToUnityVector();
+            var xRot = Quaternion.AngleAxis(Mathf.Rad2Deg * eulerAngles.x, Vector3.right);
+            var yRot = Quaternion.AngleAxis(Mathf.Rad2Deg * eulerAngles.y, Vector3.up);
+            var zRot = Quaternion.AngleAxis(Mathf.Rad2Deg * eulerAngles.z, Vector3.forward);
+            return xRot * zRot * yRot;
+        }
 
+        // Other
         public static void FromMatrix(this Transform transform, Matrix4x4 matrix)
         {
             transform.localScale = matrix.ExtractScale();

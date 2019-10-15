@@ -292,8 +292,8 @@ namespace Game.Estate.Tes
             // Handle object transforms.
             if (refObj.XSCL != null)
                 gameObject.transform.localScale = Vector3.one * refObj.XSCL.Value.Value;
-            gameObject.transform.position += NifUtils.NifPointToUnityPoint(refObj.DATA.Position.ToVector3());
-            gameObject.transform.rotation *= NifUtils.NifEulerAnglesToUnityQuaternion(refObj.DATA.EulerAngles.ToVector3());
+            gameObject.transform.position += refObj.DATA.Position.ToVector3().ToUnityVector(ConvertUtils.MeterInUnits);
+            gameObject.transform.rotation *= refObj.DATA.EulerAngles.ToVector3().ToUnityQuaternionAsEulerAngles();
             var tagTarget = gameObject;
             var coll = gameObject.GetComponentInChildren<Collider>(); // if the collider is on a child object and not on the object with the component, we need to set that object's tag instead.
             if (coll != null)

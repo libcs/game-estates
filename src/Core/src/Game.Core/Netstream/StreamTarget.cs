@@ -1,5 +1,4 @@
-﻿using Game.Core;
-using Game.Core.Netstream.Server;
+﻿using Game.Core.Netstream.Server;
 using System;
 using System.Collections.Generic;
 using System.Threading;

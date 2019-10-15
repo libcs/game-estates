@@ -174,8 +174,8 @@ namespace Game.Format.Nif
 
         void ApplyNiAVObject(NiAVObject niAVObject, GameObject obj)
         {
-            obj.transform.position = NifUtils.NifPointToUnityPoint(niAVObject.Translation);
-            obj.transform.rotation = NifUtils.NifRotationMatrixToUnityQuaternion(niAVObject.Rotation);
+            obj.transform.position = niAVObject.Translation.ToUnityVector(ConvertUtils.MeterInUnits);
+            obj.transform.rotation = niAVObject.Rotation.ToUnityQuaternionAsRotationMatrix();
             obj.transform.localScale = niAVObject.Scale * Vector3.one;
         }
 
@@ -184,14 +184,14 @@ namespace Game.Format.Nif
             // vertex positions
             var vertices = new Vector3[data.Vertices.Length];
             for (var i = 0; i < vertices.Length; i++)
-                vertices[i] = NifUtils.NifPointToUnityPoint(data.Vertices[i]);
+                vertices[i] = data.Vertices[i].ToUnityVector(ConvertUtils.MeterInUnits);
             // vertex normals
             Vector3[] normals = null;
             if (data.HasNormals)
             {
                 normals = new Vector3[vertices.Length];
                 for (var i = 0; i < normals.Length; i++)
-                    normals[i] = NifUtils.NifVectorToUnityVector(data.Normals[i]);
+                    normals[i] = data.Normals[i].ToUnityVector();
             }
             // vertex UV coordinates
             Vector2[] UVs = null;

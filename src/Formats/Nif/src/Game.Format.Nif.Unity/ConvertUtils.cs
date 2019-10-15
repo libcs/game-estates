@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-
-namespace Game.Format.Nif
+﻿namespace Game.Format.Nif
 {
     public static class ConvertUtils
     {
@@ -10,7 +8,5 @@ namespace Game.Format.Nif
 
         const int exteriorCellSideLengthInUnits = 128 * yardInUnits;
         public const float ExteriorCellSideLengthInMeters = exteriorCellSideLengthInUnits / MeterInUnits;
-
-        public static Quaternion RotationMatrixToQuaternion(Matrix4x4 matrix) => Quaternion.LookRotation(matrix.GetColumn(2), matrix.GetColumn(1));
     }
 }
