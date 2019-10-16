@@ -4,10 +4,9 @@ using System.Threading.Tasks;
 
 namespace Game.Estate.UltimaIX.FilePack
 {
-    //http://wiki.ultimacodex.com/wiki/Ultima_IX_Internal_Formats#FLX_Format
     //http://jfregnault.free.fr/Ultima9/Ultima9.htm
+    //http://wiki.ultimacodex.com/wiki/Ultima_IX_Internal_Formats#FLX_Format
     //https://sites.google.com/site/burtonradons/eee/platforms/single-games/ultima-ix/file-formats
-    //https://sites.google.com/site/burtonradons/eee/platforms/single-games/ultima-ix/file-formats/texture
     public partial class ResFile : IDisposable
     {
         readonly IFlxFile _flxFile;

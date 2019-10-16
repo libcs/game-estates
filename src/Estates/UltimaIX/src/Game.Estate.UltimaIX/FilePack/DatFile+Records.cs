@@ -45,7 +45,7 @@ namespace Game.Estate.UltimaIX.FilePack
             if (info == null)
                 switch (header.Label)
                 {
-                    case "0": header.State = 1; Load(); break;
+                    case "9": header.State = 1; Load(); break;
                 }
         }
 
@@ -73,9 +73,9 @@ namespace Game.Estate.UltimaIX.FilePack
                 GroupByLabel.Add(header.Label, group = new RecordGroup(_streamSink, FilePath));
             else group = new RecordGroup(_streamSink, FilePath) { Next = group };
 
-            if (_r[0] != null) LANDRecord.ReadTerrain(_r[0], group);
-            if (_r[1] != null) STATRecord.ReadFixed(_r[1], group);
-            //if (_r[2] != null) ReadTerrain();
+            if (_r[0] != null) using (_r[0]) LANDRecord.ReadTerrain(_r[0], group);
+            if (_r[1] != null) using (_r[1]) STATRecord.ReadFixed(_r[1], group);
+            if (_r[2] != null) using (_r[2]) DYNARecord.ReadNonfixed(_r[2], group);
         }
     }
 }
