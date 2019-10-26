@@ -25,6 +25,7 @@ namespace Game.Estate.UltimaIX.FilePack
         protected readonly StreamSink _streamSink;
         public readonly string FilePath;
         protected BinaryFileReader[] _r;
+        public object Tag;
 
         public RecordGroup(StreamSink streamSink, string filePath)
         {
@@ -45,7 +46,7 @@ namespace Game.Estate.UltimaIX.FilePack
             if (info == null)
                 switch (header.Label)
                 {
-                    case "9": header.State = 1; Load(); break;
+                    case "9_": header.State = 1; Load(); break;
                 }
         }
 
@@ -56,8 +57,8 @@ namespace Game.Estate.UltimaIX.FilePack
                 header.State = 2;
                 string path;
                 _r = new[] {
-                    File.Exists(path = Path.Combine(FilePath, $"static/terrain.{header.Label}")) ? new BinaryFileReader(File.Open(path, FileMode.Open, FileAccess.Read, FileShare.Read)) : null,
                     File.Exists(path = Path.Combine(FilePath, $"static/fixed.{header.Label}")) ? new BinaryFileReader(File.Open(path, FileMode.Open, FileAccess.Read, FileShare.Read)) : null,
+                    File.Exists(path = Path.Combine(FilePath, $"static/terrain.{header.Label}")) ? new BinaryFileReader(File.Open(path, FileMode.Open, FileAccess.Read, FileShare.Read)) : null,
                     File.Exists(path = Path.Combine(FilePath, $"runtime/nonfixed.{header.Label}")) ? new BinaryFileReader(File.Open(path, FileMode.Open, FileAccess.Read, FileShare.Read)) : null,
                 };
                 ReadGroup(header, loadAll, info);
@@ -73,9 +74,9 @@ namespace Game.Estate.UltimaIX.FilePack
                 GroupByLabel.Add(header.Label, group = new RecordGroup(_streamSink, FilePath));
             else group = new RecordGroup(_streamSink, FilePath) { Next = group };
 
-            if (_r[0] != null) using (_r[0]) LANDRecord.ReadTerrain(_r[0], group);
-            if (_r[1] != null) using (_r[1]) STATRecord.ReadFixed(_r[1], group);
-            if (_r[2] != null) using (_r[2]) DYNARecord.ReadNonfixed(_r[2], group);
+            if (_r[0] != null) using (_r[0]) CELLRecord.ReadFixed(_r[0], header, group);
+            if (_r[1] != null) using (_r[1]) LANDRecord.ReadTerrain(_r[1], header, group);
+            //if (_r[2] != null) using (_r[2]) DYNARecord.ReadNonfixed(_r[2], header, group);
         }
     }
 }

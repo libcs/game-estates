@@ -36,8 +36,9 @@ namespace Game.Estate.UltimaIX.Records
         public uint Height;
         public Page[] Pages;
 
-        public static void ReadNonfixed(BinaryFileReader r, RecordGroup group)
+        public static void ReadNonfixed(BinaryFileReader r, Header header, RecordGroup group)
         {
+            var world = int.Parse(header.Label);
             // header
             r.Skip(4 * 5);
             var width = r.ReadUInt32();

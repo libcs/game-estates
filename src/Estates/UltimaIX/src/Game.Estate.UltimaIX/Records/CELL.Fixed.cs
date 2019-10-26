@@ -1,10 +1,14 @@
 ﻿using Game.Core;
+using Game.Core.Records;
 using Game.Estate.UltimaIX.FilePack;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
 
 namespace Game.Estate.UltimaIX.Records
 {
-    public class STATRecord : Record
+    public class CELLRecord : Record, ICellRecord
     {
         public class Page
         {
@@ -31,12 +35,15 @@ namespace Game.Estate.UltimaIX.Records
             public uint Unknown;
         }
 
-        public uint Width;
-        public uint Height;
-        public uint[] Indices;
-        public Page[] Pages;
+        public class Data
+        {
+            public uint Width;
+            public uint Height;
+            public uint[] Indices;
+            public Page[] Pages;
+        }
 
-        struct Header
+        struct Head
         {
             public uint Unknown1;
             public uint Unknown2;
@@ -48,13 +55,20 @@ namespace Game.Estate.UltimaIX.Records
             public uint Unknown5;
         }
 
-        public static void ReadFixed(BinaryFileReader r, RecordGroup group)
+        public Vector3Int GridId; // => new Vector3Int(XCLC.Value.GridX, XCLC.Value.GridY, !IsInterior ? 0 : -1);
+
+        public bool IsInterior => false;
+        public Color? AmbientLight => null;
+
+        public static void ReadFixed(BinaryFileReader r, Header header, RecordGroup group)
         {
-            var header = r.ReadT<Header>(32);
-            var indexSize = (int)(header.Width * header.Height);
+            var world = int.Parse(header.Label);
+            var head = r.ReadT<Head>(32);
+            var indexSize = (int)(head.Width * head.Height);
             // These are either 0 or a number in the form nnnn001h, where nnnn is a number that may be a page index. This may be in [x + y * width] order, but that doesn't seem to corroborate with where objects are located in the maps
             var indices = r.ReadTArray<uint>(indexSize * 4, indexSize);
-            var pages = new Page[header.PageSize / 4096];
+            const int POINT_STRIDE = 32;
+            var pages = new Page[head.PageSize / 4096];
             for (var i = 0; i < pages.Length; i++)
             {
                 var page = pages[i] = new Page();
@@ -65,13 +79,48 @@ namespace Game.Estate.UltimaIX.Records
                 page.FixedObjects = r.ReadTArray<FixedObject>(0x18 * 166, 166);
                 r.Skip(0x10);
             }
-            group.Records.Add(new STATRecord
+            var data = new Data
             {
-                Width = header.Width,
-                Height = header.Height,
+                Width = head.Width,
+                Height = head.Height,
                 Indices = indices,
                 Pages = pages,
-            });
+            };
+            group.Tag = data;
+
+            // transform
+            const int CELL_STRIDE = 64;
+            var records = new List<Record>();
+            for (var y = 0; y < data.Height; y += 2)
+                for (var x = 0; x < data.Width; x += 2)
+                {
+                    //var vhgt = new ushort[CELL_STRIDE * CELL_STRIDE];
+                    //var vtex = new ushort[CELL_STRIDE * CELL_STRIDE];
+                    //var vtexf = new byte[CELL_STRIDE * CELL_STRIDE];
+                    //for (var sy = 0; sy < 2; sy++)
+                    //    for (var sx = 0; sx < 2; sx++)
+                    //    {
+                    //        var index = indices[x + sx + ((y + sy) * data.Width)];
+                    //        if (index >= chunks.Length)
+                    //            continue;
+                    //        var chunk = chunks[index];
+                    //        var offset = (sx * POINT_STRIDE) + (sy * POINT_STRIDE * CELL_STRIDE);
+                    //        for (var i = 0; i < POINT_STRIDE; i++)
+                    //        {
+                    //            Buffer.BlockCopy(chunk.VHGT, i * POINT_STRIDE * 2, vhgt, offset + (i * CELL_STRIDE * 2), POINT_STRIDE * 2);
+                    //            Buffer.BlockCopy(chunk.VTEX, i * POINT_STRIDE * 2, vtex, offset + (i * CELL_STRIDE * 2), POINT_STRIDE * 2);
+                    //            Buffer.BlockCopy(chunk.VTEXF, i * POINT_STRIDE, vtexf, offset + (i * CELL_STRIDE), POINT_STRIDE);
+                    //        }
+                    //    }
+                    records.Add(new CELLRecord
+                    {
+                        GridId = new Vector3Int(x / 2, y / 2, world),
+                    });
+                }
+
+            // insert
+            group.CELLsById = records.ToDictionary(x => ((CELLRecord)x).GridId, x => (CELLRecord)x);
+            group.Records.AddRange(records);
         }
     }
 }

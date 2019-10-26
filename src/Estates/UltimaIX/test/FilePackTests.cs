@@ -88,7 +88,7 @@ namespace Game.Estate.UltimaIX.Tests
 
         static void TestLoadCell(UltimaIXDataPack data, Vector3 position)
         {
-            var cellId = GetCellId(position, 60);
+            var cellId = GetCellId(position, 2);
             var cell = data.FindCELLRecord(cellId);
             var land = data.FindLANDRecord(cellId);
         }

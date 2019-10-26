@@ -1,66 +1,49 @@
-﻿using Game.Core;
-using Game.Core.Records;
-using Game.Estate.UltimaIX.Records;
+﻿using Game.Estate.UltimaIX.Records;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using UnityEngine;
 
 namespace Game.Estate.UltimaIX.FilePack
 {
     partial class DatFile
     {
-        Dictionary<uint, (WRLDRecord wrld, RecordGroup group)> _WRLDById;
+        Dictionary<int, Func<RecordGroup>> _WRLDById;
 
         void Process()
         {
+            _WRLDById = Headers.ToDictionary(x => int.Parse(x.Label), x => (Func<RecordGroup>)(() =>
+            {
+                if (x.State == 0) { x.State = 1; Load(); }
+                return GroupByLabel[x.Label];
+            }));
         }
 
         public LTEXRecord FindLTEXRecord(int index)
         {
-            //_LTEXsById.TryGetValue(index, out var ltex);
-            //return ltex;
             return null;
         }
 
         public LANDRecord FindLANDRecord(Vector3Int cellId)
         {
-            var world = _WRLDById[(uint)cellId.z];
-            for (var wrld = world.group; wrld.Next != null; wrld = wrld.Next)
-                for (var cellBlock = wrld.EnsureWrldAndCell(cellId); cellBlock.Next != null; cellBlock = cellBlock.Next)
-                    if (cellBlock.LANDsById.TryGetValue(cellId, out var land))
-                        return land;
-            return null;
+            var wrld = _WRLDById[cellId.z]();
+            var cellBlock = wrld.EnsureCell(cellId);
+            return cellBlock.LANDsById.TryGetValue(cellId, out var land) ? land : null;
         }
 
         public CELLRecord FindCELLRecord(Vector3Int cellId)
         {
-            var world = _WRLDById[(uint)cellId.z];
-            for (var wrld = world.group; wrld.Next != null; wrld = wrld.Next)
-                for (var cellBlock = wrld.EnsureWrldAndCell(cellId); cellBlock.Next != null; cellBlock = cellBlock.Next)
-                    if (cellBlock.CELLsById.TryGetValue(cellId, out var cell))
-                        return cell;
-            return null;
+            var wrld = _WRLDById[cellId.z]();
+            var cellBlock = wrld.EnsureCell(cellId);
+            return cellBlock.CELLsById.TryGetValue(cellId, out var cell) ? cell : null;
         }
     }
 
     partial class RecordGroup
     {
-        internal HashSet<byte[]> _ensureCELLsByLabel;
         internal Dictionary<Vector3Int, CELLRecord> CELLsById;
         internal Dictionary<Vector3Int, LANDRecord> LANDsById;
 
-        public RecordGroup EnsureWrldAndCell(Vector3Int cellId)
-        {
-            var cellBlockX = (short)(cellId.x >> 5);
-            var cellBlockY = (short)(cellId.y >> 5);
-            var cellBlockId = new byte[4];
-            Buffer.BlockCopy(BitConverter.GetBytes(cellBlockY), 0, cellBlockId, 0, 2);
-            Buffer.BlockCopy(BitConverter.GetBytes(cellBlockX), 0, cellBlockId, 2, 2);
-            return null;
-            //Load();
-            //return GroupByLabel.TryGetValue(ToLabel(false, cellBlockId), out var cellBlock) ? cellBlock.EnsureCell(cellId) : null;
-        }
+        public RecordGroup EnsureCell(Vector3Int cellId) => this;
     }
 }
