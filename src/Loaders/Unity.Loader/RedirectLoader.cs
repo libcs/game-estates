@@ -12,9 +12,9 @@
 //using Redirect = Game.Estate.Ultima.Loader.LoadEngine;
 
 // ULTIMAIX
-using Redirect = Game.Estate.UltimaIX.Loader.LoadAsset;
+//using Redirect = Game.Estate.UltimaIX.Loader.LoadAsset;
 //using Redirect = Game.Estate.UltimaIX.Loader.LoadData;
-//using Redirect = Game.Estate.UltimaIX.Loader.LoadEngine;
+using Redirect = Game.Estate.UltimaIX.Loader.LoadEngine;
 
 public class RedirectLoader : UnityEngine.MonoBehaviour
 {

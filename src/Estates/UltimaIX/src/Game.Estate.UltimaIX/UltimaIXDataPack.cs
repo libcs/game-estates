@@ -23,6 +23,6 @@ namespace Game.Estate.UltimaIX
             throw new NotImplementedException();
         }
 
-        ICellRecord IDataPack.FindCellRecord(Vector3Int cellId) => throw new NotImplementedException(); // FindCellRecord(cellId);
+        ICellRecord IDataPack.FindCellRecord(Vector3Int cellId) => FindCELLRecord(cellId);
     }
 }

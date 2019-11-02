@@ -79,7 +79,7 @@ namespace Game.Estate.UltimaIX.Tests
             using (var dataPack = (UltimaIXDataPack)await new Uri(path).GetUltimaIXDataPackAsync())
             {
                 //var x = await dataPack.LoadDataLabelAsync("test");
-                TestLoadCell(dataPack, new Vector3(0, 0, 0));
+                TestLoadCell(dataPack, new Vector3(500, 500, 0));
                 //TestAllCells(dataPack);
             }
         }
@@ -88,7 +88,7 @@ namespace Game.Estate.UltimaIX.Tests
 
         static void TestLoadCell(UltimaIXDataPack data, Vector3 position)
         {
-            var cellId = GetCellId(position, 2);
+            var cellId = GetCellId(position, 9);
             var cell = data.FindCELLRecord(cellId);
             var land = data.FindLANDRecord(cellId);
         }

@@ -12,7 +12,7 @@ namespace Game.Estate.UltimaIX
 {
     public class UltimaIXCellManager : ICellManager
     {
-        const int _cellRadius = 1; //4;
+        const int _cellRadius = 2; //4;
         const int _detailRadius = 1; //3;
         const string _defaultLandTextureFilePath = "textures/0";
 
@@ -28,7 +28,7 @@ namespace Game.Estate.UltimaIX
             _dataPack = dataPack;
         }
 
-        public Vector3Int GetCellId(Vector3 point, int world) => new Vector3Int(Mathf.FloorToInt(point.x / ConvertUtils.ExteriorCellSideLengthInMeters), Mathf.FloorToInt(point.z / ConvertUtils.ExteriorCellSideLengthInMeters), world);
+        public Vector3Int GetCellId(Vector3 point, int world) => new Vector3Int(Mathf.FloorToInt(point.x / ConvertUtils.ExteriorCellSideLengthInMeters), Mathf.FloorToInt(point.y / ConvertUtils.ExteriorCellSideLengthInMeters), world);
 
         public InRangeCellInfo StartCreatingCell(Vector3Int cellId)
         {
@@ -302,21 +302,7 @@ namespace Game.Estate.UltimaIX
         {
             // Don't return anything if the LAND doesn't have height data or texture data.
             if (land.VTEX == null) return null;
-            var textureFilePaths = new List<string>();
-            //var distinctTextureIndices = land.VTEX.Value.TextureIndicesT3.Distinct().ToList();
-            //for (var i = 0; i < distinctTextureIndices.Count; i++)
-            //{
-            //    var textureIndex = (short)distinctTextureIndices[i] - 1;
-            //    if (textureIndex < 0)
-            //    {
-            //        textureFilePaths.Add(_defaultLandTextureFilePath);
-            //        continue;
-            //    }
-            //    var ltex = _dataPack.FindLTEXRecord(textureIndex);
-            //    var textureFilePath = ltex.ICON.Value;
-            //    textureFilePaths.Add(textureFilePath);
-            //}
-            return textureFilePaths;
+            return land.VTEX.Distinct().Select(x => $"bitmap/{x}").ToList();
         }
 
         /// <summary>
@@ -330,80 +316,62 @@ namespace Game.Estate.UltimaIX
                 yield break;
             // Return before doing any work to provide an IEnumerator handle to the coroutine.
             yield return null;
-            const int LAND_SIDELENGTH_IN_SAMPLES = 64;
-            var heights = new float[LAND_SIDELENGTH_IN_SAMPLES, LAND_SIDELENGTH_IN_SAMPLES];
-            // Read in the heights in Morrowind units.
+            const int LAND_STRIDE = 64;
+            var heights = new float[LAND_STRIDE, LAND_STRIDE];
+            // Read in the heights in Unity units.
             const int VHGTIncrementToUnits = 8;
-            for (var y = 0; y < LAND_SIDELENGTH_IN_SAMPLES; y++)
-                for (var x = 0; x < LAND_SIDELENGTH_IN_SAMPLES; x++)
+            for (var y = 0; y < LAND_STRIDE; y++)
+                for (var x = 0; x < LAND_STRIDE; x++)
                 {
-                    var vhgt = land.VHGT[(y * LAND_SIDELENGTH_IN_SAMPLES) + x];
+                    var vhgt = land.VHGT[(y * LAND_STRIDE) + x];
                     heights[y, x] = vhgt * VHGTIncrementToUnits;
                 }
             // Change the heights to percentages.
             heights.GetExtrema(out var minHeight, out var maxHeight);
-            for (var y = 0; y < LAND_SIDELENGTH_IN_SAMPLES; y++)
-                for (var x = 0; x < LAND_SIDELENGTH_IN_SAMPLES; x++)
+            for (var y = 0; y < LAND_STRIDE; y++)
+                for (var x = 0; x < LAND_STRIDE; x++)
                     heights[y, x] = Utils.ChangeRange(heights[y, x], minHeight, maxHeight, 0, 1);
 
             // Texture the terrain.
             TerrainLayer[] terrainLayers = null;
-            const int LAND_TEXTUREINDICES = 256;
-            var textureIndices = land.VTEX != null ? land.VTEX : new ushort[LAND_TEXTUREINDICES];
+            var textureIndices = land.VTEX ?? new ushort[LAND_STRIDE * LAND_STRIDE];
             // Create splat prototypes.
             var terrainLayerList = new List<TerrainLayer>();
             var texInd2SplatInd = new Dictionary<ushort, int>();
-            //for (var i = 0; i < textureIndices.Length; i++)
-            //{
-            //    var textureIndex = textureIndices[i] - 1;
-            //    if (!texInd2SplatInd.ContainsKey((ushort)textureIndex))
-            //    {
-            //        // Load terrain texture.
-            //        string textureFilePath;
-            //        if (textureIndex < 0)
-            //            textureFilePath = _defaultLandTextureFilePath;
-            //        else
-            //        {
-            //            var LTEX = _dataPack.FindLTEXRecord(textureIndex);
-            //            textureFilePath = LTEX.ICON.Value;
-            //        }
-            //        var texture = _assetPack.LoadTexture(textureFilePath);
-            //        // Yield after loading each texture to avoid doing too much work on one frame.
-            //        yield return null;
-            //        // Create the splat prototype.
-            //        var layer = new TerrainLayer
-            //        {
-            //            diffuseTexture = texture,
-            //            smoothness = 0,
-            //            metallic = 0,
-            //            tileSize = new Vector2(6, 6)
-            //        };
-            //        // Update collections.
-            //        var splatIndex = terrainLayerList.Count;
-            //        terrainLayerList.Add(layer);
-            //        texInd2SplatInd.Add((ushort)textureIndex, splatIndex);
-            //    }
-            //}
+            for (var i = 0; i < textureIndices.Length; i++)
+            {
+                var textureIndex = textureIndices[i];
+                if (!texInd2SplatInd.ContainsKey(textureIndex))
+                {
+                    // Load terrain texture.
+                    var texture = _assetPack.LoadTexture($"bitmap/{textureIndex}");
+                    // Yield after loading each texture to avoid doing too much work on one frame.
+                    yield return null;
+                    // Create the splat prototype.
+                    var layer = new TerrainLayer
+                    {
+                        diffuseTexture = texture,
+                        smoothness = 0,
+                        metallic = 0,
+                        tileSize = new Vector2(16, 16)
+                    };
+                    // Update collections.
+                    var splatIndex = terrainLayerList.Count;
+                    terrainLayerList.Add(layer);
+                    texInd2SplatInd.Add(textureIndex, splatIndex);
+                }
+            }
             terrainLayers = terrainLayerList.ToArray();
 
             // Create the alpha map.
-            var VTEX_ROWS = 16;
-            var VTEX_COLUMNS = VTEX_ROWS;
-            float[,,] alphaMap = null;
-            alphaMap = new float[VTEX_ROWS, VTEX_COLUMNS, terrainLayers.Length];
-            for (var y = 0; y < VTEX_ROWS; y++)
-            {
-                var yMajor = y / 4;
-                var yMinor = y - (yMajor * 4);
-                for (var x = 0; x < VTEX_COLUMNS; x++)
+            var alphaMap = new float[LAND_STRIDE, LAND_STRIDE, terrainLayers.Length];
+            for (var y = 0; y < LAND_STRIDE; y++)
+                for (var x = 0; x < LAND_STRIDE; x++)
                 {
-                    var xMajor = x / 4;
-                    var xMinor = x - (xMajor * 4);
-                    var texIndex = (short)textureIndices[(yMajor * 64) + (xMajor * 16) + (yMinor * 4) + xMinor] - 1;
-                    if (texIndex >= 0) { var splatIndex = texInd2SplatInd[(ushort)texIndex]; alphaMap[y, x, splatIndex] = 1; }
+                    var texIndex = textureIndices[x + y * LAND_STRIDE];
+                    if (texIndex >= 0) alphaMap[y, x, texInd2SplatInd[texIndex]] = 1;
                     else alphaMap[y, x, 0] = 1;
                 }
-            }
 
             // Yield before creating the terrain GameObject because it takes a while.
             yield return null;
@@ -411,7 +379,7 @@ namespace Game.Estate.UltimaIX
             // Create the terrain.
             var heightRange = maxHeight - minHeight;
             var terrainPosition = new Vector3(ConvertUtils.ExteriorCellSideLengthInMeters * land.GridId.x, minHeight / ConvertUtils.MeterInUnits, ConvertUtils.ExteriorCellSideLengthInMeters * land.GridId.y);
-            var heightSampleDistance = ConvertUtils.ExteriorCellSideLengthInMeters / (LAND_SIDELENGTH_IN_SAMPLES - 1);
+            var heightSampleDistance = ConvertUtils.ExteriorCellSideLengthInMeters / (LAND_STRIDE - 1);
             var terrain = GameObjectUtils.CreateTerrain(-1, heights, heightRange / ConvertUtils.MeterInUnits, heightSampleDistance, terrainLayers, alphaMap, terrainPosition, null);
             terrain.GetComponent<Terrain>().materialType = Terrain.MaterialType.BuiltInLegacyDiffuse;
             terrain.transform.parent = parent.transform;

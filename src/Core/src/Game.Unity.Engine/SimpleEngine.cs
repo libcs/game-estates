@@ -69,6 +69,8 @@ namespace Game.Core
             DataPack.Dispose();
         }
 
+        public int CurrentWorld { get => _currentWorld; set => _currentWorld = value; }
+
         public virtual void Update()
         {
             if (_playerCameraObj == null)

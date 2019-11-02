@@ -41,7 +41,7 @@ namespace Game.Estate.UltimaIX.FilePack
 
         public void AddHeader(Header header, StreamSink.DataInfo info)
         {
-            Log($"Read: {header.Label}");
+            //Log($"Read: {header.Label}");
             Headers.Add(header);
             if (info == null)
                 switch (header.Label)

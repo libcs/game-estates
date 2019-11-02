@@ -239,6 +239,7 @@ GameObject:
   - component: {fileID: 1986515435}
   - component: {fileID: 1986515437}
   - component: {fileID: 1986515431}
+  - component: {fileID: 1986515436}
   m_Layer: 0
   m_Name: Player00
   m_TagString: Untagged
@@ -364,6 +365,29 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
+--- !u!114 &1986515436
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1986515430}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1287692974, guid: b4e4ba24770c3ba41a9bb87e9700d3af, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  slowSpeed: 3
+  normalSpeed: 5
+  fastSpeed: 10
+  flightSpeedMultiplier: 15
+  airborneForceMultiplier: 5
+  mouseSensitivity: 3
+  minVerticalAngle: -90
+  maxVerticalAngle: 90
+  lantern: {fileID: 0}
+  leftHand: {fileID: 0}
+  rightHand: {fileID: 0}
 --- !u!136 &1986515437
 CapsuleCollider:
   m_ObjectHideFlags: 0

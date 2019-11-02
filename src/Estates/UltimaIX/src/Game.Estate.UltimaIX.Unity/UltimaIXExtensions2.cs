@@ -15,5 +15,7 @@ namespace Game.Estate.UltimaIX
                 filePaths = new[] { "static/sappear.flx", "static/bitmap16.flx" }.Select(x => Path.Combine(filePaths[0], x)).ToArray();
             return Task.FromResult((IAssetUnityPack)new UltimaIXAssetPack(streamSink, filePaths));
         }
+
+        public static ICellManager GetUltimaIXCellManager(this TemporalLoadBalancer loadBalancer, IAssetPack assetPack, IDataPack dataPack, Func<object> func = null) => new UltimaIXCellManager(loadBalancer, (UltimaIXAssetPack)assetPack, (UltimaIXDataPack)dataPack);
     }
 }

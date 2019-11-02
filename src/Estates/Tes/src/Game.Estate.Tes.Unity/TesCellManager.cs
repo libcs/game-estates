@@ -426,20 +426,18 @@ namespace Game.Estate.Tes
             terrainLayers = terrainLayerList.ToArray();
 
             // Create the alpha map.
-            var VTEX_ROWS = 16;
-            var VTEX_COLUMNS = VTEX_ROWS;
-            float[,,] alphaMap = null;
-            alphaMap = new float[VTEX_ROWS, VTEX_COLUMNS, terrainLayers.Length];
-            for (var y = 0; y < VTEX_ROWS; y++)
+            var VTEX_STRIDE = 16;
+            var alphaMap = new float[VTEX_STRIDE, VTEX_STRIDE, terrainLayers.Length];
+            for (var y = 0; y < VTEX_STRIDE; y++)
             {
                 var yMajor = y / 4;
                 var yMinor = y - (yMajor * 4);
-                for (var x = 0; x < VTEX_COLUMNS; x++)
+                for (var x = 0; x < VTEX_STRIDE; x++)
                 {
                     var xMajor = x / 4;
                     var xMinor = x - (xMajor * 4);
                     var texIndex = (short)textureIndices[(yMajor * 64) + (xMajor * 16) + (yMinor * 4) + xMinor] - 1;
-                    if (texIndex >= 0) { var splatIndex = texInd2SplatInd[(ushort)texIndex]; alphaMap[y, x, splatIndex] = 1; }
+                    if (texIndex >= 0) alphaMap[y, x, texInd2SplatInd[(ushort)texIndex]] = 1;
                     else alphaMap[y, x, 0] = 1;
                 }
             }

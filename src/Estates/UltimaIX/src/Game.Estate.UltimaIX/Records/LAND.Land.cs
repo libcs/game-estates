@@ -58,13 +58,13 @@ namespace Game.Estate.UltimaIX.Records
                 Flags = r.ReadUInt32(),
             };
             var chunkCount = (int)r.ReadUInt32();
-            var indexSize = (int)(data.Width * data.Height);
-            var indices = data.Indices = r.ReadTArray<ushort>(indexSize * 2, indexSize);
+            var widthHeight = (int)(data.Width * data.Height);
+            var indices = data.Indices = r.ReadTArray<ushort>(widthHeight << 1, widthHeight);
             var chunks = data.Chunks = new Chunk[chunkCount];
             const int POINT_STRIDE = 16;
             for (var i = 0; i < chunks.Length; i++)
             {
-                var points = r.ReadTArray<uint>(POINT_STRIDE * POINT_STRIDE * 4, POINT_STRIDE * POINT_STRIDE); //.Select(x => (Point)x).ToArray();
+                var points = r.ReadTArray<uint>(POINT_STRIDE * POINT_STRIDE * 4, POINT_STRIDE * POINT_STRIDE);
                 chunks[i] = new Chunk
                 {
                     VHGT = points.Select(x => (ushort)(x & 0xFFF)).ToArray(),
@@ -73,6 +73,36 @@ namespace Game.Estate.UltimaIX.Records
                 };
             }
             group.Tag = data;
+
+            // transform
+            //const int LAND_STRIDE = 64;
+            //var records = new List<Record>();
+            //var VHGTs = new Dictionary<int, ushort[]>();
+            //for (var i = 0; i < POINT_STRIDE; i++)
+            //    VHGTs.Add(i, Enumerable.Repeat((ushort)(i * 10), POINT_STRIDE * POINT_STRIDE).ToArray());
+            //for (var y = 0; y < data.Height; y += 4)
+            //    for (var x = 0; x < data.Width; x += 4)
+            //    {
+            //        var vhgt = new ushort[LAND_STRIDE * LAND_STRIDE];
+            //        var vtex = new ushort[LAND_STRIDE * LAND_STRIDE];
+            //        var vtexf = new byte[LAND_STRIDE * LAND_STRIDE];
+            //        for (var sy = 0; sy < 4; sy++)
+            //            for (var sx = 0; sx < 4; sx++)
+            //            {
+            //                var offset = ((sx * POINT_STRIDE) + (sy * POINT_STRIDE * LAND_STRIDE)) << 1;
+            //                for (var i = 0; i < POINT_STRIDE; i++)
+            //                {
+            //                    Buffer.BlockCopy(VHGTs[i], i * POINT_STRIDE << 1, vhgt, offset + (i * LAND_STRIDE << 1), POINT_STRIDE << 1);
+            //                }
+            //            }
+            //        records.Add(new LANDRecord
+            //        {
+            //            VHGT = vhgt,
+            //            VTEX = vtex,
+            //            VTEXF = vtexf,
+            //            GridId = new Vector3Int(x / 4, y / 4, world),
+            //        });
+            //    }
 
             // transform
             const int LAND_STRIDE = 64;
@@ -90,12 +120,12 @@ namespace Game.Estate.UltimaIX.Records
                             if (index >= chunks.Length)
                                 continue;
                             var chunk = chunks[index];
-                            var offset = (sx * POINT_STRIDE) + (sy * POINT_STRIDE * LAND_STRIDE);
+                            var offset = ((sx * POINT_STRIDE) + (sy * POINT_STRIDE * LAND_STRIDE)) << 1;
                             for (var i = 0; i < POINT_STRIDE; i++)
                             {
-                                Buffer.BlockCopy(chunk.VHGT, i * POINT_STRIDE * 2, vhgt, offset + (i * LAND_STRIDE * 2), POINT_STRIDE * 2);
-                                Buffer.BlockCopy(chunk.VTEX, i * POINT_STRIDE * 2, vtex, offset + (i * LAND_STRIDE * 2), POINT_STRIDE * 2);
-                                Buffer.BlockCopy(chunk.VTEXF, i * POINT_STRIDE, vtexf, offset + (i * LAND_STRIDE), POINT_STRIDE);
+                                Buffer.BlockCopy(chunk.VHGT, i * POINT_STRIDE << 1, vhgt, offset + (i * LAND_STRIDE << 1), POINT_STRIDE << 1);
+                                Buffer.BlockCopy(chunk.VTEX, i * POINT_STRIDE << 1, vtex, offset + (i * LAND_STRIDE << 1), POINT_STRIDE << 1);
+                                //Buffer.BlockCopy(chunk.VTEXF, i * POINT_STRIDE, vtexf, offset + (i * LAND_STRIDE), POINT_STRIDE);
                             }
                         }
                     records.Add(new LANDRecord
