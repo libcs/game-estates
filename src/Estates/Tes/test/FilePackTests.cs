@@ -15,10 +15,26 @@ namespace Game.Estate.Tes.Tests
         public FilePackTests(ITestOutputHelper helper) => Core.CoreDebug.LogFunc = x => helper.WriteLine(x.ToString());
 
         [Theory]
-        [InlineData("game:/Morrowind.bsa#Morrowind", "textures/Tx_BC_moss.dds")]
+        [InlineData("game:/Morrowind.bsa#Morrowind", "meshes/x/ex_common_balcony_01.nif")]
+        public async Task LoadObject(string path, string modelPath)
+        {
+            // given
+            using (var assetPack = await new Uri(path).GetTesAssetPackAsync())
+            {
+                // when
+                var obj0 = await assetPack.LoadObjectInfoAsync(modelPath);
+                // then
+                Assert.NotNull(obj0);
+            }
+        }
+
+        [Theory]
+        //[InlineData("game:/Morrowind.bsa#Morrowind", "textures/Tx_BC_moss.dds")]
+        [InlineData("game:/Skyrim - Meshes0.bsa#SkyrimSE", "meshes/scalegizmo.nif")]
+        [InlineData("game:/Skyrim - Textures0.bsa#SkyrimSE", "textures/actors/dog/dog.dds")]
         //[InlineData("file:///C:/Program%20Files%20(x86)/Steam/steamapps/common/Morrowind/Data%20Files/Morrowind.*#Morrowind", "textures/Tx_BC_moss.dds")]
-        [InlineData("file:///C:/Program%20Files%20(x86)/Steam/steamapps/common/Morrowind/Data%20Files/Morrowind.bsa#Morrowind", "textures/Tx_BC_moss.dds")]
-        [InlineData("http://192.168.1.3/ASSETS/Morrowind/Morrowind.bsa#Morrowind", "textures/Tx_BC_moss.dds")]
+        //[InlineData("file:///C:/Program%20Files%20(x86)/Steam/steamapps/common/Morrowind/Data%20Files/Morrowind.bsa#Morrowind", "textures/Tx_BC_moss.dds")]
+        //[InlineData("http://192.168.1.3/ASSETS/Morrowind/Morrowind.bsa#Morrowind", "textures/Tx_BC_moss.dds")]
         //[InlineData("file://192.168.1.3/User/_ASSETS/Fallout4/Textures1";
         public async Task LoadAssetPack(string path, string modelPath)
         {

@@ -15,7 +15,7 @@ namespace Game.Estate.Tes
             @"Bethesda Softworks\Fallout NV", TesGame.FalloutNV,
             @"Bethesda Softworks\Morrowind", TesGame.Morrowind,
             @"Bethesda Softworks\Fallout 4", TesGame.Fallout4,
-            @"Bethesda Softworks\Skyrim SE", TesGame.SkyrimSE,
+            @"Bethesda Softworks\Skyrim Special Edition", TesGame.SkyrimSE,
             @"Bethesda Softworks\Fallout 4 VR", TesGame.Fallout4VR,
             @"Bethesda Softworks\Skyrim VR", TesGame.SkyrimVR
         };
@@ -42,7 +42,7 @@ namespace Game.Estate.Tes
 
         static void HardAdds()
         {
-            var morrowind = @"C:\Program Files (x86)\Steam\steamapps\common\Morrowind";
+            var morrowind = @"D:\Program Files (x86)\Steam\steamapps\common\Morrowind";
             if (Directory.Exists(morrowind))
             {
                 var dataPath = Path.Combine(morrowind, "Data Files");
